@@ -1,3 +1,5 @@
 node_modules/
 .env
 based.db
+.DS_Store
+package-lock.json
