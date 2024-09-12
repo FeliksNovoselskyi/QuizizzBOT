@@ -8,15 +8,16 @@ db.run(`
         userId INTEGER PRIMARY KEY,
         username TEXT,
         firstName TEXT,
-        lastName TEXT
+        lastName TEXT,
+        role TEXT
     )
 `)
 
 // Функция в которой информация о пользователе добавляется в базу данных
-export function addUser(userId, username, firstName, lastName) {
+export function addUser(userId, username, firstName, lastName, role) {
     db.run(
-        'INSERT OR IGNORE INTO users (userId, username, firstName, lastName) VALUES (?, ?, ?, ?)',
-        [userId, username, firstName, lastName]
+        'INSERT OR IGNORE INTO users (userId, username, firstName, lastName, role) VALUES (?, ?, ?, ?, ?)',
+        [userId, username, firstName, lastName, role]
     )
 }
 
