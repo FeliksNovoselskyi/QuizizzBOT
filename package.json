@@ -14,7 +14,9 @@
   "license": "ISC",
   "dependencies": {
     "dotenv": "^16.4.5",
+    "fs": "^0.0.1-security",
     "node-telegram-bot-api": "^0.66.0",
+    "path": "^0.12.7",
     "sqlite3": "^5.1.7"
   },
   "devDependencies": {

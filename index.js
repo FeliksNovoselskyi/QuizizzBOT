@@ -1,11 +1,19 @@
 import dotenv from 'dotenv'
 import telegramApi from 'node-telegram-bot-api'
+import fs from 'fs'
+import path from 'path'
+import {dirname} from 'path'
+import {fileURLToPath} from 'url'
 import * as dataBase from './data-base.js'
 
 dotenv.config()
 
 const botToken = process.env.token
 const bot = new telegramApi(botToken, {polling: true})
+
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = dirname(__filename)
+const uploadFilesDir = path.join(__dirname, 'uploaded_files')
 
 // Сообщения пользователя
 bot.on('message', async function(message) {
@@ -23,7 +31,7 @@ bot.on('message', async function(message) {
             },
         }
 
-        await bot.sendMessage(chatId, 'Привіт! Ти зареєстроватись у цьому боті як студент, або увійти як вчитель для створення тестів! \nДізнатись свій статус: /info', startOptions)
+        await bot.sendMessage(chatId, 'Привіт! Ти можеш зареєструватись у цьому боті як студент, або увійти як вчитель для створення тестів! \nДізнатись свій статус: /info', startOptions)
     }
 
     // Если пользователь хочет получить данные о себе
@@ -70,5 +78,32 @@ bot.on('callback_query', async function(query) {
             }
         })
     }
+})
 
+// Загрузка учителем .json файла с вопросами теста
+bot.on('document', async function(message) {
+    const chatId = message.chat.id
+    
+    const fileId = message.document.file_id
+    const fileName = message.document.file_name
+
+    if (path.extname(fileName) === '.json') {
+        const localFilePath = path.join(__dirname, fileName)
+
+        await bot.downloadFile(fileId, uploadFilesDir)
+
+        fs.readFile(localFilePath, 'utf8', function(error, data) {
+            if (error) {
+                return bot.sendMessage(chatId, 'Ошибка при чтении файла.')
+            }
+
+            try {
+                const questions = JSON.parse(data)
+                bot.sendMessage(chatId, 'Файл с вопросами успешно загружен и распознан!')
+                console.log(questions)
+            } catch {
+                bot.sendMessage(chatId, 'Ошибка при парсинге JSON файла. Проверьте правильность формата.')
+            }
+        })
+    }
 })
