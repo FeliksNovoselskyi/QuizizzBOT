@@ -1,9 +1,11 @@
-import dotenv from 'dotenv'
-import telegramApi from 'node-telegram-bot-api'
 import fs from 'fs'
 import path from 'path'
+import dotenv from 'dotenv'
+import telegramApi from 'node-telegram-bot-api'
+
 import {dirname} from 'path'
 import {fileURLToPath} from 'url'
+
 import * as dataBase from './data-base.js'
 
 dotenv.config()
@@ -12,8 +14,9 @@ const botToken = process.env.token
 const bot = new telegramApi(botToken, {polling: true})
 
 const __filename = fileURLToPath(import.meta.url)
-const __dirname = dirname(__filename)
-const uploadFilesDir = path.join(__dirname, 'uploaded_files')
+const __dirname = dirname(__filename) // Получаем главную директорию проекта
+// Получаем директорию куда будем сохранять файлы.json отправленные пользователем
+const uploadFilesDir = path.join(__dirname, 'uploaded_files') 
 
 // Сообщения пользователя
 bot.on('message', async function(message) {
@@ -88,6 +91,7 @@ bot.on('document', async function(message) {
     const fileId = message.document.file_id
     const fileName = message.document.file_name
 
+    // Проверка, что файл является.json и что это учительский аккаунт
     if (path.extname(fileName) === '.json') {
         dataBase.getUserById(userId, async function(user) {
             if (!user || user.role !== 'teacher') {
@@ -96,17 +100,21 @@ bot.on('document', async function(message) {
 
             const localFilePath = path.join(__dirname, fileName)
 
+            // Скачиваем файл который закинул нам пользователь
+            // далее сохраняем этот файл в папке uploaded_files
             await bot.downloadFile(fileId, uploadFilesDir)
 
+            // Читаем содержимое файла по указанному пути
             fs.readFile(localFilePath, 'utf8', function(error, data) {
                 if (error) {
                     return bot.sendMessage(chatId, 'Помилка при прочитанні файлу')
                 }
 
                 try {
+                    // Пробуем парсить содержимое файла
                     const questions = JSON.parse(data)
                     bot.sendMessage(chatId, 'Файл з питаннями завантажений успішно!')
-                    console.log(questions)
+                    console.log(questions) // Выводим файл (ВРЕМЕННО)
                 } catch {
                     bot.sendMessage(chatId, 'Помилка при парсингу JSON файлу. Перевірте правильність формату файлу')
                 }
