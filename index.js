@@ -36,7 +36,7 @@ bot.on('message', async function(message) {
 
     // Если пользователь хочет получить данные о себе
     if (message.text === '/info')  {
-        dataBase.getUserById(userId, async (user) => {
+        dataBase.getUserById(userId, async function(user) {
             if (user) {
                 await bot.sendMessage(chatId, `Ваше ім'я та фамілія: ${user.firstName} ${user.lastName} \nВаш статус: ${user.role} \n`)
             } else {
@@ -83,27 +83,34 @@ bot.on('callback_query', async function(query) {
 // Загрузка учителем .json файла с вопросами теста
 bot.on('document', async function(message) {
     const chatId = message.chat.id
+    const userId = message.from.id
     
     const fileId = message.document.file_id
     const fileName = message.document.file_name
 
     if (path.extname(fileName) === '.json') {
-        const localFilePath = path.join(__dirname, fileName)
-
-        await bot.downloadFile(fileId, uploadFilesDir)
-
-        fs.readFile(localFilePath, 'utf8', function(error, data) {
-            if (error) {
-                return bot.sendMessage(chatId, 'Ошибка при чтении файла.')
+        dataBase.getUserById(userId, async function(user) {
+            if (!user || user.role !== 'teacher') {
+                return bot.sendMessage(chatId, 'Завантажувати файли має право тільки вчитель!')
             }
 
-            try {
-                const questions = JSON.parse(data)
-                bot.sendMessage(chatId, 'Файл с вопросами успешно загружен и распознан!')
-                console.log(questions)
-            } catch {
-                bot.sendMessage(chatId, 'Ошибка при парсинге JSON файла. Проверьте правильность формата.')
-            }
+            const localFilePath = path.join(__dirname, fileName)
+
+            await bot.downloadFile(fileId, uploadFilesDir)
+
+            fs.readFile(localFilePath, 'utf8', function(error, data) {
+                if (error) {
+                    return bot.sendMessage(chatId, 'Помилка при прочитанні файлу')
+                }
+
+                try {
+                    const questions = JSON.parse(data)
+                    bot.sendMessage(chatId, 'Файл з питаннями завантажений успішно!')
+                    console.log(questions)
+                } catch {
+                    bot.sendMessage(chatId, 'Помилка при парсингу JSON файлу. Перевірте правильність формату файлу')
+                }
+            })
         })
     }
 })
