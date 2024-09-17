@@ -1,11 +1,19 @@
 import dotenv from 'dotenv'
 import telegramApi from 'node-telegram-bot-api'
+import fs from 'fs'
+import path from 'path'
+import {dirname} from 'path'
+import {fileURLToPath} from 'url'
 import * as dataBase from './data-base.js'
 
 dotenv.config()
 
 const botToken = process.env.token
 const bot = new telegramApi(botToken, {polling: true})
+
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = dirname(__filename)
+const uploadFilesDir = path.join(__dirname, 'uploaded_files')
 
 // Сообщения пользователя
 bot.on('message', async function(message) {
@@ -23,12 +31,12 @@ bot.on('message', async function(message) {
             },
         }
 
-        await bot.sendMessage(chatId, 'Привіт! Ти зареєстроватись у цьому боті як студент, або увійти як вчитель для створення тестів! \nДізнатись свій статус: /info', startOptions)
+        await bot.sendMessage(chatId, 'Привіт! Ти можеш зареєструватись у цьому боті як студент, або увійти як вчитель для створення тестів! \nДізнатись свій статус: /info', startOptions)
     }
 
     // Если пользователь хочет получить данные о себе
     if (message.text === '/info')  {
-        dataBase.getUserById(userId, async (user) => {
+        dataBase.getUserById(userId, async function(user) {
             if (user) {
                 await bot.sendMessage(chatId, `Ваше ім'я та фамілія: ${user.firstName} ${user.lastName} \nВаш статус: ${user.role} \n`)
             } else {
@@ -70,5 +78,39 @@ bot.on('callback_query', async function(query) {
             }
         })
     }
+})
 
+// Загрузка учителем .json файла с вопросами теста
+bot.on('document', async function(message) {
+    const chatId = message.chat.id
+    const userId = message.from.id
+    
+    const fileId = message.document.file_id
+    const fileName = message.document.file_name
+
+    if (path.extname(fileName) === '.json') {
+        dataBase.getUserById(userId, async function(user) {
+            if (!user || user.role !== 'teacher') {
+                return bot.sendMessage(chatId, 'Завантажувати файли має право тільки вчитель!')
+            }
+
+            const localFilePath = path.join(__dirname, fileName)
+
+            await bot.downloadFile(fileId, uploadFilesDir)
+
+            fs.readFile(localFilePath, 'utf8', function(error, data) {
+                if (error) {
+                    return bot.sendMessage(chatId, 'Помилка при прочитанні файлу')
+                }
+
+                try {
+                    const questions = JSON.parse(data)
+                    bot.sendMessage(chatId, 'Файл з питаннями завантажений успішно!')
+                    console.log(questions)
+                } catch {
+                    bot.sendMessage(chatId, 'Помилка при парсингу JSON файлу. Перевірте правильність формату файлу')
+                }
+            })
+        })
+    }
 })

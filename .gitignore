@@ -1,4 +1,5 @@
 node_modules/
+uploaded_files/
 .env
 based.db
 .DS_Store
