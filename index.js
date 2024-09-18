@@ -7,6 +7,7 @@ import {dirname} from 'path'
 import {fileURLToPath} from 'url'
 
 import * as dataBase from './data-base.js'
+import * as quizFuncs from './quiz-functional.js'
 
 dotenv.config()
 
@@ -18,6 +19,9 @@ const __dirname = dirname(__filename) // Получаем главную дир�
 // Получаем директорию куда будем сохранять файлы.json отправленные пользователем
 const uploadFilesDir = path.join(__dirname, 'uploaded_files') 
 
+let questions = {}
+let canStart = false
+
 // Сообщения пользователя
 bot.on('message', async function(message) {
     const chatId = message.chat.id
@@ -28,7 +32,7 @@ bot.on('message', async function(message) {
         const startOptions = {
             reply_markup: {
                 inline_keyboard: [
-                    [{text: 'Зареєструватись як студент', callback_data: 'register_student'}],
+                    [{text: 'Зареєструватись як студźнт', callback_data: 'register_student'}],
                     [{text: 'Увійти як вчитель', callback_data: 'login_teacher'}],
                 ],
             },
@@ -47,6 +51,15 @@ bot.on('message', async function(message) {
             }
         })
     }
+
+    if (message.text === '/quiz') {
+        if (!canStart) {
+            await bot.sendMessage(chatId, 'Тестування відключено!')
+        } else {
+            quizFuncs.userQuestions[chatId] = 0 // Сброс индекса вопроса для пользователя
+            await quizFuncs.sendQuestion(chatId, questions, bot)
+        }
+    }
 })
 
 // Обработка callback функций
@@ -56,6 +69,25 @@ bot.on('callback_query', async function(query) {
     const username = query.from.username || ''
     const firstName = query.from.first_name || ''
     const lastName = query.from.last_name || ''
+
+    const userIndex = quizFuncs.userQuestions[chatId] || 0
+    const currentQuestion = questions[userIndex]
+
+    if (currentQuestion) {
+        const answerIndex = parseInt(query.data)
+        const isCorrect = answerIndex === currentQuestion.correct
+
+        if (isCorrect) {
+            await bot.sendMessage(chatId, 'Вірна відповідь!')
+        } else {
+            await bot.sendMessage(chatId, `Неправильна відповідь! Правильна відповідь: ${currentQuestion.options[currentQuestion.correct]}`)
+        }
+
+        // Переход к следующему вопросу
+        console.log(quizFuncs.userQuestions)
+        quizFuncs.userQuestions[chatId] = userIndex + 1
+        await quizFuncs.sendQuestion(chatId, questions, bot)
+    }
 
     // Регистрация как ученик
     if (query.data === 'register_student') {
@@ -112,9 +144,12 @@ bot.on('document', async function(message) {
 
                 try {
                     // Пробуем парсить содержимое файла
-                    const questions = JSON.parse(data)
+                    const json_file = JSON.parse(data)
+                    questions = json_file.questions
+
                     bot.sendMessage(chatId, 'Файл з питаннями завантажений успішно!')
                     console.log(questions) // Выводим файл (ВРЕМЕННО)
+                    canStart = true
                 } catch {
                     bot.sendMessage(chatId, 'Помилка при парсингу JSON файлу. Перевірте правильність формату файлу')
                 }
