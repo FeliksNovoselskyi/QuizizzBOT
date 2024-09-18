@@ -36,7 +36,7 @@ bot.on('message', async function(message) {
         const startOptions = {
             reply_markup: {
                 inline_keyboard: [
-                    [{text: 'Зареєструватись як студźнт', callback_data: 'register_student'}],
+                    [{text: 'Зареєструватись як студент', callback_data: 'register_student'}],
                     [{text: 'Увійти як вчитель', callback_data: 'login_teacher'}],
                 ],
             },
