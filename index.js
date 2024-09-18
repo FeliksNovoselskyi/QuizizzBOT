@@ -49,7 +49,7 @@ bot.on('message', async function(message) {
     if (message.text === '/info')  {
         dataBase.getUserById(userId, async function(user) {
             if (user) {
-                await bot.sendMessage(chatId, `Ваше ім'я та фамілія: ${user.firstName} ${user.lastName} \nВаш статус: ${user.role} \n`)
+                await bot.sendMessage(chatId, `Ваше ім'я та фамілія: ${user.firstName} ${user.lastName} \nВаш статус: ${user.role} \nРозпочнемо тест командою /quiz?`)
             } else {
                 await bot.sendMessage(chatId, 'Ви не зареєстровані в цьому боті')
             }
@@ -59,7 +59,7 @@ bot.on('message', async function(message) {
     // Если пользователь хочет начать тест
     if (message.text === '/quiz') {
         if (!canStart) {
-            await bot.sendMessage(chatId, 'Тестування відключено!')
+            await bot.sendMessage(chatId, 'Тестування ще не розпочато!')
         } else {
             quizFuncs.userQuestions[chatId] = 0 // Сброс индекса вопроса для пользователя
             await quizFuncs.sendQuestion(chatId, questions, bot)
@@ -104,7 +104,7 @@ bot.on('callback_query', async function(query) {
 
     // Вход как учитель
     if (query.data === 'login_teacher') {
-        await bot.sendMessage(chatId, 'Введіть пароль від акаунту вчителя')
+        await bot.sendMessage(chatId, 'Введіть пароль від акаунту вчителя (тільки пароль, без зайвих символів)')
 
         const teacherPassword = process.env.teacherPassword
         // console.log(teacherPassword)
@@ -114,7 +114,7 @@ bot.on('callback_query', async function(query) {
             // Проверка верности пароля введенного пользователем
             if (userInputPassword === teacherPassword) {
                 dataBase.addUser(userId, username, firstName, lastName, 'teacher')
-                await bot.sendMessage(chatId, 'Ви успішно увійшли як вчитель! \nТепер ви можете завантажити JSON файл с питаннями вашого тесту, та розпочати тест для ваших студентів!')
+                await bot.sendMessage(chatId, 'Ви успішно увійшли як вчитель! \nТепер ви можете завантажити JSON файл с питаннями вашого тесту, та розпочати тест для ваших студентів командою /quiz!')
             } else {
                 await bot.sendMessage(chatId, 'Невірний пароль! \nСпробуйте знову \nДля цього нажміть на кнопку входу знову')
             }
@@ -154,7 +154,7 @@ bot.on('document', async function(message) {
                     const json_file = JSON.parse(data)
                     questions = json_file.questions
 
-                    bot.sendMessage(chatId, 'Файл з питаннями завантажений успішно!')
+                    bot.sendMessage(chatId, 'Файл з питаннями завантажений успішно! Щоб почати тест напішить /quiz')
                     // console.log(questions) // Выводим файл (ВРЕМЕННО)
                     canStart = true
                 } catch {
@@ -162,5 +162,7 @@ bot.on('document', async function(message) {
                 }
             })
         })
+    } else {
+        bot.sendMessage(chatId, 'Завантажити для тесту можна тільки .json файл!')
     }
 })
