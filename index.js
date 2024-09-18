@@ -6,6 +6,7 @@ import telegramApi from 'node-telegram-bot-api'
 import {dirname} from 'path'
 import {fileURLToPath} from 'url'
 
+// Мои скрипты
 import * as dataBase from './data-base.js'
 import * as quizFuncs from './quiz-functional.js'
 
@@ -15,11 +16,14 @@ const botToken = process.env.token
 const bot = new telegramApi(botToken, {polling: true})
 
 const __filename = fileURLToPath(import.meta.url)
-const __dirname = dirname(__filename) // Получаем главную директорию проекта
+const __dirname = dirname(__filename) // Получаем главную директорию проекта, с помощью __filename
 // Получаем директорию куда будем сохранять файлы.json отправленные пользователем
 const uploadFilesDir = path.join(__dirname, 'uploaded_files') 
 
+// Переменная в которую запишутся вопросы, после парса файла.json
 let questions = {}
+
+// Флаги
 let canStart = false
 
 // Сообщения пользователя
@@ -52,6 +56,7 @@ bot.on('message', async function(message) {
         })
     }
 
+    // Если пользователь хочет начать тест
     if (message.text === '/quiz') {
         if (!canStart) {
             await bot.sendMessage(chatId, 'Тестування відключено!')
@@ -66,6 +71,7 @@ bot.on('message', async function(message) {
 bot.on('callback_query', async function(query) {
     const chatId = query.message.chat.id
     const userId = query.from.id
+
     const username = query.from.username || ''
     const firstName = query.from.first_name || ''
     const lastName = query.from.last_name || ''
@@ -73,6 +79,7 @@ bot.on('callback_query', async function(query) {
     const userIndex = quizFuncs.userQuestions[chatId] || 0
     const currentQuestion = questions[userIndex]
 
+    // Если пришёл колбек от ответа на вопрос
     if (currentQuestion) {
         const answerIndex = parseInt(query.data)
         const isCorrect = answerIndex === currentQuestion.correct
@@ -84,7 +91,7 @@ bot.on('callback_query', async function(query) {
         }
 
         // Переход к следующему вопросу
-        console.log(quizFuncs.userQuestions)
+        // console.log(quizFuncs.userQuestions)
         quizFuncs.userQuestions[chatId] = userIndex + 1
         await quizFuncs.sendQuestion(chatId, questions, bot)
     }
@@ -148,7 +155,7 @@ bot.on('document', async function(message) {
                     questions = json_file.questions
 
                     bot.sendMessage(chatId, 'Файл з питаннями завантажений успішно!')
-                    console.log(questions) // Выводим файл (ВРЕМЕННО)
+                    // console.log(questions) // Выводим файл (ВРЕМЕННО)
                     canStart = true
                 } catch {
                     bot.sendMessage(chatId, 'Помилка при парсингу JSON файлу. Перевірте правильність формату файлу')
