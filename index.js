@@ -57,6 +57,7 @@ bot.on('message', async function(message) {
         })
     }
 
+    // Команда для смены роли (если не будет вдруг сообщения с кнопкой для этого)
     if (message.text === '/change_role')  {
         botFuncs.checkUserRole(userId, bot, chatId)
     }
@@ -116,21 +117,24 @@ bot.on('callback_query', async function(query) {
         botFuncs.teacherLogin(chatId, bot, messageId, userId, username, firstName, lastName, false)
     }
 
+    // Смена роли
     if (query.data === 'change_role') {
         botFuncs.checkUserRole(userId, bot, chatId)
     }
 
+    // Смена роли с студента на учителя
     if (query.data === 'switch_to_teacher') {
         botFuncs.teacherLogin(chatId, bot, messageId, userId, username, firstName, lastName, true)
 
     } else if (query.data === 'switch_to_student') {
-        // Логика смены на студента
+        // Смена роли с учителя на студента
         dataBase.updateUserRole(userId, 'student', () => {
             bot.sendMessage(chatId, "Ваша роль змінена на студента")
             botFuncs.updateRoleButtons(chatId, bot, messageId) // Очищаем старые кнопки и добавляем новую
         })
 
     } else if (query.data === 'cancel_change_role') {
+        // Отмена смены роли
         bot.sendMessage(chatId, "Зміна ролі відмінена")
         await bot.editMessageReplyMarkup({inline_keyboard: []}, {chat_id: chatId, message_id: messageId})
     }

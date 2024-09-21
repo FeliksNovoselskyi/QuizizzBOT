@@ -33,7 +33,8 @@ export function getUserById(userId, callback) {
     })
 }
 
-// Функция обновляющая роль пользователя, в зависимости от той какая у него сейчас
+// Функция обновляющая роль пользователя в базе данных
+// в зависимости от той какая у него сейчас
 export function updateUserRole(userId, newRole, callback) {
     db.run('UPDATE users SET role = ? WHERE userId = ?', [newRole, userId], function(error) {
         if (error) {

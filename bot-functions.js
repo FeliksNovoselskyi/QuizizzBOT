@@ -13,7 +13,7 @@ export async function teacherLogin(chatId, bot, messageId, userId, username, fir
             // Проверка верности пароля введенного пользователем
             if (userInputPassword === teacherPassword) {
                 if (changeToTeacherRole) {
-                    // Логика смены на учителя
+                    // Смена роли с студента на учителя
                     dataBase.updateUserRole(userId, 'teacher', () => {
                         bot.sendMessage(chatId, "Ваша роль змінена на вчителя")
                     })
