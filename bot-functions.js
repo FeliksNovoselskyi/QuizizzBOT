@@ -28,7 +28,8 @@ export async function teacherLogin(chatId, bot, messageId, userId, username, fir
         })
 }
 
-//
+// После входа или регистрации, предлагаем сменить роль если нужно
+// Удаляем инлайн-кнопки прошлого сообщения
 export function updateRoleButtons(chatId, bot, messageId) {
     bot.editMessageReplyMarkup({inline_keyboard: []}, {chat_id: chatId, message_id: messageId})
 
@@ -38,6 +39,35 @@ export function updateRoleButtons(chatId, bot, messageId) {
             inline_keyboard: [
                 [{ text: 'Змінити роль', callback_data: 'change_role' }]
             ]
+        }
+    })
+}
+
+// Проверяем текущую роль пользователя
+export function checkUserRole(userId, bot, chatId) {
+    dataBase.getUserById(userId, (user) => {
+        if (user) {
+            if (user.role === 'student') {
+                // Если текущая роль - студент, предлагаем смену на учителя
+                bot.sendMessage(chatId, "Ви увійшли як студент. Хочете увійти як вчитель?", {
+                    reply_markup: {
+                        inline_keyboard: [
+                            [{ text: "Так", callback_data: "switch_to_teacher" }],
+                            [{ text: "Ні", callback_data: "cancel_change_role" }]
+                        ]
+                    }
+                })
+            } else if (user.role === 'teacher') {
+                // Если текущая роль - учитель, предлагаем смену на студента
+                bot.sendMessage(chatId, "Ви увійшли як вчитель. Хочете увійти як студент?", {
+                    reply_markup: {
+                        inline_keyboard: [
+                            [{ text: "Так", callback_data: "switch_to_student" }],
+                            [{ text: "Ні", callback_data: "cancel_change_role" }]
+                        ]
+                    }
+                })
+            }
         }
     })
 }

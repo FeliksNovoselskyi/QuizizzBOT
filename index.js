@@ -50,11 +50,15 @@ bot.on('message', async function(message) {
     if (message.text === '/info')  {
         dataBase.getUserById(userId, async function(user) {
             if (user) {
-                await bot.sendMessage(chatId, `Ваше ім'я та фамілія: ${user.firstName} ${user.lastName} \nВаш статус: ${user.role} \nРозпочнемо тест командою /quiz?`)
+                await bot.sendMessage(chatId, `Ваше ім'я та фамілія: ${user.firstName} ${user.lastName} \nВаш статус: ${user.role}`)
             } else {
                 await bot.sendMessage(chatId, 'Ви не зареєстровані в цьому боті')
             }
         })
+    }
+
+    if (message.text === '/change_role')  {
+        botFuncs.checkUserRole(userId, bot, chatId)
     }
 
     // Если пользователь хочет начать тест
@@ -113,32 +117,7 @@ bot.on('callback_query', async function(query) {
     }
 
     if (query.data === 'change_role') {
-        // Проверяем текущую роль пользователя
-        dataBase.getUserById(userId, (user) => {
-            if (user) {
-                if (user.role === 'student') {
-                    // Если текущая роль - студент, предлагаем смену на учителя
-                    bot.sendMessage(chatId, "Ви увійшли як студент. Хочете увійти як вчитель?", {
-                        reply_markup: {
-                            inline_keyboard: [
-                                [{ text: "Так", callback_data: "switch_to_teacher" }],
-                                [{ text: "Ні", callback_data: "cancel_change_role" }]
-                            ]
-                        }
-                    })
-                } else if (user.role === 'teacher') {
-                    // Если текущая роль - учитель, предлагаем смену на студента
-                    bot.sendMessage(chatId, "Ви увійшли як вчитель. Хочете увійти як студент?", {
-                        reply_markup: {
-                            inline_keyboard: [
-                                [{ text: "Так", callback_data: "switch_to_student" }],
-                                [{ text: "Ні", callback_data: "cancel_change_role" }]
-                            ]
-                        }
-                    })
-                }
-            }
-        })
+        botFuncs.checkUserRole(userId, bot, chatId)
     }
 
     if (query.data === 'switch_to_teacher') {
@@ -153,6 +132,7 @@ bot.on('callback_query', async function(query) {
 
     } else if (query.data === 'cancel_change_role') {
         bot.sendMessage(chatId, "Зміна ролі відмінена")
+        await bot.editMessageReplyMarkup({inline_keyboard: []}, {chat_id: chatId, message_id: messageId})
     }
 })
 
