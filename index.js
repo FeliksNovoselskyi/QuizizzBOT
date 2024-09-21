@@ -27,6 +27,13 @@ let questions = {}
 // Флаги
 let canStart = false
 
+// Создаём меню команд для бота
+bot.setMyCommands([
+    {command: '/info', description: 'Отримати інформацію про себе'},
+    {command: '/change_role', description: 'Змінити свою роль'},
+    {command: '/quiz', description: 'Розпочати тест'},
+])
+
 // Сообщения пользователя
 bot.on('message', async function(message) {
     const chatId = message.chat.id
