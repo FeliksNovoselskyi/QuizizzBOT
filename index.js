@@ -9,6 +9,7 @@ import {fileURLToPath} from 'url'
 // Мои скрипты
 import * as dataBase from './data-base.js'
 import * as quizFuncs from './quiz-functional.js'
+import * as botFuncs from './bot-functions.js'
 
 dotenv.config()
 
@@ -71,6 +72,7 @@ bot.on('message', async function(message) {
 bot.on('callback_query', async function(query) {
     const chatId = query.message.chat.id
     const userId = query.from.id
+    const messageId = query.message.message_id
 
     const username = query.from.username || ''
     const firstName = query.from.first_name || ''
@@ -90,6 +92,8 @@ bot.on('callback_query', async function(query) {
             await bot.sendMessage(chatId, `Неправильна відповідь! Правильна відповідь: ${currentQuestion.options[currentQuestion.correct]}`)
         }
 
+        await bot.editMessageReplyMarkup({inline_keyboard: []}, {chat_id: chatId, message_id: messageId})
+
         // Переход к следующему вопросу
         // console.log(quizFuncs.userQuestions)
         quizFuncs.userQuestions[chatId] = userIndex + 1
@@ -98,27 +102,57 @@ bot.on('callback_query', async function(query) {
 
     // Регистрация как ученик
     if (query.data === 'register_student') {
+        botFuncs.updateRoleButtons(chatId, bot, messageId)
         dataBase.addUser(userId, username, firstName, lastName, 'student')
         await bot.sendMessage(chatId, 'Ви зареєстровані в цьому боті як студент')
     }
 
     // Вход как учитель
     if (query.data === 'login_teacher') {
-        await bot.sendMessage(chatId, 'Введіть пароль від акаунту вчителя (тільки пароль, без зайвих символів)')
+        botFuncs.teacherLogin(chatId, bot, messageId, userId, username, firstName, lastName, false)
+    }
 
-        const teacherPassword = process.env.teacherPassword
-        // console.log(teacherPassword)
-        bot.once('message', async (message) => {
-            const userInputPassword = message.text
-
-            // Проверка верности пароля введенного пользователем
-            if (userInputPassword === teacherPassword) {
-                dataBase.addUser(userId, username, firstName, lastName, 'teacher')
-                await bot.sendMessage(chatId, 'Ви успішно увійшли як вчитель! \nТепер ви можете завантажити JSON файл с питаннями вашого тесту, та розпочати тест для ваших студентів командою /quiz!')
-            } else {
-                await bot.sendMessage(chatId, 'Невірний пароль! \nСпробуйте знову \nДля цього нажміть на кнопку входу знову')
+    if (query.data === 'change_role') {
+        // Проверяем текущую роль пользователя
+        dataBase.getUserById(userId, (user) => {
+            if (user) {
+                if (user.role === 'student') {
+                    // Если текущая роль - студент, предлагаем смену на учителя
+                    bot.sendMessage(chatId, "Ви увійшли як студент. Хочете увійти як вчитель?", {
+                        reply_markup: {
+                            inline_keyboard: [
+                                [{ text: "Так", callback_data: "switch_to_teacher" }],
+                                [{ text: "Ні", callback_data: "cancel_change_role" }]
+                            ]
+                        }
+                    })
+                } else if (user.role === 'teacher') {
+                    // Если текущая роль - учитель, предлагаем смену на студента
+                    bot.sendMessage(chatId, "Ви увійшли як вчитель. Хочете увійти як студент?", {
+                        reply_markup: {
+                            inline_keyboard: [
+                                [{ text: "Так", callback_data: "switch_to_student" }],
+                                [{ text: "Ні", callback_data: "cancel_change_role" }]
+                            ]
+                        }
+                    })
+                }
             }
         })
+    }
+
+    if (query.data === 'switch_to_teacher') {
+        botFuncs.teacherLogin(chatId, bot, messageId, userId, username, firstName, lastName, true)
+
+    } else if (query.data === 'switch_to_student') {
+        // Логика смены на студента
+        dataBase.updateUserRole(userId, 'student', () => {
+            bot.sendMessage(chatId, "Ваша роль змінена на студента")
+            botFuncs.updateRoleButtons(chatId, bot, messageId) // Очищаем старые кнопки и добавляем новую
+        })
+
+    } else if (query.data === 'cancel_change_role') {
+        bot.sendMessage(chatId, "Зміна ролі відмінена")
     }
 })
 
