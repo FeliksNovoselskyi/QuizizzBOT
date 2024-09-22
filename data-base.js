@@ -38,7 +38,7 @@ export function getUserById(userId, callback) {
 export function updateUserRole(userId, newRole, callback) {
     db.run('UPDATE users SET role = ? WHERE userId = ?', [newRole, userId], function(error) {
         if (error) {
-            console.error("Ошибка обновления роли:", error.message);
+            console.error("Помилка при оновленні ролі:", error.message);
         } else {
             callback()
         }

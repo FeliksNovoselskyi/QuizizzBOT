@@ -1,3 +1,5 @@
+import * as indexFile from './index.js'
+
 // Индексы текущих вопросов для каждого пользователя
 export const userQuestions = {}
 
@@ -23,6 +25,7 @@ export async function sendQuestion(chatId, questions, bot) {
         } else {
             await bot.sendMessage(chatId, 'Тест завершено! Дякуюємо за ваші відповіді!')
             delete userQuestions[chatId] // Сброс состояния для пользователя
+            indexFile.completedQuizzes[chatId] = true
         }
     } catch (error) {
         console.error(error)

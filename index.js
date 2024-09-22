@@ -24,6 +24,8 @@ const uploadFilesDir = path.join(__dirname, 'uploaded_files')
 // Переменная в которую запишутся вопросы, после парса файла.json
 let questions = {}
 
+export const completedQuizzes = {}
+
 // Флаги
 let canStart = false
 let addedJsonFile = false
@@ -73,7 +75,7 @@ bot.on('message', async function(message) {
     // Если пользователь хочет начать тест
     if (message.text === '/quiz') {
         dataBase.getUserById(userId, async (user) => {
-            if (user.role === 'student' && canStart) {
+            if (user.role === 'student' && canStart && !completedQuizzes[chatId]) {
                 quizFuncs.userQuestions[chatId] = 0 // Сброс индекса вопроса для пользователя
                 await quizFuncs.sendQuestion(chatId, questions, bot)
             } else {
@@ -87,6 +89,7 @@ bot.on('message', async function(message) {
             if (user.role === 'teacher') {
                 if (addedJsonFile) {
                     canStart = true
+                    completedQuizzes[chatId] = false
                     bot.sendMessage(chatId, 'Ви успішно створили тест!\nТепер ваші студенти можуть розпочинати тестування командою /quiz')
                 } else {
                     bot.sendMessage(chatId, 'Ви не завантажили .json файл із питаннями')
