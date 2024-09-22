@@ -26,6 +26,7 @@ let questions = {}
 
 // Флаги
 let canStart = false
+let addedJsonFile = false
 
 // Создаём меню команд для бота
 bot.setMyCommands([
@@ -71,12 +72,29 @@ bot.on('message', async function(message) {
 
     // Если пользователь хочет начать тест
     if (message.text === '/quiz') {
-        if (!canStart) {
-            await bot.sendMessage(chatId, 'Тестування ще не розпочато!')
-        } else {
-            quizFuncs.userQuestions[chatId] = 0 // Сброс индекса вопроса для пользователя
-            await quizFuncs.sendQuestion(chatId, questions, bot)
-        }
+        dataBase.getUserById(userId, async (user) => {
+            if (user.role === 'student' && canStart) {
+                quizFuncs.userQuestions[chatId] = 0 // Сброс индекса вопроса для пользователя
+                await quizFuncs.sendQuestion(chatId, questions, bot)
+            } else {
+                await bot.sendMessage(chatId, 'Проходження тесту не дозволено!\nАбо, якщо ви вчитель, ви не можете проходити тест')
+            }
+        })
+    }
+
+    if (message.text === '/can_start_quiz') {
+        dataBase.getUserById(userId, async (user) => {
+            if (user.role === 'teacher') {
+                if (addedJsonFile) {
+                    canStart = true
+                    bot.sendMessage(chatId, 'Ви успішно створили тест!\nТепер ваші студенти можуть розпочинати тестування командою /quiz')
+                } else {
+                    bot.sendMessage(chatId, 'Ви не завантажили .json файл із питаннями')
+                }
+            } else {
+                await bot.sendMessage(chatId, 'Розпочати тест має право тільки вчитель')
+            }
+        })
     }
 })
 
@@ -93,58 +111,61 @@ bot.on('callback_query', async function(query) {
     const userIndex = quizFuncs.userQuestions[chatId] || 0
     const currentQuestion = questions[userIndex]
 
-    // Если пришёл колбек от ответа на вопрос
-    if (currentQuestion) {
-        const answerIndex = parseInt(query.data)
-        const isCorrect = answerIndex === currentQuestion.correct
-
-        if (isCorrect) {
-            await bot.sendMessage(chatId, 'Вірна відповідь!')
-        } else {
-            await bot.sendMessage(chatId, `Неправильна відповідь! Правильна відповідь: ${currentQuestion.options[currentQuestion.correct]}`)
-        }
-
-        await bot.editMessageReplyMarkup({inline_keyboard: []}, {chat_id: chatId, message_id: messageId})
-
-        // Переход к следующему вопросу
-        // console.log(quizFuncs.userQuestions)
-        quizFuncs.userQuestions[chatId] = userIndex + 1
-        await quizFuncs.sendQuestion(chatId, questions, bot)
-    }
-
     // Регистрация как ученик
     if (query.data === 'register_student') {
-        botFuncs.updateRoleButtons(chatId, bot, messageId)
         dataBase.addUser(userId, username, firstName, lastName, 'student')
         await bot.sendMessage(chatId, 'Ви зареєстровані в цьому боті як студент')
+        return
     }
 
     // Вход как учитель
     if (query.data === 'login_teacher') {
         botFuncs.teacherLogin(chatId, bot, messageId, userId, username, firstName, lastName, false)
-    }
-
-    // Смена роли
-    if (query.data === 'change_role') {
-        botFuncs.checkUserRole(userId, bot, chatId)
+        return
     }
 
     // Смена роли с студента на учителя
     if (query.data === 'switch_to_teacher') {
         botFuncs.teacherLogin(chatId, bot, messageId, userId, username, firstName, lastName, true)
-
-    } else if (query.data === 'switch_to_student') {
+        return
+    } 
+    
+    if (query.data === 'switch_to_student') {
         // Смена роли с учителя на студента
+        delete quizFuncs.userQuestions[chatId]
         dataBase.updateUserRole(userId, 'student', () => {
             bot.sendMessage(chatId, "Ваша роль змінена на студента")
-            botFuncs.updateRoleButtons(chatId, bot, messageId) // Очищаем старые кнопки и добавляем новую
         })
-
-    } else if (query.data === 'cancel_change_role') {
-        // Отмена смены роли
-        bot.sendMessage(chatId, "Зміна ролі відмінена")
-        await bot.editMessageReplyMarkup({inline_keyboard: []}, {chat_id: chatId, message_id: messageId})
+        return
     }
+    
+    if (query.data === 'cancel_change_role') {
+        // Отмена смены роли
+        await bot.sendMessage(chatId, "Зміна ролі відмінена")
+        await bot.editMessageReplyMarkup({inline_keyboard: []}, {chat_id: chatId, message_id: messageId})
+        return
+    }
+
+    // Проверяем, если нет текущего вопроса, избегаем выполнения кода
+    if (!currentQuestion) {
+        return // Если вопроса нет, ничего не делаем
+    }
+
+    // Обработка ответов на вопросы
+    const answerIndex = parseInt(query.data)
+    const isCorrect = answerIndex === currentQuestion.correct
+
+    if (isCorrect) {
+        await bot.sendMessage(chatId, 'Вірна відповідь!')
+    } else {
+        await bot.sendMessage(chatId, `Неправильна відповідь! Правильна відповідь: ${currentQuestion.options[currentQuestion.correct]}`)
+    }
+
+    await bot.editMessageReplyMarkup({inline_keyboard: []}, {chat_id: chatId, message_id: messageId})
+
+    // Переход к следующему вопросу
+    quizFuncs.userQuestions[chatId] = userIndex + 1
+    await quizFuncs.sendQuestion(chatId, questions, bot)
 })
 
 // Загрузка учителем .json файла с вопросами теста
@@ -179,9 +200,9 @@ bot.on('document', async function(message) {
                     const json_file = JSON.parse(data)
                     questions = json_file.questions
 
-                    bot.sendMessage(chatId, 'Файл з питаннями завантажений успішно! Щоб почати тест напішить /quiz')
+                    bot.sendMessage(chatId, 'Файл з питаннями завантажений успішно! Щоб надати можливість розпочати тест напишіть /can_start_quiz')
                     // console.log(questions) // Выводим файл (ВРЕМЕННО)
-                    canStart = true
+                    addedJsonFile = true
                 } catch {
                     bot.sendMessage(chatId, 'Помилка при парсингу JSON файлу. Перевірте правильність формату файлу')
                 }

@@ -12,6 +12,7 @@ export async function teacherLogin(chatId, bot, messageId, userId, username, fir
 
             // Проверка верности пароля введенного пользователем
             if (userInputPassword === teacherPassword) {
+                await bot.editMessageReplyMarkup({inline_keyboard: []}, {chat_id: chatId, message_id: messageId})
                 if (changeToTeacherRole) {
                     // Смена роли с студента на учителя
                     dataBase.updateUserRole(userId, 'teacher', () => {
@@ -19,28 +20,13 @@ export async function teacherLogin(chatId, bot, messageId, userId, username, fir
                     })
                 }
                 
-                updateRoleButtons(chatId, bot, messageId)
                 dataBase.addUser(userId, username, firstName, lastName, 'teacher')
-                await bot.sendMessage(chatId, 'Ви успішно увійшли як вчитель! \nТепер ви можете завантажити JSON файл с питаннями вашого тесту, та розпочати тест для ваших студентів командою /quiz!')
+                await bot.sendMessage(chatId, 'Ви успішно увійшли як вчитель! \nТепер ви можете завантажити JSON файл с питаннями вашого тесту, та надати можливість розпочати тест для ваших студентів командою /can_start_quiz!')
             } else {
+                await bot.editMessageReplyMarkup({inline_keyboard: []}, {chat_id: chatId, message_id: messageId})
                 await bot.sendMessage(chatId, 'Невірний пароль! \nСпробуйте знову \nДля цього нажміть на кнопку входу знову')
             }
         })
-}
-
-// После входа или регистрации, предлагаем сменить роль если нужно
-// Удаляем инлайн-кнопки прошлого сообщения
-export function updateRoleButtons(chatId, bot, messageId) {
-    bot.editMessageReplyMarkup({inline_keyboard: []}, {chat_id: chatId, message_id: messageId})
-
-    // Отправляем новое сообщение с кнопкой "Поменять роль"
-    bot.sendMessage(chatId, 'Хочете увійти як вчитель?\nАбо зареєструватись як студент?\n\nКлацніть лише на одну кнопку:', {
-        reply_markup: {
-            inline_keyboard: [
-                [{ text: 'Змінити роль', callback_data: 'change_role' }]
-            ]
-        }
-    })
 }
 
 // Проверяем текущую роль пользователя
@@ -52,8 +38,8 @@ export function checkUserRole(userId, bot, chatId) {
                 bot.sendMessage(chatId, "Ви увійшли як студент. Хочете увійти як вчитель?", {
                     reply_markup: {
                         inline_keyboard: [
-                            [{ text: "Так", callback_data: "switch_to_teacher" }],
-                            [{ text: "Ні", callback_data: "cancel_change_role" }]
+                            [{text: "Так", callback_data: "switch_to_teacher"}],
+                            [{text: "Ні", callback_data: "cancel_change_role"}]
                         ]
                     }
                 })
@@ -62,8 +48,8 @@ export function checkUserRole(userId, bot, chatId) {
                 bot.sendMessage(chatId, "Ви увійшли як вчитель. Хочете увійти як студент?", {
                     reply_markup: {
                         inline_keyboard: [
-                            [{ text: "Так", callback_data: "switch_to_student" }],
-                            [{ text: "Ні", callback_data: "cancel_change_role" }]
+                            [{text: "Так", callback_data: "switch_to_student"}],
+                            [{text: "Ні", callback_data: "cancel_change_role"}]
                         ]
                     }
                 })
