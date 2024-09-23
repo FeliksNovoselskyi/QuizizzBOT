@@ -14,8 +14,9 @@ git clone https://github.com/FeliksNovoselskyi/QuizizzBOT.git
 ```
 npm install
 ```
-3. Create your own `.env` file
+3. Create your own `.env` file in main directory
 4. Write the token in it, and the password for the teacher's account
+
 As in the example:
 ```shell
 token = 'token'
