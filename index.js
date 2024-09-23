@@ -34,7 +34,8 @@ let addedJsonFile = false
 bot.setMyCommands([
     {command: '/info', description: 'Отримати інформацію про себе'},
     {command: '/change_role', description: 'Змінити свою роль'},
-    {command: '/quiz', description: 'Розпочати тест'},
+    {command: '/can_start_quiz', description: 'Надати можливість проходити тест (вчитель)'},
+    {command: '/quiz', description: 'Розпочати проходження тесту, якщо надана можливість його розпочати (студент)'},
 ])
 
 // Сообщения пользователя
@@ -60,7 +61,7 @@ bot.on('message', async function(message) {
     if (message.text === '/info')  {
         dataBase.getUserById(userId, async function(user) {
             if (user) {
-                await bot.sendMessage(chatId, `Ваше ім'я та фамілія: ${user.firstName} ${user.lastName} \nВаш статус: ${user.role}`)
+                await bot.sendMessage(chatId, `Ваше ім'я та прізвище: ${user.firstName} ${user.lastName} \nВаш статус: ${user.role}`)
             } else {
                 await bot.sendMessage(chatId, 'Ви не зареєстровані в цьому боті')
             }
@@ -139,6 +140,7 @@ bot.on('callback_query', async function(query) {
         dataBase.updateUserRole(userId, 'student', () => {
             bot.sendMessage(chatId, "Ваша роль змінена на студента")
         })
+        await bot.editMessageReplyMarkup({inline_keyboard: []}, {chat_id: chatId, message_id: messageId})
         return
     }
     
