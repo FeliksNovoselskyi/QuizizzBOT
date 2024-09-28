@@ -2,6 +2,7 @@ import * as indexFile from './index.js'
 
 // Индексы текущих вопросов для каждого пользователя
 export const userQuestions = {}
+export let userProgress = []
 
 // Функция для отправки вопроса с инлайн-кнопками
 export async function sendQuestion(chatId, questions, bot) {
@@ -23,11 +24,22 @@ export async function sendQuestion(chatId, questions, bot) {
                 }
             })
         } else {
-            await bot.sendMessage(chatId, 'Тест завершено! Дякуюємо за ваші відповіді!')
+            console.log(userProgress)
+
+            let allQuestions = userProgress.length
+            let allCorrectAnswers = 0
+
+            userProgress.forEach((question) => {
+                let objectValues = Object.values(question)
+
+                allCorrectAnswers = allCorrectAnswers + parseInt(objectValues)
+            })
+
+            await bot.sendMessage(chatId, `Тест завершено! \n\nКількість питань: ${allQuestions} \n\nКількість правильних відповідей: ${allCorrectAnswers} \n\nДякуюємо за ваші відповіді!`)
             delete userQuestions[chatId] // Сброс состояния для пользователя
             indexFile.completedQuizzes[chatId] = true
         }
     } catch (error) {
-        console.error(error)
+        console.log(error)
     }
 }

@@ -9,7 +9,8 @@ db.run(`
         username TEXT,
         firstName TEXT,
         lastName TEXT,
-        role TEXT
+        role TEXT,
+        progress TEXT
     )
 `)
 
@@ -41,6 +42,15 @@ export function updateUserRole(userId, newRole, callback) {
             console.error("Помилка при оновленні ролі:", error.message);
         } else {
             callback()
+        }
+    })
+}
+
+// Функция обновляющая прогресс пользователя
+export function updateProgress(newList, userId) {
+    db.run('UPDATE users SET progress = ? WHERE userId = ?', [newList, userId], function(error) {
+        if (error) {
+            console.log('Помилка при оновленні прогресу користувача', error.message)
         }
     })
 }

@@ -45,16 +45,22 @@ bot.on('message', async function(message) {
 
     // Если пользователь написал /start получаем о нём данные и записываем в БД
     if (message.text === '/start') {
-        const startOptions = {
-            reply_markup: {
-                inline_keyboard: [
-                    [{text: 'Зареєструватись як студент', callback_data: 'register_student'}],
-                    [{text: 'Увійти як вчитель', callback_data: 'login_teacher'}],
-                ],
-            },
-        }
-
-        await bot.sendMessage(chatId, 'Привіт! Ти можеш зареєструватись у цьому боті як студент, або увійти як вчитель для створення тестів! \nДізнатись свій статус: /info', startOptions)
+        dataBase.getUserById(userId, async function(user) {
+            if (user) {
+                await bot.sendMessage(chatId, `Привіт! Ти вже зареєстрований у цьому боті як ${user.role}`)
+            } else {
+                const startOptions = {
+                    reply_markup: {
+                        inline_keyboard: [
+                            [{text: 'Зареєструватись як студент', callback_data: 'register_student'}],
+                            [{text: 'Увійти як вчитель', callback_data: 'login_teacher'}],
+                        ],
+                    },
+                }
+        
+                await bot.sendMessage(chatId, 'Привіт! Ти можеш зареєструватись у цьому боті як студент, або увійти як вчитель для створення тестів! \nДізнатись свій статус: /info', startOptions)
+            }
+        })
     }
 
     // Если пользователь хочет получить данные о себе
@@ -153,17 +159,41 @@ bot.on('callback_query', async function(query) {
 
     // Проверяем, если нет текущего вопроса, избегаем выполнения кода
     if (!currentQuestion) {
-        return // Если вопроса нет, ничего не делаем
+        return // Если вопроса нет, ничего дальше не делаем
     }
 
     // Обработка ответов на вопросы
     const answerIndex = parseInt(query.data)
     const isCorrect = answerIndex === currentQuestion.correct
 
+    const numberQuestion = quizFuncs.userQuestions[userId]
+
+    let questionResult = {}
+
+    let userProgressJSON
+
     if (isCorrect) {
         await bot.sendMessage(chatId, 'Вірна відповідь!')
+
+        questionResult[numberQuestion] = 1
+        quizFuncs.userProgress.push(questionResult)
+
+        // console.log(quizFuncs.userProgress)
+        // console.log(userProgressJSON)
+
+        userProgressJSON = JSON.stringify(quizFuncs.userProgress)
+        dataBase.updateProgress(userProgressJSON, userId)
     } else {
         await bot.sendMessage(chatId, `Неправильна відповідь! Правильна відповідь: ${currentQuestion.options[currentQuestion.correct]}`)
+        
+        questionResult[numberQuestion] = 0
+        quizFuncs.userProgress.push(questionResult)
+        
+        // console.log(quizFuncs.userProgress)
+        // console.log(userProgressJSON)
+
+        userProgressJSON = JSON.stringify(quizFuncs.userProgress)
+        dataBase.updateProgress(userProgressJSON, userId)
     }
 
     await bot.editMessageReplyMarkup({inline_keyboard: []}, {chat_id: chatId, message_id: messageId})
