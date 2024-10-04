@@ -24,8 +24,6 @@ export async function sendQuestion(chatId, questions, bot) {
                 }
             })
         } else {
-            console.log(userProgress)
-
             let allQuestions = userProgress.length
             let allCorrectAnswers = 0
 

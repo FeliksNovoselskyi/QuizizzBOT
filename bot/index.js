@@ -11,7 +11,7 @@ import * as dataBase from './data-base.js'
 import * as quizFuncs from './quiz-functional.js'
 import * as botFuncs from './bot-functions.js'
 
-dotenv.config()
+dotenv.config({path: '../.env'})
 
 const botToken = process.env.token
 const bot = new telegramApi(botToken, {polling: true})
