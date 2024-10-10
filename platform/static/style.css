@@ -63,6 +63,8 @@ main {
     align-items: center;
     padding: 15px;
     width: 95%;
+    background-color: rgb(207, 207, 207);
+    border-radius: 16px;
 }
 
 .answers-text {

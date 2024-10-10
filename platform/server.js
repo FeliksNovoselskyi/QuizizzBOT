@@ -4,6 +4,8 @@ import dotenv from 'dotenv'
 import {fileURLToPath} from 'url'
 import {dirname, join} from 'path'
 
+import * as dataBase from './data-base.js'
+
 dotenv.config({path: '../.env'})
 
 const app = express()
@@ -26,9 +28,13 @@ app.use(express.urlencoded({extended: true}))
 
 let context = {}
 
-app.get('/', (req, res) => {
+app.get('/', async (req, res) => {
 
     context.error = null
+
+    const allQuestions = await dataBase.Questions.findAll()
+    const questionData = allQuestions.map(question => question.dataValues)
+    context.questionData = questionData
 
     res.render('main', context)
 })
@@ -38,8 +44,17 @@ app.post('/', (req, res) => {
 
     const {questionTextInput, answer1Input, answer2Input, answer3Input, answer4Input} = req.body
 
-    if (!questionTextInput || !answer1Input || answer2Input || answer3Input || answer4Input) {
+    if (!questionTextInput || !answer1Input || !answer2Input || !answer3Input || !answer4Input) {
         context.error = 'Fill all inputs to create a question'
+    } else {
+        dataBase.Questions.create({
+            questionText: questionTextInput,
+            answer1: answer1Input,
+            answer2: answer2Input,
+            answer3: answer3Input,
+            answer4: answer4Input
+        })
+        context.error = null
     }
 
     return res.render('main', context)
