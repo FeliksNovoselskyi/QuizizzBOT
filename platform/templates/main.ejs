@@ -11,18 +11,13 @@
     
 </head>
 <body>
-    <p>Hello from quizizz platform!</p>
-
     <main>
         <div id="questions-block">
             <% if (error) { %>
                 <p class="error-message"><%= error %></p>
             <% } %>
             
-            <button id="add-button">Add question</button>
-            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
-                Launch demo modal
-            </button>
+            <button id="add-button" data-bs-toggle="modal" data-bs-target="#exampleModal">Add question</button>
 
             <div id="created-questions">
                 <!-- Example -->
