@@ -4,3 +4,4 @@ uploaded_files/
 based.db
 .DS_Store
 package-lock.json
+platform_database.db

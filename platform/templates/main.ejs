@@ -11,31 +11,30 @@
     
 </head>
 <body>
-    <p>Hello from quizizz platform!</p>
-
     <main>
         <div id="questions-block">
             <% if (error) { %>
                 <p class="error-message"><%= error %></p>
             <% } %>
             
-            <button id="add-button">Add question</button>
-            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
-                Launch demo modal
-            </button>
+            <button id="add-button" data-bs-toggle="modal" data-bs-target="#exampleModal">Add question</button>
 
             <div id="created-questions">
                 <!-- Example -->
-                <div class="question">
-                    <h3 class="question-text">Created question text</h3>
-
-                    <div class="answers">
-                        <p class="answers-text">Answer</p>
-                        <p class="answers-text">Answer</p>
-                        <p class="answers-text">Answer</p>
-                        <p class="answers-text">Answer</p>
-                    </div>
-                </div>
+                <% if (typeof questionData !== 'undefined' && questionData.length > 0) { %>
+                    <% questionData.forEach(function(question) { %>
+                        <div class="question">
+                            <h3 class="question-text"><%=question.questionText %></h3>
+    
+                            <div class="answers">
+                                <p class="answers-text"><%=question.answer1 %></p>
+                                <p class="answers-text"><%=question.answer2 %></p>
+                                <p class="answers-text"><%=question.answer3 %></p>
+                                <p class="answers-text"><%=question.answer4 %></p>
+                            </div>
+                        </div>
+                    <% }) %>
+                <% } %>
             </div>
         </div>
     </main>
