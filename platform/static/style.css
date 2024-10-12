@@ -42,6 +42,7 @@ main {
     align-items: center;
     border-radius: 8px;
     padding: 10px;
+    gap: 10px;
     background-color: rgb(239, 239, 239);
     border: 3px solid rgb(45, 45, 45);
 }
@@ -53,6 +54,7 @@ main {
     align-items: center;
     width: 100%;
     padding: 0 20px;
+    gap: 10px;
 }
 
 .question-text {
@@ -82,4 +84,25 @@ main {
 
 .error-message {
     color: red;
+}
+
+.question-header {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    width: 95%;
+}
+
+.delete-quest-button {
+    padding: 10px;
+    border: transparent;
+    border-radius: 16px;
+    background-color: rgb(224, 224, 224);
+    transition: all 150ms ease-in-out;
+}
+
+.delete-quest-button:hover {
+    background-color: rgb(173, 173, 173);
 }

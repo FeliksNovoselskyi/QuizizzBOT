@@ -3,6 +3,7 @@ import dotenv from 'dotenv'
 
 import {fileURLToPath} from 'url'
 import {dirname, join} from 'path'
+import {JSDOM} from 'jsdom'
 
 import * as dataBase from './data-base.js'
 
@@ -29,7 +30,6 @@ app.use(express.urlencoded({extended: true}))
 let context = {}
 
 app.get('/', async (req, res) => {
-
     context.error = null
 
     const allQuestions = await dataBase.Questions.findAll()
@@ -39,25 +39,55 @@ app.get('/', async (req, res) => {
     res.render('main', context)
 })
 
-app.post('/', (req, res) => {
+app.post('/', async (req, res) => {
     context = {}
 
-    const {questionTextInput, answer1Input, answer2Input, answer3Input, answer4Input} = req.body
+    const {questionTextInput, answer1Input, answer2Input, answer3Input, answer4Input, action} = req.body
 
-    if (!questionTextInput || !answer1Input || !answer2Input || !answer3Input || !answer4Input) {
-        context.error = 'Fill all inputs to create a question'
-    } else {
-        dataBase.Questions.create({
-            questionText: questionTextInput,
-            answer1: answer1Input,
-            answer2: answer2Input,
-            answer3: answer3Input,
-            answer4: answer4Input
-        })
-        context.error = null
+    if (action === "createQuest") {
+        if (!questionTextInput || !answer1Input || !answer2Input || !answer3Input || !answer4Input) {
+            context.error = 'Fill all inputs to create a question'
+            return res.render('main', context)
+        } else {
+            dataBase.Questions.create({
+                questionText: questionTextInput,
+                answer1: answer1Input,
+                answer2: answer2Input,
+                answer3: answer3Input,
+                answer4: answer4Input
+            })
+            context.error = null
+            return res.render('main', context)
+        }
     }
 
-    return res.render('main', context)
+    if (action === "deleteQuest") {
+        const questionId = req.body.questionId
+
+        if (!questionId) {
+            return res.render('main', {error: 'Question ID is missing'})
+        }
+
+        try {
+            await dataBase.Questions.destroy({
+                where: {id: questionId}
+            })
+
+            const allQuestions = await dataBase.Questions.findAll()
+            const questionData = allQuestions.map(question => question.dataValues)
+
+            res.render('main', {
+                error: null,
+                questionData: questionData
+            })
+        } catch (error) {
+            console.error(error)
+            res.render('main', {
+                error: 'Failed to delete question',
+                questionData: []
+            })
+        }
+    }
 })
 
 app.listen(PORT, HOST, () => {
