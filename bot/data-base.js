@@ -1,56 +1,92 @@
-import sqlite3 from 'sqlite3'
+import {Sequelize, DataTypes} from 'sequelize'
+import dotenv from 'dotenv'
 
-const db = new sqlite3.Database('./based.db')
+import {fileURLToPath} from 'url'
+import {dirname, join} from 'path'
 
-// Создаем таблицу для пользователей
-db.run(`
-    CREATE TABLE IF NOT EXISTS users (
-        userId INTEGER PRIMARY KEY,
-        username TEXT,
-        firstName TEXT,
-        lastName TEXT,
-        role TEXT,
-        progress TEXT
-    )
-`)
+dotenv.config({path: '../.env'})
+
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = dirname(__filename)
+
+const sequelize = new Sequelize(process.env.BOT_DB_NAME, process.env.BOT_DB_ADMIN_NAME, process.env.BOT_DB_PASSWORD, {
+    host: 'localhost',
+    dialect: 'sqlite',
+    storage: join(__dirname, `${process.env.BOT_DB_NAME}.db`)
+})
+
+export const Users = sequelize.define('Users', {
+    userId: {type: DataTypes.INTEGER},
+    username: {type: DataTypes.TEXT},
+    firstName: {type: DataTypes.TEXT},
+    lastName: {type: DataTypes.TEXT},
+    role: {type: DataTypes.TEXT},
+    progress: {type: DataTypes.TEXT}
+})
+
+sequelize.sync()
+    .then(() => {
+        console.log('База даних створена успішно')
+    })
+    .catch((error) => {
+        console.log('Помилка під час створення бази даних:', error)
+    })
 
 // Функция в которой информация о пользователе добавляется в базу данных
-export function addUser(userId, username, firstName, lastName, role) {
-    db.run(
-        'INSERT OR IGNORE INTO users (userId, username, firstName, lastName, role) VALUES (?, ?, ?, ?, ?)',
-        [userId, username, firstName, lastName, role]
-    )
+export async function addUser(userId, username, firstName, lastName, role) {
+    try {
+        Users.create({
+            userId: userId,
+            username: username,
+            firstName: firstName,
+            lastName: lastName,
+            role: role,
+        })
+    } catch (error) {
+        console.error('Помилка при додаванні користувача:', error.message);
+    }
 }
 
-// Функция получения информации об пользователе когда он того хочет
-export function getUserById(userId, callback) {
-    db.get('SELECT * FROM users WHERE userId = ?', [userId], (error, row) => {
-        if (error) {
-            console.error(error.message)
-            callback(null)
-        } else {
-            callback(row)
-        }
-    })
+// // Функция получения информации об пользователе когда он того хочет
+export async function getUserById(userId) {
+    try {
+        const user = await Users.findOne({ where: {userId}})
+        return user
+    } catch (error) {
+        console.error('Помилка при отриманні користувача:', error.message);
+        return null
+    }
 }
 
 // Функция обновляющая роль пользователя в базе данных
 // в зависимости от той какая у него сейчас
-export function updateUserRole(userId, newRole, callback) {
-    db.run('UPDATE users SET role = ? WHERE userId = ?', [newRole, userId], function(error) {
-        if (error) {
-            console.error("Помилка при оновленні ролі:", error.message);
-        } else {
+export async function updateUserRole(userId, newRole, callback) {
+    try {
+        const [updated] = await Users.update({role: newRole}, {where: {userId}})
+        
+        if (updated) {
             callback()
+        } else {
+            console.error("Помилка: користувача з таким id не знайдено")
         }
-    })
+    } catch (error) {
+        console.error("Помилка при оновленні ролі:", error.message)
+    }
 }
 
 // Функция обновляющая прогресс пользователя
-export function updateProgress(newList, userId) {
-    db.run('UPDATE users SET progress = ? WHERE userId = ?', [newList, userId], function(error) {
-        if (error) {
-            console.log('Помилка при оновленні прогресу користувача', error.message)
-        }
-    })
+export async function updateProgress(newList, userId) {
+    try {
+        await Users.update({progress: newList}, {where: {userId}})
+    } catch (error) {
+        console.error("Помилка при оновленні прогресу користувача:", error.message)
+    }
+}
+
+export async function clearProgress(userId) {
+    try {
+        await Users.update({progress: null}, {where: {userId}})
+    } catch (error) {
+        console.error("Помилка під час очищення прогрессу", error.message)
+    }
 }

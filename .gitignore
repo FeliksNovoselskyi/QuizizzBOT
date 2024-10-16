@@ -5,3 +5,4 @@ based.db
 .DS_Store
 package-lock.json
 platform_database.db
+bot_database.db

@@ -45,15 +45,15 @@ bot.on('message', async function(message) {
 
     // Если пользователь написал /start получаем о нём данные и записываем в БД
     if (message.text === '/start') {
-        dataBase.getUserById(userId, async function(user) {
+        dataBase.getUserById(userId).then(async (user) => {
             if (user) {
                 await bot.sendMessage(chatId, `Привіт! Ти вже зареєстрований у цьому боті як ${user.role}`)
             } else {
                 const startOptions = {
                     reply_markup: {
                         inline_keyboard: [
-                            [{text: 'Зареєструватись як студент', callback_data: 'register_student'}],
-                            [{text: 'Увійти як вчитель', callback_data: 'login_teacher'}],
+                            [{ text: 'Зареєструватись як студент', callback_data: 'register_student' }],
+                            [{ text: 'Увійти як вчитель', callback_data: 'login_teacher' }],
                         ],
                     },
                 }
@@ -65,7 +65,7 @@ bot.on('message', async function(message) {
 
     // Если пользователь хочет получить данные о себе
     if (message.text === '/info')  {
-        dataBase.getUserById(userId, async function(user) {
+        dataBase.getUserById(userId).then(async (user) => {
             if (user) {
                 await bot.sendMessage(chatId, `Ваше ім'я та прізвище: ${user.firstName} ${user.lastName} \nВаш статус: ${user.role}`)
             } else {
@@ -81,8 +81,9 @@ bot.on('message', async function(message) {
 
     // Если пользователь хочет начать тест
     if (message.text === '/quiz') {
-        dataBase.getUserById(userId, async (user) => {
+        dataBase.getUserById(userId).then(async (user) => {
             if (user.role === 'student' && canStart && !completedQuizzes[chatId]) {
+                await dataBase.clearProgress(userId)
                 quizFuncs.userQuestions[chatId] = 0 // Сброс индекса вопроса для пользователя
                 await quizFuncs.sendQuestion(chatId, questions, bot)
             } else {
@@ -92,7 +93,7 @@ bot.on('message', async function(message) {
     }
 
     if (message.text === '/can_start_quiz') {
-        dataBase.getUserById(userId, async (user) => {
+        dataBase.getUserById(userId).then(async (user) => {
             if (user.role === 'teacher') {
                 if (addedJsonFile) {
                     canStart = true
@@ -213,7 +214,7 @@ bot.on('document', async function(message) {
 
     // Проверка, что файл является.json и что это учительский аккаунт
     if (path.extname(fileName) === '.json') {
-        dataBase.getUserById(userId, async function(user) {
+        dataBase.getUserById(userId).then(async function(user) {
             if (!user || user.role !== 'teacher') {
                 return bot.sendMessage(chatId, 'Завантажувати файли має право тільки вчитель!')
             }
