@@ -10,10 +10,10 @@ dotenv.config({path: '../.env'})
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
 
-const sequelize = new Sequelize(process.env.DB_NAME, process.env.DB_ADMIN_NAME, process.env.DB_PASSWORD, {
+const sequelize = new Sequelize(process.env.PLATFORM_DB_NAME, process.env.PLATFORM_DB_ADMIN_NAME, process.env.PLATFORM_DB_PASSWORD, {
     host: 'localhost',
     dialect: 'sqlite',
-    storage: join(__dirname, `${process.env.DB_NAME}.db`)
+    storage: join(__dirname, `${process.env.PLATFORM_DB_NAME}.db`)
 })
 
 export const Questions = sequelize.define('Questions', {

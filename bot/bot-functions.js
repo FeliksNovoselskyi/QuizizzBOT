@@ -20,7 +20,6 @@ export async function teacherLogin(chatId, bot, messageId, userId, username, fir
                     })
                 }
                 
-                dataBase.addUser(userId, username, firstName, lastName, 'teacher')
                 await bot.sendMessage(chatId, 'Ви успішно увійшли як вчитель! \nТепер ви можете завантажити JSON файл с питаннями вашого тесту, та надати можливість розпочати тест для ваших студентів командою /can_start_quiz!')
             } else {
                 await bot.editMessageReplyMarkup({inline_keyboard: []}, {chat_id: chatId, message_id: messageId})
@@ -31,7 +30,7 @@ export async function teacherLogin(chatId, bot, messageId, userId, username, fir
 
 // Проверяем текущую роль пользователя
 export function checkUserRole(userId, bot, chatId) {
-    dataBase.getUserById(userId, (user) => {
+    dataBase.getUserById(userId).then(async (user) => {
         if (user) {
             if (user.role === 'student') {
                 // Если текущая роль - студент, предлагаем смену на учителя
