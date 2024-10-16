@@ -82,3 +82,11 @@ export async function updateProgress(newList, userId) {
         console.error("Помилка при оновленні прогресу користувача:", error.message)
     }
 }
+
+export async function clearProgress(userId) {
+    try {
+        await Users.update({progress: null}, {where: {userId}})
+    } catch (error) {
+        console.error("Помилка під час очищення прогрессу", error.message)
+    }
+}

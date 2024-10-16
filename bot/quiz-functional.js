@@ -35,6 +35,7 @@ export async function sendQuestion(chatId, questions, bot) {
 
             await bot.sendMessage(chatId, `Тест завершено! \n\nКількість питань: ${allQuestions} \n\nКількість правильних відповідей: ${allCorrectAnswers} \n\nДякуюємо за ваші відповіді!`)
             delete userQuestions[chatId] // Сброс состояния для пользователя
+            userProgress = []
             indexFile.completedQuizzes[chatId] = true
         }
     } catch (error) {

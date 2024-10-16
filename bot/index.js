@@ -83,6 +83,7 @@ bot.on('message', async function(message) {
     if (message.text === '/quiz') {
         dataBase.getUserById(userId).then(async (user) => {
             if (user.role === 'student' && canStart && !completedQuizzes[chatId]) {
+                await dataBase.clearProgress(userId)
                 quizFuncs.userQuestions[chatId] = 0 // Сброс индекса вопроса для пользователя
                 await quizFuncs.sendQuestion(chatId, questions, bot)
             } else {
