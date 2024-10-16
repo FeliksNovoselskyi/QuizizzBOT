@@ -1,33 +1,64 @@
 # Quizizz Telegram Bot
 ---
 ## About
-Quizizz BOT created on NodeJS framework. 
-The bot is able to handle the registration and authorisation of both student and teacher, to perform the change of these roles
-According to the role - access levels to the bot, a teacher can create a quiz and start it for his students
+A two-part project
+Platform - provides the ability to build a quiz on the site and get an output .json file with quiz info that the bot needs to start the quiz
+Bot - provides access levels for teacher and student, teacher is able to upload .json files and start the quiz. At the time the student is able to take it
 
 ## Installation
 1. Clone the repository
 ```
 git clone https://github.com/FeliksNovoselskyi/QuizizzBOT.git
 ```
-2. Install packages
+2. Choose directory of the project
+3. Install packages
 ```
 npm install
 ```
-3. Create your own `.env` file in main directory
-4. Write the token in it, and the password for the teacher's account
+4. Create your own `.env` file in main directory
 
+5. Write the information required for the bot and platform here
 As in the example:
 ```shell
 token = 'token'
 teacherPassword = 'password'
+
+PORT = 'your_port' # Optional
+HOST = 'your_host' # Optional
+
+PLATFORM_DB_NAME = 'database_name'
+PLATFORM_DB_ADMIN_NAME = 'admin_name'
+PLATFORM_DB_PASSWORD = 'admin_password'
+
+BOT_DB_NAME = 'database_name'
+BOT_DB_ADMIN_NAME = 'admin_name'
+BOT_DB_PASSWORD = 'admin_password'
 ```
-5. Run the project
+6. Then choose what project do you wanna to start
+### BOT
+7. Choose Telegram BOT directiory
+```
+cd bot
+```
+
+8. Run the project (run `index.js`)
 ```
 node index.js
 ```
+
+### PLATFORM
+7. Choose Platform directiory
+```
+cd platform
+```
+
+8. Run the project (run `server.js`)
+```
+node server.js
+```
+
 ### Importantly
 There is an `questions.json` file in the project directory
-You can use it to create a test when the bot asks you to upload a `.json` file with the questions for the test
+You can use it to create a quiz when the bot asks you to upload a `.json` file with the questions for the quiz
 
 # Enjoy using it!
