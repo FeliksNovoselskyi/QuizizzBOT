@@ -1,20 +1,18 @@
-// Мои скрипты
 import * as dataBase from './data-base.js'
 
-// Функция обрабатывающая вход как учитель, с проверкой пароля
+// Function that handles login as a teacher, with password verification
 export async function teacherLogin(chatId, bot, messageId, userId, username, firstName, lastName, changeToTeacherRole) {
     await bot.sendMessage(chatId, 'Введіть пароль від акаунту вчителя (тільки пароль, без зайвих символів)')
 
         const teacherPassword = process.env.teacherPassword
-        // console.log(teacherPassword)
         bot.once('message', async (message) => {
             const userInputPassword = message.text
 
-            // Проверка верности пароля введенного пользователем
+            // Checking the validity of the password entered by the user
             if (userInputPassword === teacherPassword) {
                 await bot.editMessageReplyMarkup({inline_keyboard: []}, {chat_id: chatId, message_id: messageId})
                 if (changeToTeacherRole) {
-                    // Смена роли с студента на учителя
+                    // Role change from student to teacher
                     dataBase.updateUserRole(userId, 'teacher', () => {
                         bot.sendMessage(chatId, "Ваша роль змінена на вчителя")
                     })
@@ -28,12 +26,12 @@ export async function teacherLogin(chatId, bot, messageId, userId, username, fir
         })
 }
 
-// Проверяем текущую роль пользователя
+// Check the current user role
 export function checkUserRole(userId, bot, chatId) {
     dataBase.getUserById(userId).then(async (user) => {
         if (user) {
             if (user.role === 'student') {
-                // Если текущая роль - студент, предлагаем смену на учителя
+                // If the current role is student, offer a change to teacher
                 bot.sendMessage(chatId, "Ви увійшли як студент. Хочете увійти як вчитель?", {
                     reply_markup: {
                         inline_keyboard: [
@@ -43,7 +41,7 @@ export function checkUserRole(userId, bot, chatId) {
                     }
                 })
             } else if (user.role === 'teacher') {
-                // Если текущая роль - учитель, предлагаем смену на студента
+                // If the current role is teacher, offer a change to student
                 bot.sendMessage(chatId, "Ви увійшли як вчитель. Хочете увійти як студент?", {
                     reply_markup: {
                         inline_keyboard: [

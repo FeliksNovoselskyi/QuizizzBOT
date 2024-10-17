@@ -15,6 +15,7 @@ const sequelize = new Sequelize(process.env.BOT_DB_NAME, process.env.BOT_DB_ADMI
     storage: join(__dirname, `${process.env.BOT_DB_NAME}.db`)
 })
 
+// Users model
 export const Users = sequelize.define('Users', {
     userId: {type: DataTypes.INTEGER},
     username: {type: DataTypes.TEXT},
@@ -24,6 +25,7 @@ export const Users = sequelize.define('Users', {
     progress: {type: DataTypes.TEXT}
 })
 
+// Sync BOT DB
 sequelize.sync()
     .then(() => {
         console.log('База даних створена успішно')
@@ -32,7 +34,7 @@ sequelize.sync()
         console.log('Помилка під час створення бази даних:', error)
     })
 
-// Функция в которой информация о пользователе добавляется в базу данных
+// Function in which user information is added to the database
 export async function addUser(userId, username, firstName, lastName, role) {
     try {
         Users.create({
@@ -47,7 +49,7 @@ export async function addUser(userId, username, firstName, lastName, role) {
     }
 }
 
-// // Функция получения информации об пользователе когда он того хочет
+// Function to get information about the user when he/she wants it
 export async function getUserById(userId) {
     try {
         const user = await Users.findOne({ where: {userId}})
@@ -58,8 +60,8 @@ export async function getUserById(userId) {
     }
 }
 
-// Функция обновляющая роль пользователя в базе данных
-// в зависимости от той какая у него сейчас
+// Function updating the user role in the database
+// depending on the one he's got now
 export async function updateUserRole(userId, newRole, callback) {
     try {
         const [updated] = await Users.update({role: newRole}, {where: {userId}})
@@ -74,7 +76,7 @@ export async function updateUserRole(userId, newRole, callback) {
     }
 }
 
-// Функция обновляющая прогресс пользователя
+// Function that updates the user's progress
 export async function updateProgress(newList, userId) {
     try {
         await Users.update({progress: newList}, {where: {userId}})
@@ -83,6 +85,8 @@ export async function updateProgress(newList, userId) {
     }
 }
 
+
+// Function to clearing user progress from the database
 export async function clearProgress(userId) {
     try {
         await Users.update({progress: null}, {where: {userId}})
