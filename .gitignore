@@ -1,8 +1,10 @@
 node_modules/
 uploaded_files/
-.env
-based.db
-.DS_Store
-package-lock.json
+
 platform_database.db
 bot_database.db
+
+package-lock.json
+.env
+
+.DS_Store
