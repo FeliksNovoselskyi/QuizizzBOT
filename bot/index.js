@@ -6,7 +6,7 @@ import telegramApi from 'node-telegram-bot-api'
 import {dirname} from 'path'
 import {fileURLToPath} from 'url'
 
-// Мои скрипты
+// My scripts
 import * as dataBase from './data-base.js'
 import * as quizFuncs from './quiz-functional.js'
 import * as botFuncs from './bot-functions.js'
@@ -17,20 +17,21 @@ const botToken = process.env.token
 const bot = new telegramApi(botToken, {polling: true})
 
 const __filename = fileURLToPath(import.meta.url)
-const __dirname = dirname(__filename) // Получаем главную директорию проекта, с помощью __filename
-// Получаем директорию куда будем сохранять файлы.json отправленные пользователем
+const __dirname = dirname(__filename)
+
+// Get the directory where we will save json files sent by the user
 const uploadFilesDir = path.join(__dirname, 'uploaded_files') 
 
-// Переменная в которую запишутся вопросы, после парса файла.json
+// Variable to which the questions will be written after parsing the file.json
 let questions = {}
 
 export const completedQuizzes = {}
 
-// Флаги
+// Flags
 let canStart = false
 let addedJsonFile = false
 
-// Создаём меню команд для бота
+// Create a menu of commands for the bot
 bot.setMyCommands([
     {command: '/info', description: 'Отримати інформацію про себе'},
     {command: '/change_role', description: 'Змінити свою роль'},
@@ -38,12 +39,13 @@ bot.setMyCommands([
     {command: '/quiz', description: 'Розпочати проходження тесту, якщо надана можливість його розпочати (студент)'},
 ])
 
-// Сообщения пользователя
+// User messages
 bot.on('message', async function(message) {
     const chatId = message.chat.id
     const userId = message.from.id
 
-    // Если пользователь написал /start получаем о нём данные и записываем в БД
+    // If a user has written /start we get data about him/her
+    // whether it is stored in the database or not
     if (message.text === '/start') {
         dataBase.getUserById(userId).then(async (user) => {
             if (user) {
@@ -63,7 +65,7 @@ bot.on('message', async function(message) {
         })
     }
 
-    // Если пользователь хочет получить данные о себе
+    // If the user wants to retrieve data about him/herself
     if (message.text === '/info')  {
         dataBase.getUserById(userId).then(async (user) => {
             if (user) {
@@ -74,17 +76,19 @@ bot.on('message', async function(message) {
         })
     }
 
-    // Команда для смены роли (если не будет вдруг сообщения с кнопкой для этого)
+    // Command to change role
     if (message.text === '/change_role')  {
         botFuncs.checkUserRole(userId, bot, chatId)
     }
 
-    // Если пользователь хочет начать тест
+    // If the user wants to start taking the test
     if (message.text === '/quiz') {
         dataBase.getUserById(userId).then(async (user) => {
             if (user.role === 'student' && canStart && !completedQuizzes[chatId]) {
                 await dataBase.clearProgress(userId)
-                quizFuncs.userQuestions[chatId] = 0 // Сброс индекса вопроса для пользователя
+
+                // Resetting the question index for a user
+                quizFuncs.userQuestions[chatId] = 0
                 await quizFuncs.sendQuestion(chatId, questions, bot)
             } else {
                 await bot.sendMessage(chatId, 'Проходження тесту не дозволено!\nАбо, якщо ви вчитель, ви не можете проходити тест')
@@ -92,6 +96,7 @@ bot.on('message', async function(message) {
         })
     }
 
+    // Command authorising to start the test (available only to the teacher)
     if (message.text === '/can_start_quiz') {
         dataBase.getUserById(userId).then(async (user) => {
             if (user.role === 'teacher') {
@@ -109,7 +114,7 @@ bot.on('message', async function(message) {
     }
 })
 
-// Обработка callback функций
+// Processing callback functions
 bot.on('callback_query', async function(query) {
     const chatId = query.message.chat.id
     const userId = query.from.id
@@ -122,27 +127,27 @@ bot.on('callback_query', async function(query) {
     const userIndex = quizFuncs.userQuestions[chatId] || 0
     const currentQuestion = questions[userIndex]
 
-    // Регистрация как ученик
+    // Sign up as a student
     if (query.data === 'register_student') {
         dataBase.addUser(userId, username, firstName, lastName, 'student')
         await bot.sendMessage(chatId, 'Ви зареєстровані в цьому боті як студент')
         return
     }
 
-    // Вход как учитель
+    // Sign in as a teacher
     if (query.data === 'login_teacher') {
         botFuncs.teacherLogin(chatId, bot, messageId, userId, username, firstName, lastName, false)
         return
     }
 
-    // Смена роли с студента на учителя
+    // Role change from student to teacher
     if (query.data === 'switch_to_teacher') {
         botFuncs.teacherLogin(chatId, bot, messageId, userId, username, firstName, lastName, true)
         return
     } 
     
     if (query.data === 'switch_to_student') {
-        // Смена роли с учителя на студента
+        // Role change from teacher to student
         delete quizFuncs.userQuestions[chatId]
         dataBase.updateUserRole(userId, 'student', () => {
             bot.sendMessage(chatId, "Ваша роль змінена на студента")
@@ -152,18 +157,18 @@ bot.on('callback_query', async function(query) {
     }
     
     if (query.data === 'cancel_change_role') {
-        // Отмена смены роли
+        // Cancelling a role change
         await bot.sendMessage(chatId, "Зміна ролі відмінена")
         await bot.editMessageReplyMarkup({inline_keyboard: []}, {chat_id: chatId, message_id: messageId})
         return
     }
 
-    // Проверяем, если нет текущего вопроса, избегаем выполнения кода
+    // Check if there is no current issue, avoid executing the code
     if (!currentQuestion) {
-        return // Если вопроса нет, ничего дальше не делаем
+        return // If there is no question, we don't do anything further
     }
 
-    // Обработка ответов на вопросы
+    // Processing of responses to questions
     const answerIndex = parseInt(query.data)
     const isCorrect = answerIndex === currentQuestion.correct
 
@@ -179,9 +184,6 @@ bot.on('callback_query', async function(query) {
         questionResult[numberQuestion] = 1
         quizFuncs.userProgress.push(questionResult)
 
-        // console.log(quizFuncs.userProgress)
-        // console.log(userProgressJSON)
-
         userProgressJSON = JSON.stringify(quizFuncs.userProgress)
         dataBase.updateProgress(userProgressJSON, userId)
     } else {
@@ -189,9 +191,6 @@ bot.on('callback_query', async function(query) {
         
         questionResult[numberQuestion] = 0
         quizFuncs.userProgress.push(questionResult)
-        
-        // console.log(quizFuncs.userProgress)
-        // console.log(userProgressJSON)
 
         userProgressJSON = JSON.stringify(quizFuncs.userProgress)
         dataBase.updateProgress(userProgressJSON, userId)
@@ -199,12 +198,12 @@ bot.on('callback_query', async function(query) {
 
     await bot.editMessageReplyMarkup({inline_keyboard: []}, {chat_id: chatId, message_id: messageId})
 
-    // Переход к следующему вопросу
+    // Moving on to the next question
     quizFuncs.userQuestions[chatId] = userIndex + 1
     await quizFuncs.sendQuestion(chatId, questions, bot)
 })
 
-// Загрузка учителем .json файла с вопросами теста
+// Teacher uploading .json file with test questions
 bot.on('document', async function(message) {
     const chatId = message.chat.id
     const userId = message.from.id
@@ -212,7 +211,7 @@ bot.on('document', async function(message) {
     const fileId = message.document.file_id
     const fileName = message.document.file_name
 
-    // Проверка, что файл является.json и что это учительский аккаунт
+    // Checking that the file is .json and that it is a teacher account
     if (path.extname(fileName) === '.json') {
         dataBase.getUserById(userId).then(async function(user) {
             if (!user || user.role !== 'teacher') {
@@ -221,23 +220,22 @@ bot.on('document', async function(message) {
 
             const localFilePath = path.join(__dirname, fileName)
 
-            // Скачиваем файл который закинул нам пользователь
-            // далее сохраняем этот файл в папке uploaded_files
+            // Download the file that the user uploaded to us
+            // then save this file in the /uploaded_files/
             await bot.downloadFile(fileId, uploadFilesDir)
 
-            // Читаем содержимое файла по указанному пути
+            // Read the contents of the file at the specified path
             fs.readFile(localFilePath, 'utf8', function(error, data) {
                 if (error) {
                     return bot.sendMessage(chatId, 'Помилка при прочитанні файлу')
                 }
 
                 try {
-                    // Пробуем парсить содержимое файла
+                    // Try parsing the contents of the file
                     const json_file = JSON.parse(data)
                     questions = json_file.questions
 
                     bot.sendMessage(chatId, 'Файл з питаннями завантажений успішно! Щоб надати можливість розпочати тест напишіть /can_start_quiz')
-                    // console.log(questions) // Выводим файл (ВРЕМЕННО)
                     addedJsonFile = true
                 } catch {
                     bot.sendMessage(chatId, 'Помилка при парсингу JSON файлу. Перевірте правильність формату файлу')

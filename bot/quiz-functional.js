@@ -1,10 +1,10 @@
 import * as indexFile from './index.js'
 
-// Индексы текущих вопросов для каждого пользователя
+// Indexes of current issues for each user
 export const userQuestions = {}
 export let userProgress = []
 
-// Функция для отправки вопроса с инлайн-кнопками
+// Function for sending a question with inline buttons
 export async function sendQuestion(chatId, questions, bot) {
     try {
         const userIndex = userQuestions[chatId] || 0
@@ -12,12 +12,12 @@ export async function sendQuestion(chatId, questions, bot) {
         if (userIndex < questions.length) {
             const currentQuestion = questions[userIndex]
     
-            // Генерируем опции для инлайн-клавиатуры под сообщением
+            // Generate options for the inline keyboard under the message
             const options = currentQuestion.options.map((option, index) => {
                 return [{text: option, callback_data: String(index)}]
             })
     
-            // Отправка сообщения с инлайн-клавиатурой
+            // Sending a message with an inline keyboard
             await bot.sendMessage(chatId, currentQuestion.question, {
                 reply_markup: {
                     inline_keyboard: options
@@ -34,7 +34,9 @@ export async function sendQuestion(chatId, questions, bot) {
             })
 
             await bot.sendMessage(chatId, `Тест завершено! \n\nКількість питань: ${allQuestions} \n\nКількість правильних відповідей: ${allCorrectAnswers} \n\nДякуюємо за ваші відповіді!`)
-            delete userQuestions[chatId] // Сброс состояния для пользователя
+            
+            // Resetting the status for the user
+            delete userQuestions[chatId]
             userProgress = []
             indexFile.completedQuizzes[chatId] = true
         }
