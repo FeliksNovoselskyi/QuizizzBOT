@@ -16,6 +16,7 @@ const sequelize = new Sequelize(process.env.PLATFORM_DB_NAME, process.env.PLATFO
     storage: join(__dirname, `${process.env.PLATFORM_DB_NAME}.db`)
 })
 
+// Questions model
 export const Questions = sequelize.define('Questions', {
     questionText: {
         type: DataTypes.STRING
@@ -26,6 +27,7 @@ export const Questions = sequelize.define('Questions', {
     answer4: {type: DataTypes.STRING}
 })
 
+// Sync DB
 sequelize.sync()
     .then(() => {
         console.log('Database created successfully')

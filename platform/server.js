@@ -4,6 +4,7 @@ import dotenv from 'dotenv'
 import {fileURLToPath} from 'url'
 import {dirname, join} from 'path'
 
+// My scripts
 import * as dataBase from './data-base.js'
 
 dotenv.config({path: '../.env'})
@@ -19,6 +20,7 @@ const __dirname = dirname(__filename)
 app.set('view engine', 'ejs')
 app.set('views', './templates')
 
+// Setup static routes
 app.use('/static/', express.static(join(__dirname, 'static')))
 app.use('/css', express.static(join(__dirname, 'node_modules/bootstrap/dist/css')))
 app.use('/js', express.static(join(__dirname, 'node_modules/bootstrap/dist/js')))
@@ -46,6 +48,8 @@ app.post('/', async (req, res) => {
 
     if (action === "createQuest") {
         if (!questionTextInput || !answer1Input || !answer2Input || !answer3Input || !answer4Input) {
+            // Unfilled inputs during creation of question
+            // response to ajax
             return res.status(400).json({error: 'Fill all inputs to create a question'})
         } else {
             const newQuestion = dataBase.Questions.create({
@@ -56,6 +60,8 @@ app.post('/', async (req, res) => {
                 answer4: answer4Input
             })
 
+            // Successfully created question
+            // response to ajax
             return res.status(200).json({
                 id: newQuestion.id,
                 questionText: questionTextInput,

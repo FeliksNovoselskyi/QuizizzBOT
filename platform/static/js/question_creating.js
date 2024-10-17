@@ -1,4 +1,5 @@
 $(document).ready(function() {
+    // Create question ajax request
     $(".question-form").submit(function(event) {
         event.preventDefault()
 
