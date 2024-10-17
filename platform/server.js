@@ -25,6 +25,7 @@ app.use('/js', express.static(join(__dirname, 'node_modules/bootstrap/dist/js'))
 app.use('/js', express.static(join(__dirname, 'node_modules/jquery/dist')))
 
 app.use(express.urlencoded({extended: true}))
+app.use(express.json()) // for json parsing after ajax requests
 
 let context = {}
 
@@ -45,18 +46,25 @@ app.post('/', async (req, res) => {
 
     if (action === "createQuest") {
         if (!questionTextInput || !answer1Input || !answer2Input || !answer3Input || !answer4Input) {
-            context.error = 'Fill all inputs to create a question'
-            return res.render('main', context)
+            return res.status(400).json({error: 'Fill all inputs to create a question'})
         } else {
-            dataBase.Questions.create({
+            const newQuestion = dataBase.Questions.create({
                 questionText: questionTextInput,
                 answer1: answer1Input,
                 answer2: answer2Input,
                 answer3: answer3Input,
                 answer4: answer4Input
             })
-            context.error = null
-            return res.render('main', context)
+
+            return res.status(200).json({
+                id: newQuestion.id,
+                questionText: questionTextInput,
+                answer1: answer1Input,
+                answer2: answer2Input,
+                answer3: answer3Input,
+                answer4: answer4Input,
+                message: 'Question added successfully!'
+            })
         }
     }
 
