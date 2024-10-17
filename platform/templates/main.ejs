@@ -9,14 +9,15 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
     
+    <!-- jQuery and Sortable -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <!-- My scripts -->
+    <script src="../static/js/question_creating.js" defer></script>
 </head>
 <body>
     <main>
-        <div id="questions-block">
-            <% if (error) { %>
-                <p class="error-message"><%= error %></p>
-            <% } %>
-            
+        <div id="questions-block">            
             <button id="add-button" data-bs-toggle="modal" data-bs-target="#exampleModal">Add question</button>
 
             <div id="created-questions">
@@ -46,6 +47,7 @@
         </div>
     </main>
 
+    <!-- Modal window for questions creating -->
     <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
@@ -58,14 +60,16 @@
                         <div id="question-answers-block">
                             <!-- question text -->
                             <p>Question text</p> 
-                            <input type="text" maxlength="100" name="questionTextInput">
+                            <input type="text" maxlength="100" id="questionTextInput" name="questionTextInput">
 
                             <!-- answers -->
                             <p>Question answers</p>
-                            <input type="text" maxlength="100" name="answer1Input">
-                            <input type="text" maxlength="100" name="answer2Input">
-                            <input type="text" maxlength="100" name="answer3Input">
-                            <input type="text" maxlength="100" name="answer4Input">
+                            <input type="text" maxlength="100" id="answer1Input" name="answer1Input">
+                            <input type="text" maxlength="100" id="answer2Input" name="answer2Input">
+                            <input type="text" maxlength="100" id="answer3Input" name="answer3Input">
+                            <input type="text" maxlength="100" id="answer4Input" name="answer4Input">
+
+                            <p class="error-message"></p>
 
                             <button type="submit" class="btn btn-primary" name="action" value="createQuest">Create question</button>
                         </div>

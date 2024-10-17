@@ -4,6 +4,7 @@ import dotenv from 'dotenv'
 import {fileURLToPath} from 'url'
 import {dirname, join} from 'path'
 
+// My scripts
 import * as dataBase from './data-base.js'
 
 dotenv.config({path: '../.env'})
@@ -19,12 +20,14 @@ const __dirname = dirname(__filename)
 app.set('view engine', 'ejs')
 app.set('views', './templates')
 
+// Setup static routes
 app.use('/static/', express.static(join(__dirname, 'static')))
 app.use('/css', express.static(join(__dirname, 'node_modules/bootstrap/dist/css')))
 app.use('/js', express.static(join(__dirname, 'node_modules/bootstrap/dist/js')))
 app.use('/js', express.static(join(__dirname, 'node_modules/jquery/dist')))
 
 app.use(express.urlencoded({extended: true}))
+app.use(express.json()) // for json parsing after ajax requests
 
 let context = {}
 
@@ -45,18 +48,29 @@ app.post('/', async (req, res) => {
 
     if (action === "createQuest") {
         if (!questionTextInput || !answer1Input || !answer2Input || !answer3Input || !answer4Input) {
-            context.error = 'Fill all inputs to create a question'
-            return res.render('main', context)
+            // Unfilled inputs during creation of question
+            // response to ajax
+            return res.status(400).json({error: 'Fill all inputs to create a question'})
         } else {
-            dataBase.Questions.create({
+            const newQuestion = dataBase.Questions.create({
                 questionText: questionTextInput,
                 answer1: answer1Input,
                 answer2: answer2Input,
                 answer3: answer3Input,
                 answer4: answer4Input
             })
-            context.error = null
-            return res.render('main', context)
+
+            // Successfully created question
+            // response to ajax
+            return res.status(200).json({
+                id: newQuestion.id,
+                questionText: questionTextInput,
+                answer1: answer1Input,
+                answer2: answer2Input,
+                answer3: answer3Input,
+                answer4: answer4Input,
+                message: 'Question added successfully!'
+            })
         }
     }
 
