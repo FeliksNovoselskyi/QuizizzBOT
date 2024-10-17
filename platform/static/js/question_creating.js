@@ -42,8 +42,15 @@ $(document).ready(function() {
                     </div>
                 `
                 $('#created-questions').append(newQuestionHtml)
+                $('.error-message').text("")
                 $('.question-form')[0].reset()
             },
+
+            error: function(response) {
+                if (response.status === 400) {
+                    $('.error-message').text(response.responseJSON.error)
+                }
+            }
         })
     })
 })

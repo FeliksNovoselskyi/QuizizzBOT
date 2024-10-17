@@ -17,11 +17,7 @@
 </head>
 <body>
     <main>
-        <div id="questions-block">
-            <% if (error) { %>
-                <p class="error-message"><%= error %></p>
-            <% } %>
-            
+        <div id="questions-block">            
             <button id="add-button" data-bs-toggle="modal" data-bs-target="#exampleModal">Add question</button>
 
             <div id="created-questions">
@@ -71,6 +67,8 @@
                             <input type="text" maxlength="100" id="answer2Input" name="answer2Input">
                             <input type="text" maxlength="100" id="answer3Input" name="answer3Input">
                             <input type="text" maxlength="100" id="answer4Input" name="answer4Input">
+
+                            <p class="error-message"></p>
 
                             <button type="submit" class="btn btn-primary" name="action" value="createQuest">Create question</button>
                         </div>
