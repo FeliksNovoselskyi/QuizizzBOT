@@ -23,23 +23,8 @@ npm install
 ```
 4. Create your own `.env` file in main directory
 
-5. Write the information required for the bot and platform here
-As in the example:
-```shell
-token = 'token'
-teacherPassword = 'password'
+5. Write the information required for the bot and platform here as in the `.env-sample` file in main directory
 
-PORT = 'your_port' # Optional
-HOST = 'your_host' # Optional
-
-PLATFORM_DB_NAME = 'database_name'
-PLATFORM_DB_ADMIN_NAME = 'admin_name'
-PLATFORM_DB_PASSWORD = 'admin_password'
-
-BOT_DB_NAME = 'database_name'
-BOT_DB_ADMIN_NAME = 'admin_name'
-BOT_DB_PASSWORD = 'admin_password'
-```
 6. Then choose what project do you wanna to start
 ### BOT
 7. Choose Telegram BOT directiory
