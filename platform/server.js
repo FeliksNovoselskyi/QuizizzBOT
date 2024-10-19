@@ -52,7 +52,7 @@ app.post('/', async (req, res) => {
             // response to ajax
             return res.status(400).json({error: 'Fill all inputs to create a question'})
         } else {
-            const newQuestion = dataBase.Questions.create({
+            const newQuestion = await dataBase.Questions.create({
                 questionText: questionTextInput,
                 answer1: answer1Input,
                 answer2: answer2Input,

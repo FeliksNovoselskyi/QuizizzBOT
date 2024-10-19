@@ -1,10 +1,12 @@
 $(document).ready(function() {
-    $(".delete-quest-form").submit(function(event) {
+    // Делегирование событий
+    // для того чтобы можно было обрабатывать события динамически добавленных элементов
+    $(document).on('submit', '.delete-quest-form', function(event) {
         event.preventDefault()
 
         let $form = $(this)
         let questionId = $form.find("input[name=questionId]").val()
-        console.log(questionId)
+        console.log('Удаляем вопрос с ID:', questionId)
 
         $.ajax({
             url: '/',
