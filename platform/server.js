@@ -78,10 +78,11 @@ app.post('/', async (req, res) => {
         const questionId = req.body.questionId
 
         if (!questionId) {
-            return res.render('main', {error: 'Question ID is missing'})
+            return res.status(400).json({error: 'Question ID is missing'})
         }
 
         try {
+            console.log(questionId)
             await dataBase.Questions.destroy({
                 where: {id: questionId}
             })
@@ -89,16 +90,13 @@ app.post('/', async (req, res) => {
             const allQuestions = await dataBase.Questions.findAll()
             const questionData = allQuestions.map(question => question.dataValues)
 
-            res.render('main', {
-                error: null,
-                questionData: questionData
+            return res.status(200).json({
+                deleteQuestion: true
             })
         } catch (error) {
             console.error(error)
-            res.render('main', {
-                error: 'Failed to delete question',
-                questionData: []
-            })
+
+            return res.status(400).json({error: 'Failed to delete question'})
         }
     }
 })

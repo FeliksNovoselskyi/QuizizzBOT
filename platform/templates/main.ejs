@@ -13,7 +13,8 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
     <!-- My scripts -->
-    <script src="../static/js/question_creating.js" defer></script>
+    <script src="../static/js/create_quest.js" defer></script>
+    <script src="../static/js/delete_quest.js" defer></script>
 </head>
 <body>
     <main>
@@ -28,7 +29,7 @@
                             <div class="question-header">
                                 <h3 class="question-text"><%=question.questionText %></h3>
         
-                                <form action="/" method="post">
+                                <form action="/" method="post" class="delete-quest-form">
                                     <input type="hidden" name="questionId" value="<%=question.id %>">
                                     <button type="submit" class="delete-quest-button" name="action" value="deleteQuest" data-question-id="<%=question.id %>">Delete question</button>
                                 </form>
