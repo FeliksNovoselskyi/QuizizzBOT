@@ -9,8 +9,6 @@ $(document).ready(function() {
         const answer3Input = $('#answer3Input').val()
         const answer4Input = $('#answer4Input').val()
 
-        console.log(questionTextInput, answer1Input, answer2Input, answer3Input, answer4Input)
-
         $.ajax({
             url: '/',
             type: 'POST',
@@ -24,8 +22,6 @@ $(document).ready(function() {
                 action: 'createQuest'
             }),
             success: function(response) {
-                console.log(response.message)
-                console.log(response.id)
                 const newQuestionHtml = `
                     <div class="question">
                         <div class="question-header">

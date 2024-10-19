@@ -82,17 +82,11 @@ app.post('/', async (req, res) => {
         }
 
         try {
-            console.log(questionId)
             await dataBase.Questions.destroy({
                 where: {id: questionId}
             })
 
-            const allQuestions = await dataBase.Questions.findAll()
-            const questionData = allQuestions.map(question => question.dataValues)
-
-            return res.status(200).json({
-                deleteQuestion: true
-            })
+            return res.status(200).json({deleteQuestion: true})
         } catch (error) {
             console.error(error)
 
