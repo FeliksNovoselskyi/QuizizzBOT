@@ -52,7 +52,7 @@ app.post('/', async (req, res) => {
             // response to ajax
             return res.status(400).json({error: 'Fill all inputs to create a question'})
         } else {
-            const newQuestion = dataBase.Questions.create({
+            const newQuestion = await dataBase.Questions.create({
                 questionText: questionTextInput,
                 answer1: answer1Input,
                 answer2: answer2Input,
@@ -78,7 +78,7 @@ app.post('/', async (req, res) => {
         const questionId = req.body.questionId
 
         if (!questionId) {
-            return res.render('main', {error: 'Question ID is missing'})
+            return res.status(400).json({error: 'Question ID is missing'})
         }
 
         try {
@@ -86,19 +86,11 @@ app.post('/', async (req, res) => {
                 where: {id: questionId}
             })
 
-            const allQuestions = await dataBase.Questions.findAll()
-            const questionData = allQuestions.map(question => question.dataValues)
-
-            res.render('main', {
-                error: null,
-                questionData: questionData
-            })
+            return res.status(200).json({deleteQuestion: true})
         } catch (error) {
             console.error(error)
-            res.render('main', {
-                error: 'Failed to delete question',
-                questionData: []
-            })
+
+            return res.status(400).json({error: 'Failed to delete question'})
         }
     }
 })

@@ -18,6 +18,11 @@ const sequelize = new Sequelize(process.env.PLATFORM_DB_NAME, process.env.PLATFO
 
 // Questions model
 export const Questions = sequelize.define('Questions', {
+    id: {
+        type: DataTypes.INTEGER,
+        autoIncrement: true,
+        primaryKey: true
+    },
     questionText: {
         type: DataTypes.STRING
     },
