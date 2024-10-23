@@ -9,45 +9,57 @@ $(document).ready(function() {
         const answer3Input = $('#answer3Input').val()
         const answer4Input = $('#answer4Input').val()
 
-        $.ajax({
-            url: '/',
-            type: 'POST',
-            contentType: 'application/json',
-            data: JSON.stringify({
+        fetch('/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
                 questionTextInput,
                 answer1Input,
                 answer2Input,
                 answer3Input,
                 answer4Input,
                 action: 'createQuest'
-            }),
-            success: function(response) {
-                const newQuestionHtml = `
-                    <div class="question">
-                        <div class="question-header">
-                            <h3 class="question-text">${response.questionText}</h3>
-                            <form action="/" method="post" class="delete-quest-form">
-                                <input type="hidden" name="questionId" value="${response.id}">
-                                <button type="submit" class="delete-quest-button" name="action" value="deleteQuest" data-question-id="${response.id}">Delete question</button>
-                            </form>
-                        </div>
-                        <div class="answers">
-                            <p class="answers-text">${response.answer1}</p>
-                            <p class="answers-text">${response.answer2}</p>
-                            <p class="answers-text">${response.answer3}</p>
-                            <p class="answers-text">${response.answer4}</p>
-                        </div>
+            })
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw response
+            }
+            return response.json()
+        })
+        // Successfully created question
+        .then(data => {
+            const newQuestionHtml = `
+                <div class="question">
+                    <div class="question-header">
+                        <h3 class="question-text">${data.questionText}</h3>
+                        <form action="/" method="post" class="delete-quest-form">
+                            <input type="hidden" name="questionId" value="${data.id}">
+                            <button type="submit" class="delete-quest-button" name="action" value="deleteQuest" data-question-id="${data.id}">Delete question</button>
+                        </form>
                     </div>
-                `
-                $('#created-questions').append(newQuestionHtml)
-                $('.error-message').text("")
-                $('.question-form')[0].reset()
-            },
-
-            error: function(response) {
-                if (response.status === 400) {
-                    $('.error-message').text(response.responseJSON.error)
-                }
+                    <div class="answers">
+                        <p class="answers-text">${data.answer1}</p>
+                        <p class="answers-text">${data.answer2}</p>
+                        <p class="answers-text">${data.answer3}</p>
+                        <p class="answers-text">${data.answer4}</p>
+                    </div>
+                </div>
+            `
+            document.getElementById('created-questions').insertAdjacentHTML('beforeend', newQuestionHtml)
+            document.querySelector('.error-message').textContent = ""
+            document.querySelector('.question-form').reset()
+        })
+        // Errors during form validation
+        .catch(error => {
+            if (error instanceof Response) {
+                error.json().then(err => {
+                    document.querySelector('.error-message').textContent = err.error
+                })
+            } else {
+                console.error(error)
             }
         })
     })
