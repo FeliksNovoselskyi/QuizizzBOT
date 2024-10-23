@@ -10,6 +10,10 @@
 ![Bootstrap](https://img.shields.io/badge/Bootstrap-563D7C?style=for-the-badge&logo=bootstrap&logoColor=white)
 ![jQuery](https://img.shields.io/badge/jQuery-0769AD?style=for-the-badge&logo=jquery&logoColor=white)
 ![AJAX](https://img.shields.io/badge/AJAX-00A7E1?style=for-the-badge&logo=ajax&logoColor=white)
+![Fetch API](https://img.shields.io/badge/Fetch%20API-Enabled-007acc?style=for-the-badge&logo=javascript)
+![Async](https://img.shields.io/badge/Async-Enabled-007acc?style=for-the-badge&logo=javascript)
+
+
 ![Open Source](https://img.shields.io/badge/Open%20Source-%E2%9D%A4-red?style=for-the-badge)
 
 ## About
@@ -18,6 +22,14 @@ A two-part project
 Platform - provides the ability to build a quiz on the site and get an output `.json` file with quiz info that the bot needs to start the quiz
 
 Bot - provides access levels for teacher and student, teacher is able to upload `.json` files and start the quiz. At the time the student is able to take it
+
+---
+## Project structure
+```mermaid
+graph TD;
+    A[QuizizzBOT] --> B[bot] --> C[Telegram bot acting as a quiz organiser, ensuring their uploading and launching];
+    A --> D[platform] --> E[A web application to create a quiz to be sent to a bot];
+```
 
 ---
 ## Installation
