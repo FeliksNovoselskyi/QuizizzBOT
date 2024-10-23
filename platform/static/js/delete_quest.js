@@ -23,11 +23,14 @@ $(document).ready(function() {
             }
             return response.json()
         })
+        // Successfully deleted question
         .then(data => {
             if (data.deleteQuestion) {
                 $form.closest('.question').remove()
             }
         })
+
+        // Possible errors
         .catch(error => {
             if (error instanceof Response) {
                 error.json().then(err => {
@@ -35,23 +38,5 @@ $(document).ready(function() {
                 })
             }
         })
-
-        // $.ajax({
-        //     url: '/',
-        //     type: 'POST',
-        //     contentType: 'application/json',
-        //     data: JSON.stringify({
-        //         questionId,
-        //         action: 'deleteQuest'
-        //     }),
-        //     success: function(response) {
-        //         if (response.deleteQuestion) {
-        //             $form.closest('.question').remove()
-        //         }
-        //     },
-        //     error: function(response) {
-        //         console.log(response.responseJSON.error)
-        //     }
-        // })
     })
 })

@@ -29,6 +29,7 @@ $(document).ready(function() {
             }
             return response.json()
         })
+        // Successfully created question
         .then(data => {
             const newQuestionHtml = `
                 <div class="question">
@@ -51,6 +52,7 @@ $(document).ready(function() {
             document.querySelector('.error-message').textContent = ""
             document.querySelector('.question-form').reset()
         })
+        // Errors during form validation
         .catch(error => {
             if (error instanceof Response) {
                 error.json().then(err => {
