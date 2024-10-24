@@ -1,4 +1,5 @@
-import * as dataBase from './data-base.js'
+// My scripts
+import * as dbFunctions from './db/db_functions.js'
 
 // Function that handles login as a teacher, with password verification
 export async function teacherLogin(chatId, bot, messageId, userId, username, firstName, lastName, changeToTeacherRole) {
@@ -13,7 +14,7 @@ export async function teacherLogin(chatId, bot, messageId, userId, username, fir
                 await bot.editMessageReplyMarkup({inline_keyboard: []}, {chat_id: chatId, message_id: messageId})
                 if (changeToTeacherRole) {
                     // Role change from student to teacher
-                    dataBase.updateUserRole(userId, 'teacher', () => {
+                    dbFunctions.updateUserRole(userId, 'teacher', () => {
                         bot.sendMessage(chatId, "Ваша роль змінена на вчителя")
                     })
                 }
@@ -28,7 +29,7 @@ export async function teacherLogin(chatId, bot, messageId, userId, username, fir
 
 // Check the current user role
 export function checkUserRole(userId, bot, chatId) {
-    dataBase.getUserById(userId).then(async (user) => {
+    dbFunctions.getUserById(userId).then(async (user) => {
         if (user) {
             if (user.role === 'student') {
                 // If the current role is student, offer a change to teacher
