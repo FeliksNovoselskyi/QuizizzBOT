@@ -1,3 +1,4 @@
+// My scripts
 import * as indexFile from './index.js'
 
 // Indexes of current issues for each user

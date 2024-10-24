@@ -7,7 +7,8 @@ import {dirname} from 'path'
 import {fileURLToPath} from 'url'
 
 // My scripts
-import * as dataBase from './data-base.js'
+import * as dbFunctions from './db/db_functions.js'
+
 import * as quizFuncs from './quiz-functional.js'
 import * as botFuncs from './bot-functions.js'
 
@@ -47,7 +48,7 @@ bot.on('message', async function(message) {
     // If a user has written /start we get data about him/her
     // whether it is stored in the database or not
     if (message.text === '/start') {
-        dataBase.getUserById(userId).then(async (user) => {
+        dbFunctions.getUserById(userId).then(async (user) => {
             if (user) {
                 await bot.sendMessage(chatId, `Привіт! Ти вже зареєстрований у цьому боті як ${user.role}`)
             } else {
@@ -67,7 +68,7 @@ bot.on('message', async function(message) {
 
     // If the user wants to retrieve data about him/herself
     if (message.text === '/info')  {
-        dataBase.getUserById(userId).then(async (user) => {
+        dbFunctions.getUserById(userId).then(async (user) => {
             if (user) {
                 await bot.sendMessage(chatId, `Ваше ім'я та прізвище: ${user.firstName} ${user.lastName} \nВаш статус: ${user.role}`)
             } else {
@@ -83,9 +84,9 @@ bot.on('message', async function(message) {
 
     // If the user wants to start taking the test
     if (message.text === '/quiz') {
-        dataBase.getUserById(userId).then(async (user) => {
+        dbFunctions.getUserById(userId).then(async (user) => {
             if (user.role === 'student' && canStart && !completedQuizzes[chatId]) {
-                await dataBase.clearProgress(userId)
+                await dbFunctions.clearProgress(userId)
 
                 // Resetting the question index for a user
                 quizFuncs.userQuestions[chatId] = 0
@@ -98,7 +99,7 @@ bot.on('message', async function(message) {
 
     // Command authorising to start the test (available only to the teacher)
     if (message.text === '/can_start_quiz') {
-        dataBase.getUserById(userId).then(async (user) => {
+        dbFunctions.getUserById(userId).then(async (user) => {
             if (user.role === 'teacher') {
                 if (addedJsonFile) {
                     canStart = true
@@ -129,7 +130,7 @@ bot.on('callback_query', async function(query) {
 
     // Sign up as a student
     if (query.data === 'register_student') {
-        dataBase.addUser(userId, username, firstName, lastName, 'student')
+        dbFunctions.addUser(userId, username, firstName, lastName, 'student')
         await bot.sendMessage(chatId, 'Ви зареєстровані в цьому боті як студент')
         return
     }
@@ -149,7 +150,7 @@ bot.on('callback_query', async function(query) {
     if (query.data === 'switch_to_student') {
         // Role change from teacher to student
         delete quizFuncs.userQuestions[chatId]
-        dataBase.updateUserRole(userId, 'student', () => {
+        dbFunctions.updateUserRole(userId, 'student', () => {
             bot.sendMessage(chatId, "Ваша роль змінена на студента")
         })
         await bot.editMessageReplyMarkup({inline_keyboard: []}, {chat_id: chatId, message_id: messageId})
@@ -185,7 +186,7 @@ bot.on('callback_query', async function(query) {
         quizFuncs.userProgress.push(questionResult)
 
         userProgressJSON = JSON.stringify(quizFuncs.userProgress)
-        dataBase.updateProgress(userProgressJSON, userId)
+        dbFunctions.updateProgress(userProgressJSON, userId)
     } else {
         await bot.sendMessage(chatId, `Неправильна відповідь! Правильна відповідь: ${currentQuestion.options[currentQuestion.correct]}`)
         
@@ -193,7 +194,7 @@ bot.on('callback_query', async function(query) {
         quizFuncs.userProgress.push(questionResult)
 
         userProgressJSON = JSON.stringify(quizFuncs.userProgress)
-        dataBase.updateProgress(userProgressJSON, userId)
+        dbFunctions.updateProgress(userProgressJSON, userId)
     }
 
     await bot.editMessageReplyMarkup({inline_keyboard: []}, {chat_id: chatId, message_id: messageId})
@@ -213,7 +214,7 @@ bot.on('document', async function(message) {
 
     // Checking that the file is .json and that it is a teacher account
     if (path.extname(fileName) === '.json') {
-        dataBase.getUserById(userId).then(async function(user) {
+        dbFunctions.getUserById(userId).then(async function(user) {
             if (!user || user.role !== 'teacher') {
                 return bot.sendMessage(chatId, 'Завантажувати файли має право тільки вчитель!')
             }
