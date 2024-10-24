@@ -4,6 +4,7 @@ $(document).ready(function() {
     $(document).on('submit', '.delete-quest-form', function(event) {
         event.preventDefault()
 
+        // Get form using jQuery for correctly questions deleting
         let $form = $(this)
         let questionId = $form.find("input[name=questionId]").val()
 
@@ -17,6 +18,7 @@ $(document).ready(function() {
             }),
             success: function(response) {
                 if (response.deleteQuestion) {
+                    // Deleting .question div where the delete button
                     $form.closest('.question').remove()
                 }
             },

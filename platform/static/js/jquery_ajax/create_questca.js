@@ -39,7 +39,10 @@ $(document).ready(function() {
                         </div>
                     </div>
                 `
+                // Add new question on page
                 $('#created-questions').append(newQuestionHtml)
+
+                // Clear error message and reset form inputs
                 $('.error-message').text("")
                 $('.question-form')[0].reset()
             },

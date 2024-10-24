@@ -11,6 +11,7 @@ dotenv.config({path: '../.env'})
 
 const app = express()
 
+// PORT and HOST (from .env file or basic values)
 const PORT = process.env.PORT || 3000
 const HOST = process.env.HOST || 'localhost'
 
@@ -31,6 +32,7 @@ app.use(express.json()) // for json parsing after ajax requests
 
 let context = {}
 
+// Render of the main page
 app.get('/', async (req, res) => {
     context.error = null
 
@@ -41,6 +43,7 @@ app.get('/', async (req, res) => {
     res.render('main', context)
 })
 
+// Post requests on main page
 app.post('/', async (req, res) => {
     context = {}
 
@@ -75,26 +78,32 @@ app.post('/', async (req, res) => {
     }
 
     if (action === "deleteQuest") {
+        // get questionId from the submitted form (from hidden input)
         const questionId = req.body.questionId
 
+        // if the questionId was missed at the time of receipt
         if (!questionId) {
             return res.status(400).json({error: 'Question ID is missing'})
         }
 
+        // Trying to delete question from db
         try {
             await dataBase.Questions.destroy({
                 where: {id: questionId}
             })
 
+            // Successfully deleted question
             return res.status(200).json({deleteQuestion: true})
         } catch (error) {
             console.error(error)
 
+            // Probably errors during question deleting
             return res.status(400).json({error: 'Failed to delete question'})
         }
     }
 })
 
+// Url output for the site (for convenience during development)
 app.listen(PORT, HOST, () => {
     console.log(`Server started on http://${HOST}:${PORT}`)
 })

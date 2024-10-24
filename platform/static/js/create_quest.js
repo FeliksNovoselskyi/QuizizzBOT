@@ -3,6 +3,8 @@ $(document).ready(function() {
     $(".question-form").submit(function(event) {
         event.preventDefault()
 
+        // Get form input values
+        // using jQuery
         const questionTextInput = $('#questionTextInput').val()
         const answer1Input = $('#answer1Input').val()
         const answer2Input = $('#answer2Input').val()
@@ -48,12 +50,20 @@ $(document).ready(function() {
                     </div>
                 </div>
             `
+
+            // Add new question on page
+            // insertAdjacentHTML method is used to correctly add new code
+            // using dom-tree
             document.getElementById('created-questions').insertAdjacentHTML('beforeend', newQuestionHtml)
+            
+            // Clear error message and reset form inputs
             document.querySelector('.error-message').textContent = ""
             document.querySelector('.question-form').reset()
         })
         // Errors during form validation
         .catch(error => {
+            // Check if error is an instance of Response class
+            // It is checked to ensure that the request has been sent, even if it is not correct
             if (error instanceof Response) {
                 error.json().then(err => {
                     document.querySelector('.error-message').textContent = err.error
@@ -64,3 +74,6 @@ $(document).ready(function() {
         })
     })
 })
+
+// Response.json() takes the Response stream and reads it to the end
+// It returns a promise that resolves to the result of parsing the response body as a string

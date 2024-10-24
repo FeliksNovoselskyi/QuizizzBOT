@@ -10,6 +10,7 @@ dotenv.config({path: '../.env'})
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
 
+// Create an instance of the Sequelize class, which will be an ORM, to work with the db
 const sequelize = new Sequelize(process.env.PLATFORM_DB_NAME, process.env.PLATFORM_DB_ADMIN_NAME, process.env.PLATFORM_DB_PASSWORD, {
     host: 'localhost',
     dialect: 'sqlite',
