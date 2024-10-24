@@ -1,4 +1,4 @@
-import {Sequelize, DataTypes} from 'sequelize'
+import {Sequelize} from 'sequelize'
 import dotenv from 'dotenv'
 
 import {fileURLToPath} from 'url'
@@ -11,26 +11,10 @@ const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
 
 // Create an instance of the Sequelize class, which will be an ORM, to work with the db
-const sequelize = new Sequelize(process.env.PLATFORM_DB_NAME, process.env.PLATFORM_DB_ADMIN_NAME, process.env.PLATFORM_DB_PASSWORD, {
+export const sequelize = new Sequelize(process.env.PLATFORM_DB_NAME, process.env.PLATFORM_DB_ADMIN_NAME, process.env.PLATFORM_DB_PASSWORD, {
     host: 'localhost',
     dialect: 'sqlite',
     storage: join(__dirname, `${process.env.PLATFORM_DB_NAME}.db`)
-})
-
-// Questions model
-export const Questions = sequelize.define('Questions', {
-    id: {
-        type: DataTypes.INTEGER,
-        autoIncrement: true,
-        primaryKey: true
-    },
-    questionText: {
-        type: DataTypes.STRING
-    },
-    answer1: {type: DataTypes.STRING},
-    answer2: {type: DataTypes.STRING},
-    answer3: {type: DataTypes.STRING},
-    answer4: {type: DataTypes.STRING}
 })
 
 // Sync DB

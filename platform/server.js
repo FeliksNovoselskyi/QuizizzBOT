@@ -5,7 +5,8 @@ import {fileURLToPath} from 'url'
 import {dirname, join} from 'path'
 
 // My scripts
-import * as dataBase from './data-base.js'
+import * as dataBase from './db/db_setup.js'
+import * as models from './db/models.js'
 
 dotenv.config({path: '../.env'})
 
@@ -36,7 +37,7 @@ let context = {}
 app.get('/', async (req, res) => {
     context.error = null
 
-    const allQuestions = await dataBase.Questions.findAll()
+    const allQuestions = await models.Questions.findAll()
     const questionData = allQuestions.map(question => question.dataValues)
     context.questionData = questionData
 
@@ -55,7 +56,7 @@ app.post('/', async (req, res) => {
             // response to ajax
             return res.status(400).json({error: 'Fill all inputs to create a question'})
         } else {
-            const newQuestion = await dataBase.Questions.create({
+            const newQuestion = await models.Questions.create({
                 questionText: questionTextInput,
                 answer1: answer1Input,
                 answer2: answer2Input,
@@ -88,7 +89,7 @@ app.post('/', async (req, res) => {
 
         // Trying to delete question from db
         try {
-            await dataBase.Questions.destroy({
+            await models.Questions.destroy({
                 where: {id: questionId}
             })
 
