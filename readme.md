@@ -24,14 +24,6 @@ Platform - provides the ability to build a quiz on the site and get an output `.
 Bot - provides access levels for teacher and student, teacher is able to upload `.json` files and start the quiz. At the time the student is able to take it
 
 ---
-## Project structure
-```mermaid
-graph TD;
-    A[QuizizzBOT] --> B[bot] --> C[Telegram bot acting as a quiz organiser, ensuring their uploading and launching];
-    A --> D[platform] --> E[A web application to create a quiz to be sent to a bot];
-```
-
----
 ## Installation
 *Of course install [NodeJS](https://nodejs.org/en) previously
 
@@ -78,5 +70,15 @@ There is an `questions.json` file in the project directory
 You can use it to create a quiz when the bot asks you to upload a `.json` file with the questions for the quiz
 
 ---
+## Project structure
+>[Back to top](#quizizz-telegram-bot)
+```mermaid
+graph TD;
+    A[QuizizzBOT] --> B[bot] --> C[Telegram bot acting as a quiz organiser, ensuring their uploading and launching];
+    A --> D[platform] --> E[A web application to create a quiz to be sent to a bot];
+```
+
+---
+>[Back to top](#quizizz-telegram-bot)
 # Enjoy using it!
 # Enjoy exploring it!
