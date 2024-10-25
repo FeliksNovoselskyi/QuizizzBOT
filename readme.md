@@ -79,6 +79,11 @@ graph TD;
 ```
 
 ---
+## Figma and FigJam
+* [Figma](https://www.figma.com/design/jMjdkaAEDIh5ONLtelxzi7/QuizizzBOT-Platform?node-id=0-1&t=Y2RKr0VkKNAYPncM-1)
+* [FigJam](https://www.figma.com/board/AZD4TR2pNnDRlWKSJgVxKp/QuizizzBOT-Structure?node-id=0-1&t=FxYQlPNAcjUQaIe8-1)
+
+---
 >[Back to top](#quizizz-telegram-bot)
 # Enjoy using it!
 # Enjoy exploring it!
