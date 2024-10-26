@@ -73,23 +73,23 @@ You can use it to create a quiz when the bot asks you to upload a `.json` file w
 ---
 ## Technologies Used
 >[Back to top](#quizizz-telegram-bot)
-| **Technology**                       | **Description**                                                                                                                                           |
-|--------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------|
-| [NodeJS](https://nodejs.org/uk)     | the main framework on which the bot and the platform are written                                                                                           |
-| [Express](https://expressjs.com/)    | web framework used to build the platform                                                                                              |
-| [JavaScript](https://developer.mozilla.org/en-US/docs/Web/JavaScript) | main programming language                                                                                                                    |
-| [Sequelize ORM](https://sequelize.org/)     | ORM (Object-Relational Mapping), ORM used for working with the database                                                                             |
-| [node-telegram-bot-api](https://www.npmjs.com/package/node-telegram-bot-api) | API, used to develop a telegram bot                                                                                                     |
-| [EJS](https://ejs.co/)               | a simple templating language was used to develop a website templates                                                                                  |
-| [jQuery](https://jquery.com/)        | JavaScript library that simplifies development and interaction with the project                                                                       |
-| [Sortable](https://jqueryui.com/sortable/) | A jQuery plugin to smoothly and quickly drag and drop questions to change their order                                                            |
-| [AJAX](https://api.jquery.com/category/ajax/) | technology for fast and convenient data handling without page refreshes                                                                        |
-| [Fetch API](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API) | used for asynchronous functioning of the site without constant page refreshes                                                                       |
-| [HTML](https://developer.mozilla.org/en-US/docs/Web/HTML)/[CSS](https://developer.mozilla.org/en-US/docs/Learn/CSS) | languages for website layout, structure, and styling                                                                                                   |
-| [Bootstrap 5](https://getbootstrap.com/) | frontend framework used to create some elements on the pages                                                                      |
-| [Figma](https://help.figma.com/hc/en-us) | online service used for planning the site's design                                                                                          |
-| [SQLite3](https://www.sqlite.org/docs.html)  | database used for the site development                                                                                                      |
 
+| **Technology**  | **Description** |
+| ------------- | -------------      |
+| [NodeJS](https://nodejs.org/uk)       | The main framework on which the bot and the platform are built  |
+| [Express](https://expressjs.com/)  | Web framework used to build the platform  |
+| [JavaScript](https://developer.mozilla.org/en-US/docs/Web/JavaScript)  | The primary programming language  |
+| [Sequelize ORM](https://sequelize.org/)  | ORM (Object-Relational Mapping) used for interacting with the database  |
+| [node-telegram-bot-api](https://www.npmjs.com/package/node-telegram-bot-api)  | API used to develop a Telegram bot  |
+| [EJS](https://ejs.co/)      | A simple templating language used for developing website templates |
+| [jQuery](https://jquery.com/)                                                  | A JavaScript library that simplifies development and interaction within the project.                              |
+| [Sortable](https://jqueryui.com/sortable/)                                     | A jQuery plugin that allows smooth and quick drag-and-drop functionality for reordering items.                    |
+| [AJAX](https://api.jquery.com/category/ajax/)                                  | A technology for fast and convenient data handling without page refreshes.                                        |
+| [Fetch API](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API)        | Used for asynchronous operations on the site without constant page refreshes.                                     |
+| [HTML](https://developer.mozilla.org/en-US/docs/Web/HTML)/[CSS](https://developer.mozilla.org/en-US/docs/Learn/CSS) | Languages used for website layout, structure, and styling.                   |
+| [Bootstrap 5](https://getbootstrap.com/)                                       | A frontend framework used to create various elements on the pages.                                                |
+| [Figma](https://help.figma.com/hc/en-us)                                       | An online service used for designing the site's layout.                                                           |
+| [SQLite3](https://www.sqlite.org/docs.html)                                    | A database used for site development.                                                                             |
 
 ---
 ## Project structure
