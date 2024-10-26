@@ -11,6 +11,33 @@ $(document).ready(function() {
         const answer3Input = $('#answer3Input').val()
         const answer4Input = $('#answer4Input').val()
 
+        const checkboxAnswers = [
+            $('#correctAnswer1Input'),
+            $('#correctAnswer2Input'),
+            $('#correctAnswer3Input'),
+            $('#correctAnswer4Input')
+        ]
+
+        // if (correctAnswer1Input.prop('checked')) {
+        //     console.log(11111)
+        // } else {
+        //     console.log(23232323232323)
+        // }
+
+        function chooseCorrectAnswer() {
+            const correctAnswers = checkboxAnswers.filter(checkbox => checkbox.prop('checked'))
+
+            if (correctAnswers.length === 1) {
+                const correctAnswerIndex = checkboxAnswers.indexOf(correctAnswers[0])
+                return correctAnswerIndex
+            }
+            return null
+        }
+
+        const correctAnswerIndex = chooseCorrectAnswer()
+
+        // if (correctAnswerIndex === null) return
+
         fetch('/', {
             method: 'POST',
             headers: {
@@ -22,6 +49,7 @@ $(document).ready(function() {
                 answer2Input,
                 answer3Input,
                 answer4Input,
+                correctAnswerIndex,
                 action: 'createQuest'
             })
         })

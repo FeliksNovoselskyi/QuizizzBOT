@@ -106,3 +106,19 @@ main {
 .delete-quest-button:hover {
     background-color: rgb(173, 173, 173);
 }
+
+.answer-block {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.answer-text-input {
+    width: 100%;
+}
+
+.correct-answer-checkbox {
+
+}
