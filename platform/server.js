@@ -5,7 +5,6 @@ import {fileURLToPath} from 'url'
 import {dirname, join} from 'path'
 
 // My scripts
-import * as dataBase from './db/db_setup.js'
 import * as models from './db/models.js'
 
 dotenv.config({path: '../.env'})
@@ -48,20 +47,23 @@ app.get('/', async (req, res) => {
 app.post('/', async (req, res) => {
     context = {}
 
-    const {questionTextInput, answer1Input, answer2Input, answer3Input, answer4Input, action} = req.body
+    const {questionTextInput, answer1Input, answer2Input, answer3Input, answer4Input, correctAnswerIndex, action} = req.body
 
     if (action === "createQuest") {
         if (!questionTextInput || !answer1Input || !answer2Input || !answer3Input || !answer4Input) {
             // Unfilled inputs during creation of question
             // response to ajax
             return res.status(400).json({error: 'Fill all inputs to create a question'})
+        } else if (correctAnswerIndex == null) {
+            return res.status(400).json({ error: 'Choose only one correct answer within the valid range (1-4)' })
         } else {
             const newQuestion = await models.Questions.create({
                 questionText: questionTextInput,
                 answer1: answer1Input,
                 answer2: answer2Input,
                 answer3: answer3Input,
-                answer4: answer4Input
+                answer4: answer4Input,
+                correctAnswer: correctAnswerIndex
             })
 
             // Successfully created question

@@ -1,4 +1,11 @@
 $(document).ready(function() {
+    $('.correct-answer-checkbox').change(function() {
+        // If the current checkbox is selected, deselect all other checkboxes
+        if ($(this).prop('checked')) {
+            $('.correct-answer-checkbox').not(this).prop('checked', false)
+        }
+    })
+
     // Create question ajax request
     $(".question-form").submit(function(event) {
         event.preventDefault()
@@ -11,6 +18,25 @@ $(document).ready(function() {
         const answer3Input = $('#answer3Input').val()
         const answer4Input = $('#answer4Input').val()
 
+        const checkboxAnswers = [
+            $('#correctAnswer1Input'),
+            $('#correctAnswer2Input'),
+            $('#correctAnswer3Input'),
+            $('#correctAnswer4Input')
+        ]
+
+        function chooseCorrectAnswer() {
+            const correctAnswers = checkboxAnswers.filter(checkbox => checkbox.prop('checked'))
+
+            if (correctAnswers.length === 1) {
+                const correctAnswerIndex = checkboxAnswers.indexOf(correctAnswers[0])
+                return correctAnswerIndex
+            }
+            return null
+        }
+
+        const correctAnswerIndex = chooseCorrectAnswer()
+
         fetch('/', {
             method: 'POST',
             headers: {
@@ -22,6 +48,7 @@ $(document).ready(function() {
                 answer2Input,
                 answer3Input,
                 answer4Input,
+                correctAnswerIndex,
                 action: 'createQuest'
             })
         })
