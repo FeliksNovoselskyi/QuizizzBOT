@@ -1,4 +1,11 @@
 $(document).ready(function() {
+    $('.correct-answer-checkbox').change(function() {
+        // If the current checkbox is selected, deselect all other checkboxes
+        if ($(this).prop('checked')) {
+            $('.correct-answer-checkbox').not(this).prop('checked', false)
+        }
+    })
+
     // Create question ajax request
     $(".question-form").submit(function(event) {
         event.preventDefault()
