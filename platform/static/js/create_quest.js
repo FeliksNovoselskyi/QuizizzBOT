@@ -18,12 +18,6 @@ $(document).ready(function() {
             $('#correctAnswer4Input')
         ]
 
-        // if (correctAnswer1Input.prop('checked')) {
-        //     console.log(11111)
-        // } else {
-        //     console.log(23232323232323)
-        // }
-
         function chooseCorrectAnswer() {
             const correctAnswers = checkboxAnswers.filter(checkbox => checkbox.prop('checked'))
 
@@ -35,8 +29,6 @@ $(document).ready(function() {
         }
 
         const correctAnswerIndex = chooseCorrectAnswer()
-
-        // if (correctAnswerIndex === null) return
 
         fetch('/', {
             method: 'POST',

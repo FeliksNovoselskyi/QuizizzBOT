@@ -10,9 +10,7 @@ export const Questions = dataBase.sequelize.define('Questions', {
         autoIncrement: true,
         primaryKey: true
     },
-    questionText: {
-        type: DataTypes.STRING
-    },
+    questionText: {type: DataTypes.STRING},
     answer1: {type: DataTypes.STRING},
     answer2: {type: DataTypes.STRING},
     answer3: {type: DataTypes.STRING},

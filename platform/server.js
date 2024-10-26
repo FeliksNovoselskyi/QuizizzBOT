@@ -49,8 +49,6 @@ app.post('/', async (req, res) => {
 
     const {questionTextInput, answer1Input, answer2Input, answer3Input, answer4Input, correctAnswerIndex, action} = req.body
 
-    // console.log(correctAnswerIndex)
-
     if (action === "createQuest") {
         if (!questionTextInput || !answer1Input || !answer2Input || !answer3Input || !answer4Input) {
             // Unfilled inputs during creation of question
@@ -59,7 +57,6 @@ app.post('/', async (req, res) => {
         } else if (correctAnswerIndex == null) {
             return res.status(400).json({ error: 'Choose only one correct answer within the valid range (1-4)' })
         } else {
-            console.log(correctAnswerIndex)
             const newQuestion = await models.Questions.create({
                 questionText: questionTextInput,
                 answer1: answer1Input,
