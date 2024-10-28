@@ -1,53 +1,53 @@
 {
     "questions": [
         {
-            "question": "Яка мова використовується для розробки на Node.js?",
+            "question": "What language is used to develop with Node.js?",
             "options": ["Python", "C#", "JavaScript", "Ruby"],
             "correct": 2
         },
         {
-            "question": "Яку назву має пакетний менеджер для Node.js?",
+            "question": "What is the name of the package manager for Node.js?",
             "options": ["npm", "pip", "composer", "gem"],
             "correct": 0
         },
         {
-            "question": "Що таке API?",
-            "options": ["Протокол передачі даних", "Система версій", "Інтерфейс для взаємодії застосунків", "Модуль для Python"],
+            "question": "What is an API?",
+            "options": ["Data transfer protocol", "Versioning system", "Interface for application interaction", "Python module"],
             "correct": 2
         },
         {
-            "question": "Який метод використовується для виводу інформації у консоль в JavaScript?",
+            "question": "What method is used to output information to the console in JavaScript?",
             "options": ["print()", "echo()", "console.log()", "alert()"],
             "correct": 2
         },
         {
-            "question": "Що таке змінна у програмуванні?",
-            "options": ["Фіксоване значення", "Іменований контейнер для збереження даних", "Тип даних", "Команда системи"],
+            "question": "What is a variable in programming?",
+            "options": ["Fixed value", "Named container for saving data", "Data type", "System team"],
             "correct": 1
         },
         {
-            "question": "Який символ використовується для присвоєння значення у JavaScript?",
+            "question": "What character is used to assign a value in JavaScript?",
             "options": ["==", "=", "=>", "==="],
             "correct": 1
         },
         {
-            "question": "Який із типів даних є примітивним у JavaScript?",
+            "question": "Which data type is primitive in JavaScript?",
             "options": ["Object", "Array", "Function", "String"],
             "correct": 3
         },
         {
-            "question": "Що робить оператор '===' у JavaScript?",
-            "options": ["Порівнює тільки значення", "Порівнює типи та значення", "Порівнює посилання на об'єкти", "Перетворює типи даних перед порівнянням"],
+            "question": "What does the ‘===’ operator do in JavaScript?",
+            "options": ["Compares only the value of", "Compares types and values", "Compares object references", "Converts data types before comparing"],
             "correct": 1
         },
         {
-            "question": "Яка функція використовується для перетворення рядку в число в JavaScript?",
+            "question": "What function is used to convert a string to a number in JavaScript?",
             "options": ["Number()", "String()", "parseInt()", "float()"],
             "correct": 2
         },
         {
-            "question": "Що таке DOM у веб-розробці?",
-            "options": ["Мова розмітки", "Програмна бібліотека", "Інтерфейс для роботи із HTML та XML документами", "Фреймворк для JS"],
+            "question": "What is DOM in web development?",
+            "options": ["Markup language", "Software library", "Interface for working with HTML and XML documents", "A framework for JS"],
             "correct": 2
         }
     ]

@@ -19,8 +19,8 @@ export const sequelize = new Sequelize(process.env.BOT_DB_NAME, process.env.BOT_
 // Sync BOT DB
 sequelize.sync()
     .then(() => {
-        console.log('База даних створена успішно')
+        console.log('Database created successfully')
     })
     .catch((error) => {
-        console.log('Помилка під час створення бази даних:', error)
+        console.log('Error during database creation:', error)
     })
