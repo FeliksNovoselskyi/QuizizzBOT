@@ -17,11 +17,12 @@ export async function teacherLogin(chatId, bot, messageId, userId, username, fir
                     dbFunctions.updateUserRole(userId, 'teacher', () => {
                         bot.sendMessage(chatId, "Your role has been changed to teacher")
                     })
+                    return
                 }
                 
+                dbFunctions.addUser(userId, username, firstName, lastName, 'teacher')
                 await bot.sendMessage(chatId, 'You have successfully logged in as a teacher! \nNow you can upload a JSON file with your test questions, and give your students the opportunity to start the test with command /can_start_quiz!')
             } else {
-                await bot.editMessageReplyMarkup({inline_keyboard: []}, {chat_id: chatId, message_id: messageId})
                 await bot.sendMessage(chatId, 'Incorrect password! \nTry again \nTo do this, press the login button again')
             }
         })

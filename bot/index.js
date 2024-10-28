@@ -131,6 +131,7 @@ bot.on('callback_query', async function(query) {
     // Sign up as a student
     if (query.data === 'register_student') {
         dbFunctions.addUser(userId, username, firstName, lastName, 'student')
+        await bot.editMessageReplyMarkup({inline_keyboard: []}, {chat_id: chatId, message_id: messageId})
         await bot.sendMessage(chatId, 'You are registered in this bot as a student')
         return
     }
