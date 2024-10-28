@@ -34,10 +34,10 @@ let addedJsonFile = false
 
 // Create a menu of commands for the bot
 bot.setMyCommands([
-    {command: '/info', description: 'Отримати інформацію про себе'},
-    {command: '/change_role', description: 'Змінити свою роль'},
-    {command: '/can_start_quiz', description: 'Надати можливість проходити тест (вчитель)'},
-    {command: '/quiz', description: 'Розпочати проходження тесту, якщо надана можливість його розпочати (студент)'},
+    {command: '/info', description: 'Get information about you'},
+    {command: '/change_role', description: 'Change your role'},
+    {command: '/can_start_quiz', description: 'Provide an opportunity to take the test (teacher)'},
+    {command: '/quiz', description: 'Start taking the test if given the opportunity to do so (student)'},
 ])
 
 // User messages
@@ -50,18 +50,18 @@ bot.on('message', async function(message) {
     if (message.text === '/start') {
         dbFunctions.getUserById(userId).then(async (user) => {
             if (user) {
-                await bot.sendMessage(chatId, `Привіт! Ти вже зареєстрований у цьому боті як ${user.role}`)
+                await bot.sendMessage(chatId, `Hi! You are already registered with this bot as ${user.role}`)
             } else {
                 const startOptions = {
                     reply_markup: {
                         inline_keyboard: [
-                            [{ text: 'Зареєструватись як студент', callback_data: 'register_student' }],
-                            [{ text: 'Увійти як вчитель', callback_data: 'login_teacher' }],
+                            [{text: 'Register as a student', callback_data: 'register_student'}],
+                            [{text: 'Log in as a teacher', callback_data: 'login_teacher'}],
                         ],
                     },
                 }
         
-                await bot.sendMessage(chatId, 'Привіт! Ти можеш зареєструватись у цьому боті як студент, або увійти як вчитель для створення тестів! \nДізнатись свій статус: /info', startOptions)
+                await bot.sendMessage(chatId, 'Hello! You can sign up for this bot as a student or log in as a teacher to create quizzes! \nFind out your status: /info', startOptions)
             }
         })
     }
@@ -70,9 +70,9 @@ bot.on('message', async function(message) {
     if (message.text === '/info')  {
         dbFunctions.getUserById(userId).then(async (user) => {
             if (user) {
-                await bot.sendMessage(chatId, `Ваше ім'я та прізвище: ${user.firstName} ${user.lastName} \nВаш статус: ${user.role}`)
+                await bot.sendMessage(chatId, `Your first and last names: ${user.firstName} ${user.lastName} \nYour status: ${user.role}`)
             } else {
-                await bot.sendMessage(chatId, 'Ви не зареєстровані в цьому боті')
+                await bot.sendMessage(chatId, 'You are not logged into this bot')
             }
         })
     }
@@ -92,7 +92,7 @@ bot.on('message', async function(message) {
                 quizFuncs.userQuestions[chatId] = 0
                 await quizFuncs.sendQuestion(chatId, questions, bot)
             } else {
-                await bot.sendMessage(chatId, 'Проходження тесту не дозволено!\nАбо, якщо ви вчитель, ви не можете проходити тест')
+                await bot.sendMessage(chatId, 'Passing the test is not allowed!\nOr, if you are a teacher, you cannot take the test')
             }
         })
     }
@@ -104,12 +104,12 @@ bot.on('message', async function(message) {
                 if (addedJsonFile) {
                     canStart = true
                     completedQuizzes[chatId] = false
-                    bot.sendMessage(chatId, 'Ви успішно створили тест!\nТепер ваші студенти можуть розпочинати тестування командою /quiz')
+                    bot.sendMessage(chatId, 'You have successfully created a test!\nNow your students can start testing as a team /quiz')
                 } else {
-                    bot.sendMessage(chatId, 'Ви не завантажили .json файл із питаннями')
+                    bot.sendMessage(chatId, 'You did not upload a .json file with questions')
                 }
             } else {
-                await bot.sendMessage(chatId, 'Розпочати тест має право тільки вчитель')
+                await bot.sendMessage(chatId, 'Only the teacher has the right to start the test')
             }
         })
     }
@@ -131,7 +131,7 @@ bot.on('callback_query', async function(query) {
     // Sign up as a student
     if (query.data === 'register_student') {
         dbFunctions.addUser(userId, username, firstName, lastName, 'student')
-        await bot.sendMessage(chatId, 'Ви зареєстровані в цьому боті як студент')
+        await bot.sendMessage(chatId, 'You are registered in this bot as a student')
         return
     }
 
@@ -151,7 +151,7 @@ bot.on('callback_query', async function(query) {
         // Role change from teacher to student
         delete quizFuncs.userQuestions[chatId]
         dbFunctions.updateUserRole(userId, 'student', () => {
-            bot.sendMessage(chatId, "Ваша роль змінена на студента")
+            bot.sendMessage(chatId, "Your role has been changed to student")
         })
         await bot.editMessageReplyMarkup({inline_keyboard: []}, {chat_id: chatId, message_id: messageId})
         return
@@ -159,7 +159,7 @@ bot.on('callback_query', async function(query) {
     
     if (query.data === 'cancel_change_role') {
         // Cancelling a role change
-        await bot.sendMessage(chatId, "Зміна ролі відмінена")
+        await bot.sendMessage(chatId, "Role change cancelled")
         await bot.editMessageReplyMarkup({inline_keyboard: []}, {chat_id: chatId, message_id: messageId})
         return
     }
@@ -180,7 +180,7 @@ bot.on('callback_query', async function(query) {
     let userProgressJSON
 
     if (isCorrect) {
-        await bot.sendMessage(chatId, 'Вірна відповідь!')
+        await bot.sendMessage(chatId, "That's the right answer!")
 
         questionResult[numberQuestion] = 1
         quizFuncs.userProgress.push(questionResult)
@@ -188,7 +188,7 @@ bot.on('callback_query', async function(query) {
         userProgressJSON = JSON.stringify(quizFuncs.userProgress)
         dbFunctions.updateProgress(userProgressJSON, userId)
     } else {
-        await bot.sendMessage(chatId, `Неправильна відповідь! Правильна відповідь: ${currentQuestion.options[currentQuestion.correct]}`)
+        await bot.sendMessage(chatId, `Wrong answer! The correct answer: ${currentQuestion.options[currentQuestion.correct]}`)
         
         questionResult[numberQuestion] = 0
         quizFuncs.userProgress.push(questionResult)
@@ -216,7 +216,7 @@ bot.on('document', async function(message) {
     if (path.extname(fileName) === '.json') {
         dbFunctions.getUserById(userId).then(async function(user) {
             if (!user || user.role !== 'teacher') {
-                return bot.sendMessage(chatId, 'Завантажувати файли має право тільки вчитель!')
+                return bot.sendMessage(chatId, 'Only teachers are allowed to upload files!')
             }
 
             const localFilePath = path.join(__dirname, fileName)
@@ -228,7 +228,7 @@ bot.on('document', async function(message) {
             // Read the contents of the file at the specified path
             fs.readFile(localFilePath, 'utf8', function(error, data) {
                 if (error) {
-                    return bot.sendMessage(chatId, 'Помилка при прочитанні файлу')
+                    return bot.sendMessage(chatId, 'Error during reading a file')
                 }
 
                 try {
@@ -236,14 +236,14 @@ bot.on('document', async function(message) {
                     const json_file = JSON.parse(data)
                     questions = json_file.questions
 
-                    bot.sendMessage(chatId, 'Файл з питаннями завантажений успішно! Щоб надати можливість розпочати тест напишіть /can_start_quiz')
+                    bot.sendMessage(chatId, 'The file with questions has been uploaded successfully! To start the test, please write /can_start_quiz')
                     addedJsonFile = true
                 } catch {
-                    bot.sendMessage(chatId, 'Помилка при парсингу JSON файлу. Перевірте правильність формату файлу')
+                    bot.sendMessage(chatId, 'Error parsing JSON file. Check the file format is correct')
                 }
             })
         })
     } else {
-        bot.sendMessage(chatId, 'Завантажити для тесту можна тільки .json файл!')
+        bot.sendMessage(chatId, 'You can only upload a .json file for the test!')
     }
 })

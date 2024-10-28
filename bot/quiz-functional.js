@@ -34,7 +34,7 @@ export async function sendQuestion(chatId, questions, bot) {
                 allCorrectAnswers = allCorrectAnswers + parseInt(objectValues)
             })
 
-            await bot.sendMessage(chatId, `Тест завершено! \n\nКількість питань: ${allQuestions} \n\nКількість правильних відповідей: ${allCorrectAnswers} \n\nДякуюємо за ваші відповіді!`)
+            await bot.sendMessage(chatId, `The test is over! \n\nNumber of questions: ${allQuestions} \n\nThe number of correct answers: ${allCorrectAnswers} \n\nThank you for your answers!`)
             
             // Resetting the status for the user
             delete userQuestions[chatId]
