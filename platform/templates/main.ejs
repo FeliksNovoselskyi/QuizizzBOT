@@ -16,6 +16,7 @@
     <!-- My scripts -->
     <script src="../static/js/create_quest.js" defer></script>
     <script src="../static/js/delete_quest.js" defer></script>
+    <script src="../static/js/sortable_elements.js" defer></script>
 
     <!-- If you wanna use fetch api -->
     <!-- <script src="../static/js/fetch_api/create_questFetch.js" defer></script>
@@ -30,7 +31,7 @@
             <div id="created-questions">
                 <% if (typeof questionData !== 'undefined' && questionData.length > 0) { %>
                     <% questionData.forEach(function(question) { %>
-                        <div class="question">
+                        <div class="question" data-question-id="<%= question.id %>">
                             <div class="question-header">
                                 <h3 class="question-text"><%=question.questionText %></h3>
         

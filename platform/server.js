@@ -36,7 +36,9 @@ let context = {}
 app.get('/', async (req, res) => {
     context.error = null
 
-    const allQuestions = await models.Questions.findAll()
+    const allQuestions = await models.Questions.findAll({
+        order: [['order', 'ASC']]
+    })
     const questionData = allQuestions.map(question => question.dataValues)
     context.questionData = questionData
 
@@ -47,7 +49,16 @@ app.get('/', async (req, res) => {
 app.post('/', async (req, res) => {
     context = {}
 
-    const {questionTextInput, answer1Input, answer2Input, answer3Input, answer4Input, correctAnswerIndex, action} = req.body
+    const {
+        questionTextInput, 
+        answer1Input, 
+        answer2Input, 
+        answer3Input, 
+        answer4Input, 
+        correctAnswerIndex, 
+        action, 
+        cell_order
+    } = req.body
 
     if (action === "createQuest") {
         if (!questionTextInput || !answer1Input || !answer2Input || !answer3Input || !answer4Input) {
@@ -102,6 +113,19 @@ app.post('/', async (req, res) => {
 
             // Probably errors during question deleting
             return res.status(400).json({error: 'Failed to delete question'})
+        }
+    }
+
+    if (action === "cell_order_upgrade") {
+        console.log(12121)
+        for (const item_order of cell_order) {
+                await models.Questions.update(
+                    {order: item_order.order},
+                    {
+                        where: {id: item_order.id}
+                    }
+                )
+
         }
     }
 })

@@ -5,7 +5,7 @@ $(document).ready(function() {
             $('.correct-answer-checkbox').not(this).prop('checked', false)
         }
     })
-    
+
     // Create question ajax request
     $(".question-form").submit(function(event) {
         event.preventDefault()
@@ -50,7 +50,7 @@ $(document).ready(function() {
             }),
             success: function(response) {
                 const newQuestionHtml = `
-                    <div class="question">
+                    <div class="question" data-question-id="${response.id}">
                         <div class="question-header">
                             <h3 class="question-text">${response.questionText}</h3>
                             <form action="/" method="post" class="delete-quest-form">
