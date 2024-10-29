@@ -44,6 +44,7 @@ bot.setMyCommands([
 bot.on('message', async function(message) {
     const chatId = message.chat.id
     const userId = message.from.id
+    const messageId = message.message_id
 
     // If a user has written /start we get data about him/her
     // whether it is stored in the database or not
@@ -90,7 +91,7 @@ bot.on('message', async function(message) {
 
                 // Resetting the question index for a user
                 quizFuncs.userQuestions[chatId] = 0
-                await quizFuncs.sendQuestion(chatId, questions, bot)
+                await quizFuncs.sendQuestion(chatId, messageId, questions, bot)
             } else {
                 await bot.sendMessage(chatId, 'Passing the test is not allowed!\nOr, if you are a teacher, you cannot take the test')
             }
@@ -181,7 +182,7 @@ bot.on('callback_query', async function(query) {
     let userProgressJSON
 
     if (isCorrect) {
-        await bot.sendMessage(chatId, "That's the right answer!")
+        await bot.sendMessage(chatId, "✅✅ That's the right answer! ✅✅")
 
         questionResult[numberQuestion] = 1
         quizFuncs.userProgress.push(questionResult)
@@ -189,7 +190,7 @@ bot.on('callback_query', async function(query) {
         userProgressJSON = JSON.stringify(quizFuncs.userProgress)
         dbFunctions.updateProgress(userProgressJSON, userId)
     } else {
-        await bot.sendMessage(chatId, `Wrong answer! The correct answer: ${currentQuestion.options[currentQuestion.correct]}`)
+        await bot.sendMessage(chatId, `❌❌ Wrong answer! The correct answer: ${currentQuestion.options[currentQuestion.correct]} ❌❌`)
         
         questionResult[numberQuestion] = 0
         quizFuncs.userProgress.push(questionResult)
@@ -202,7 +203,7 @@ bot.on('callback_query', async function(query) {
 
     // Moving on to the next question
     quizFuncs.userQuestions[chatId] = userIndex + 1
-    await quizFuncs.sendQuestion(chatId, questions, bot)
+    await quizFuncs.sendQuestion(chatId, messageId, questions, bot)
 })
 
 // Teacher uploading .json file with test questions
