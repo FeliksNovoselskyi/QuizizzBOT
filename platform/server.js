@@ -36,6 +36,7 @@ let context = {}
 app.get('/', async (req, res) => {
     context.error = null
 
+    // Preparing questions in their order (in ascending order)
     const allQuestions = await models.Questions.findAll({
         order: [['order', 'ASC']]
     })
@@ -116,16 +117,15 @@ app.post('/', async (req, res) => {
         }
     }
 
+    // If the item order (in this case, QUESTIONS) has been updated
     if (action === "cell_order_upgrade") {
-        console.log(12121)
         for (const item_order of cell_order) {
-                await models.Questions.update(
-                    {order: item_order.order},
-                    {
-                        where: {id: item_order.id}
-                    }
-                )
-
+            await models.Questions.update(
+                {order: item_order.order},
+                {
+                    where: {id: item_order.id}
+                }
+            )
         }
     }
 })
