@@ -6,9 +6,11 @@ export const userQuestions = {}
 export let userProgress = []
 
 // Function for sending a question with inline buttons
-export async function sendQuestion(chatId, questions, bot) {
+export async function sendQuestion(chatId, messageId, questions, bot) {
     try {
         const userIndex = userQuestions[chatId] || 0
+
+        
     
         if (userIndex < questions.length) {
             const currentQuestion = questions[userIndex]
@@ -17,13 +19,24 @@ export async function sendQuestion(chatId, questions, bot) {
             const options = currentQuestion.options.map((option, index) => {
                 return [{text: option, callback_data: String(index)}]
             })
-    
-            // Sending a message with an inline keyboard
-            await bot.sendMessage(chatId, currentQuestion.question, {
-                reply_markup: {
-                    inline_keyboard: options
-                }
-            })
+
+            if (userIndex === 0) {
+                // Sending a message with an inline keyboard
+                await bot.sendMessage(chatId, currentQuestion.question, {
+                    reply_markup: {
+                        inline_keyboard: options
+                    }
+                })
+            } else {
+                await bot.editMessageText(currentQuestion.question, {
+                    chat_id: chatId,
+                    message_id: messageId,
+                    reply_markup: {
+                        inline_keyboard: options
+                    }
+                })
+            }
+
         } else {
             let allQuestions = userProgress.length
             let allCorrectAnswers = 0
@@ -34,7 +47,7 @@ export async function sendQuestion(chatId, questions, bot) {
                 allCorrectAnswers = allCorrectAnswers + parseInt(objectValues)
             })
 
-            await bot.sendMessage(chatId, `The test is over! \n\nNumber of questions: ${allQuestions} \n\nThe number of correct answers: ${allCorrectAnswers} \n\nThank you for your answers!`)
+            await bot.sendMessage(chatId, `✋🛑 The test is over! \n\n👉 Number of questions: ${allQuestions} \n\n👉 The number of correct answers: ${allCorrectAnswers} \n\nThank you for all your answers! 🤗`)
             
             // Resetting the status for the user
             delete userQuestions[chatId]
