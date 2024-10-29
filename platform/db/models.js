@@ -15,5 +15,6 @@ export const Questions = dataBase.sequelize.define('Questions', {
     answer2: {type: DataTypes.STRING},
     answer3: {type: DataTypes.STRING},
     answer4: {type: DataTypes.STRING},
-    correctAnswer: {type: DataTypes.INTEGER}
+    correctAnswer: {type: DataTypes.INTEGER},
+    order: {type: DataTypes.INTEGER, defaultValue: 0}
 })
