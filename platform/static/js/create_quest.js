@@ -34,10 +34,14 @@ $(document).ready(function() {
         }
 
         const correctAnswerIndex = chooseCorrectAnswer()
+        const csrfToken = $('meta[name="csrf-token"]').attr('content')
 
         $.ajax({
             url: '/',
             type: 'POST',
+            headers: {
+                'X-CSRF-Token': csrfToken,
+            },
             contentType: 'application/json',
             data: JSON.stringify({
                 questionTextInput,

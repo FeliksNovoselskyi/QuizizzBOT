@@ -19,9 +19,14 @@ $(document).ready(function () {
                         })
                     })
     
+                    const csrfToken = $('meta[name="csrf-token"]').attr('content')
+                    
                     $.ajax({
                         url: "/",
                         type: "POST",
+                        headers: {
+                            'X-CSRF-Token': csrfToken,
+                        },
                         contentType: 'application/json',
                         data: JSON.stringify({
                             cell_order: order,
