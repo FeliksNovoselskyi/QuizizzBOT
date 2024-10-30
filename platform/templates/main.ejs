@@ -45,10 +45,15 @@
                             </div>
 
                             <div class="answers">
-                                <p class="answers-text"><%=question.answer1 %></p>
-                                <p class="answers-text"><%=question.answer2 %></p>
-                                <p class="answers-text"><%=question.answer3 %></p>
-                                <p class="answers-text"><%=question.answer4 %></p>
+                                <% for (let i = 1; i <= 4; i++) { %>
+                                    <% let answerClass %>
+                                    <% if (question.correctAnswer === i) { %> 
+                                        <% answerClass = 'corr-answer' %>
+                                    <% } else { %> 
+                                        <% answerClass = 'incorr-answer' %>
+                                    <% } %>
+                                    <p class="answers-text <%=answerClass %>"><%= question[`answer${i}`] %></p>
+                                <% } %>
                             </div>
                         </div>
                     <% }) %>
