@@ -1,5 +1,7 @@
 import express from 'express'
 import dotenv from 'dotenv'
+import csrf from "csurf"
+import cookieParser from 'cookie-parser'
 
 import {fileURLToPath} from 'url'
 import {dirname, join} from 'path'
@@ -30,6 +32,17 @@ app.use('/js', express.static(join(__dirname, 'node_modules/jquery/dist')))
 app.use(express.urlencoded({extended: true}))
 app.use(express.json()) // for json parsing after ajax requests
 
+// CSRF protection
+app.use(cookieParser())
+
+const csrfProtection = csrf({cookie: true})
+app.use(csrfProtection)
+
+app.use((req, res, next) => {
+    res.locals.csrfToken = req.csrfToken()
+    next()
+})
+
 let context = {}
 
 // Render of the main page
@@ -47,7 +60,7 @@ app.get('/', async (req, res) => {
 })
 
 // Post requests on main page
-app.post('/', async (req, res) => {
+app.post('/', csrfProtection, async (req, res) => {
     context = {}
 
     const {
@@ -87,6 +100,7 @@ app.post('/', async (req, res) => {
                 answer2: answer2Input,
                 answer3: answer3Input,
                 answer4: answer4Input,
+                correctAnswer: correctAnswerIndex,
                 message: 'Question added successfully!'
             })
         }

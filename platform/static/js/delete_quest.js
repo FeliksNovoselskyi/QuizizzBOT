@@ -8,9 +8,14 @@ $(document).ready(function() {
         let $form = $(this)
         let questionId = $form.find("input[name=questionId]").val()
 
+        const csrfToken = $('meta[name="csrf-token"]').attr('content')
+
         $.ajax({
             url: '/',
             type: 'POST',
+            headers: {
+                'X-CSRF-Token': csrfToken,
+            },
             contentType: 'application/json',
             data: JSON.stringify({
                 questionId,
