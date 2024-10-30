@@ -53,6 +53,16 @@ $(document).ready(function() {
                 action: 'createQuest'
             }),
             success: function(response) {
+                function getCorrectAnswer(index) {
+                    console.log(response.correctAnswer)
+                    console.log(index)
+                    if (response.correctAnswer === index) {
+                        return 'corr-answer'
+                    } else {
+                        return 'incorr-answer'
+                    }
+                }
+
                 const newQuestionHtml = `
                     <div class="question" data-question-id="${response.id}">
                         <div class="question-header">
@@ -63,10 +73,12 @@ $(document).ready(function() {
                             </form>
                         </div>
                         <div class="answers">
-                            <p class="answers-text">${response.answer1}</p>
-                            <p class="answers-text">${response.answer2}</p>
-                            <p class="answers-text">${response.answer3}</p>
-                            <p class="answers-text">${response.answer4}</p>
+                            
+
+                            <p class="answers-text ${getCorrectAnswer(0)}">${response.answer1}</p>
+                            <p class="answers-text ${getCorrectAnswer(1)}">${response.answer2}</p>
+                            <p class="answers-text ${getCorrectAnswer(2)}">${response.answer3}</p>
+                            <p class="answers-text ${getCorrectAnswer(3)}">${response.answer4}</p>
                         </div>
                     </div>
                 `

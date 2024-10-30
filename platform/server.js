@@ -100,6 +100,7 @@ app.post('/', csrfProtection, async (req, res) => {
                 answer2: answer2Input,
                 answer3: answer3Input,
                 answer4: answer4Input,
+                correctAnswer: correctAnswerIndex,
                 message: 'Question added successfully!'
             })
         }
