@@ -13,16 +13,14 @@
 ![AJAX](https://img.shields.io/badge/AJAX-00A7E1?style=for-the-badge&logo=ajax&logoColor=white)
 ![Fetch API](https://img.shields.io/badge/Fetch%20API-Enabled-007acc?style=for-the-badge&logo=javascript)
 ![Async](https://img.shields.io/badge/Async-Enabled-007acc?style=for-the-badge&logo=javascript)
-
-
 ![Open Source](https://img.shields.io/badge/Open%20Source-%E2%9D%A4-red?style=for-the-badge)
 
 ## About
-A two-part project
+A ***two-part*** project
 
-Platform - provides the ability to build a quiz on the site and get an output `.json` file with quiz info that the bot needs to start the quiz
+**Platform** - provides the ability to build a quiz on the site and get an output `.json` file with quiz info that the bot needs to start the quiz
 
-Bot - provides access levels for teacher and student, teacher is able to upload `.json` files and start the quiz. At the time the student is able to take it
+**Bot** - provides access levels for *teacher* and *student*, *teacher* is able to upload `.json` files and start the quiz. At the time the *student* is able to take it
 
 ---
 ## Installation
@@ -33,18 +31,18 @@ Bot - provides access levels for teacher and student, teacher is able to upload 
 ```
 git clone https://github.com/FeliksNovoselskyi/QuizizzBOT.git
 ```
-2. Choose directory of the project
+2. Choose main directory of the project
 3. Install packages
 ```
 npm install
 ```
 4. Create your own `.env` file in main directory
 
-5. Write the information required for the bot and platform here as in the `.env-sample` file in main directory
+5. Write the information required for the **bot** and **platform** here as in the `.env-sample` file in main directory
 
 6. Then choose what project do you wanna to start
 ### BOT
-7. Choose Telegram BOT directiory
+7. Choose `/bot`
 ```
 cd bot
 ```
@@ -55,7 +53,7 @@ node index.js
 ```
 
 ### PLATFORM
-7. Choose Platform directiory
+7. Choose `/platform`
 ```
 cd platform
 ```
@@ -68,7 +66,7 @@ node server.js
 ### Importantly
 There is an `questions.json` file in the project directory
 
-You can use it to create a quiz when the bot asks you to upload a `.json` file with the questions for the quiz
+You can use it to create a quiz when the **bot** asks you to upload a `.json` file with the questions for the quiz
 
 ---
 ## Technologies Used
@@ -116,6 +114,6 @@ graph TD;
 * [FigJam](https://www.figma.com/board/AZD4TR2pNnDRlWKSJgVxKp/QuizizzBOT-Structure?node-id=0-1&t=FxYQlPNAcjUQaIe8-1)
 
 ---
+## Want to get back to the top?
 >[Back to top](#quizizz-telegram-bot)
 # Enjoy using it!
-# Enjoy exploring it!
