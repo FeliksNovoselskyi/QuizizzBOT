@@ -20,12 +20,19 @@
     <script src="../static/js/create_quest.js" defer></script>
     <script src="../static/js/delete_quest.js" defer></script>
     <script src="../static/js/sortable_elements.js" defer></script>
+    
+    <script src="../static/js/preload_screen.js" defer></script>
 
     <!-- If you wanna use fetch api -->
     <!-- <script src="../static/js/fetch_api/create_questFetch.js" defer></script>
     <script src="../static/js/fetch_api/delete_questFetch.js" defer></script> -->
 </head>
 <body>
+    <div id="loading-screen">
+        <div class="loader"></div>
+        <p>Loading...</p>
+    </div>
+
     <main>
         <div id="questions-block">            
             <button id="add-button" data-bs-toggle="modal" data-bs-target="#exampleModal">Add question</button>
