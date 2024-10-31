@@ -96,8 +96,17 @@ You can use it to create a quiz when the bot asks you to upload a `.json` file w
 >[Back to top](#quizizz-telegram-bot)
 ```mermaid
 graph TD;
-    A[QuizizzBOT] --> B[bot] --> C[Telegram bot acting as a quiz organiser, ensuring their uploading and launching];
-    A --> D[platform] --> E[A web application to create a quiz to be sent to a bot];
+    A[**QuizizzBOT**] --> B[**bot** 
+    Telegram bot acting as a quiz organiser, ensuring their uploading and launching] --> b1[*modules*];
+    B --> b2[*db*];
+    B --> b3[***questions.json***];
+    B --> b4[***index.js***];
+
+    A --> D[**platform**
+    A web application to create a quiz to be sent to a bot] --> d1[*templates*];
+    D --> d2[*static*];
+    D --> d3[*db*];
+    D --> d4[***server.js***];
 ```
 
 ---
