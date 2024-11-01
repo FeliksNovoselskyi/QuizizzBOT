@@ -1,5 +1,5 @@
 // My scripts
-import * as dbFunctions from './db/db_functions.js'
+import * as dbFunctions from '../db/db_functions.js'
 
 // Function that handles login as a teacher, with password verification
 export async function teacherLogin(chatId, bot, messageId, userId, username, firstName, lastName, changeToTeacherRole) {

@@ -9,8 +9,8 @@ import {fileURLToPath} from 'url'
 // My scripts
 import * as dbFunctions from './db/db_functions.js'
 
-import * as quizFuncs from './quiz-functional.js'
-import * as botFuncs from './bot-functions.js'
+import * as quizFuncs from './modules/quiz-functional.js'
+import * as botFuncs from './modules/bot-functions.js'
 
 dotenv.config({path: '../.env'})
 
@@ -25,8 +25,31 @@ const uploadFilesDir = path.join(__dirname, 'uploaded_files')
 
 // Variable to which the questions will be written after parsing the file.json
 let questions = {}
+// Variable storing the text of the message with the result of the answer to the question
+// is used when checking for a match between a new text and an existing text.
+let currentMessageText = ""
 
+// Variables for quiz functionality (quiz in one message)
+export const answerMsgIdState = {
+    answerMessageId: null
+}
 export const completedQuizzes = {}
+
+// Bot message (only huge messages)
+let helpMessage = `
+Hi! 👋🤘
+Do you need some help? 🤔
+Here's a list of my commands that can help you:
+
+/start - starts your communication with me
+/help - will give you a list of commands that can help you
+/info - will give you information about yourself, your status, whether you are registered or not
+/change_role - allows you to change your role, for example from student to teacher
+/can_start_quiz - command that allows you to pass quiz. Available only to teacher 👨‍🏫
+/quiz - command to start a quiz. Available only to the student 🧑‍🎓
+
+Also remember that you always have a menu of my commands that can help you 🤗
+`
 
 // Flags
 let canStart = false
@@ -34,6 +57,8 @@ let addedJsonFile = false
 
 // Create a menu of commands for the bot
 bot.setMyCommands([
+    {command: '/start', description: '❕ Start communicating with the bot'},
+    {command: '/help', description: '❕ Get help from the bot'},
     {command: '/info', description: '❕ Get information about you'},
     {command: '/change_role', description: '❕ Change your role'},
     {command: '/can_start_quiz', description: '❕ Provide an opportunity to take the test (teacher)'},
@@ -78,6 +103,11 @@ bot.on('message', async function(message) {
         })
     }
 
+    // If the user wants to take help with bot commands
+    if (message.text === '/help')  {
+        await bot.sendMessage(chatId, helpMessage)
+    }
+
     // Command to change role
     if (message.text === '/change_role')  {
         botFuncs.checkUserRole(userId, bot, chatId)
@@ -113,6 +143,19 @@ bot.on('message', async function(message) {
                 await bot.sendMessage(chatId, '❗️ Only the teacher has the right to start the quiz ❗️')
             }
         })
+    }
+
+    if (
+    !message.document &&
+    message.text !== process.env.teacherPassword &&
+    message.text !== '/start' &&
+    message.text !== '/info' &&
+    message.text !== '/help' &&
+    message.text !== '/change_role' &&
+    message.text !== '/quiz' &&
+    message.text !== '/can_start_quiz'
+        ) {
+        await bot.sendMessage(chatId, helpMessage)
     }
 })
 
@@ -178,26 +221,62 @@ bot.on('callback_query', async function(query) {
     const numberQuestion = quizFuncs.userQuestions[userId]
 
     let questionResult = {}
-
     let userProgressJSON
 
     if (isCorrect) {
-        await bot.sendMessage(chatId, "✅ That's the right answer! ✅")
-
+        const correctAnswerText = "✅ That's the right answer! ✅"
+        
         questionResult[numberQuestion] = 1
         quizFuncs.userProgress.push(questionResult)
 
+        // Determining whether a reply message has been sent or not
+        // it's done by its message_id
+        if (answerMsgIdState.answerMessageId) {
+            // Check if the existing text matches the text that will be added
+            // If they match, an error will occur
+            if (currentMessageText !== correctAnswerText) {
+                await bot.editMessageText(correctAnswerText, {
+                    chat_id: chatId,
+                    message_id: answerMsgIdState.answerMessageId
+                })
+                currentMessageText = correctAnswerText
+            }
+        } else {
+            const sentMessage = await bot.sendMessage(chatId, correctAnswerText)
+            answerMsgIdState.answerMessageId = sentMessage.message_id
+            currentMessageText = correctAnswerText
+        }
+        
         userProgressJSON = JSON.stringify(quizFuncs.userProgress)
         dbFunctions.updateProgress(userProgressJSON, userId)
     } else {
-        await bot.sendMessage(chatId, `❌ Wrong answer! The correct answer: ${currentQuestion.options[currentQuestion.correct]} ❌`)
+        const wrongAnswerText = `❌ Wrong answer! The correct answer: ${currentQuestion.options[currentQuestion.correct]} ❌`
         
         questionResult[numberQuestion] = 0
         quizFuncs.userProgress.push(questionResult)
 
+        // Determining whether a reply message has been sent or not
+        // it's done by its message_id
+        if (answerMsgIdState.answerMessageId) {
+            // Check if the existing text matches the text that will be added
+            // If they match, an error will occur
+            if (currentMessageText !== wrongAnswerText) {
+                await bot.editMessageText(wrongAnswerText, {
+                    chat_id: chatId,
+                    message_id: answerMsgIdState.answerMessageId
+                })
+                currentMessageText = wrongAnswerText
+            }
+        } else {
+            const sentMessage = await bot.sendMessage(chatId, wrongAnswerText)
+            answerMsgIdState.answerMessageId = sentMessage.message_id
+            currentMessageText = wrongAnswerText
+        }
+        
         userProgressJSON = JSON.stringify(quizFuncs.userProgress)
         dbFunctions.updateProgress(userProgressJSON, userId)
-    }
+    } 
+    
 
     await bot.editMessageReplyMarkup({inline_keyboard: []}, {chat_id: chatId, message_id: messageId})
 
