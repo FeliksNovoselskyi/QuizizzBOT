@@ -25,6 +25,8 @@ const uploadFilesDir = path.join(__dirname, 'uploaded_files')
 
 // Variable to which the questions will be written after parsing the file.json
 let questions = {}
+
+// Variables for quiz functionality (in one message)
 let answerMessageId = null
 let currentMessageText = ""
 
@@ -180,7 +182,6 @@ bot.on('callback_query', async function(query) {
     const numberQuestion = quizFuncs.userQuestions[userId]
 
     let questionResult = {}
-
     let userProgressJSON
 
     if (isCorrect) {
@@ -189,9 +190,12 @@ bot.on('callback_query', async function(query) {
         questionResult[numberQuestion] = 1
         quizFuncs.userProgress.push(questionResult)
 
+
+        // Determining whether a reply message has been sent or not
+        // it's done by its message_id
         if (answerMessageId) {
-            // console.log(currentMessageText)
-            // console.log(correctAnswerText)
+            // Check if the existing text matches the text that will be added
+            // If they match, an error will occur
             if (currentMessageText !== correctAnswerText) {
                 await bot.editMessageText(correctAnswerText, {
                     chat_id: chatId,
@@ -205,7 +209,6 @@ bot.on('callback_query', async function(query) {
             currentMessageText = correctAnswerText
         }
         
-        console.log(11111)
         userProgressJSON = JSON.stringify(quizFuncs.userProgress)
         dbFunctions.updateProgress(userProgressJSON, userId)
     } else {
@@ -214,9 +217,11 @@ bot.on('callback_query', async function(query) {
         questionResult[numberQuestion] = 0
         quizFuncs.userProgress.push(questionResult)
 
+        // Determining whether a reply message has been sent or not
+        // it's done by its message_id
         if (answerMessageId) {
-            // console.log(currentMessageText)
-            // console.log(wrongAnswerText)
+            // Check if the existing text matches the text that will be added
+            // If they match, an error will occur
             if (currentMessageText !== wrongAnswerText) {
                 await bot.editMessageText(wrongAnswerText, {
                     chat_id: chatId,
@@ -230,7 +235,6 @@ bot.on('callback_query', async function(query) {
             currentMessageText = wrongAnswerText
         }
         
-        console.log(11111)
         userProgressJSON = JSON.stringify(quizFuncs.userProgress)
         dbFunctions.updateProgress(userProgressJSON, userId)
     } 
