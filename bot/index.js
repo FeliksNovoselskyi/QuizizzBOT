@@ -26,7 +26,7 @@ const uploadFilesDir = path.join(__dirname, 'uploaded_files')
 // Variable to which the questions will be written after parsing the file.json
 let questions = {}
 
-// Variables for quiz functionality (in one message)
+// Variables for quiz functionality (quiz in one message)
 export const answerMsgIdState = {
     answerMessageId: null
 }
@@ -84,6 +84,11 @@ bot.on('message', async function(message) {
         })
     }
 
+    // If the user wants to take help with bot commands
+    if (message.text === '/help')  {
+        await bot.sendMessage(chatId, "Hi! 👋🤘\nDo you need some help? 🤔\nHere's a list of my commands that can help you:\n\n/start - starts your communication with me\n/help - will give you a list of commands that can help you\n/info - will give you information about yourself, your status, whether you are registered or not.\n/change_role - allows you to change your role, for example from student to teacher.\n/can_start_quiz - command that allows you to pass quiz. Available only to teacher 👨‍🏫\n/quiz - command to start a quiz. Available only to the student 🧑‍🎓\n\nAlso remember that you always have a menu of my commands that can help you 🤗")
+    }
+
     // Command to change role
     if (message.text === '/change_role')  {
         botFuncs.checkUserRole(userId, bot, chatId)
@@ -119,6 +124,16 @@ bot.on('message', async function(message) {
                 await bot.sendMessage(chatId, '❗️ Only the teacher has the right to start the quiz ❗️')
             }
         })
+    }
+
+    if (message.text !== '/start' &&
+        message.text !== '/info' &&
+        message.text !== '/help' &&
+        message.text !== '/change_role' &&
+        message.text !== '/quiz' &&
+        message.text !== '/can_start_quiz'
+        ) {
+        await bot.sendMessage(chatId, "Hi! 👋🤘\nDo you need some help? 🤔\nHere's a list of my commands that can help you:\n\n/start - starts your communication with me\n/help - will give you a list of commands that can help you\n/info - will give you information about yourself, your status, whether you are registered or not.\n/change_role - allows you to change your role, for example from student to teacher.\n/can_start_quiz - command that allows you to pass quiz. Available only to teacher 👨‍🏫\n/quiz - command to start a quiz. Available only to the student 🧑‍🎓\n\nAlso remember that you always have a menu of my commands that can help you 🤗")
     }
 })
 
