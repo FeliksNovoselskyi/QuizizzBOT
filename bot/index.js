@@ -57,6 +57,8 @@ let addedJsonFile = false
 
 // Create a menu of commands for the bot
 bot.setMyCommands([
+    {command: '/start', description: '❕ Start communicating with the bot'},
+    {command: '/help', description: '❕ Get help from the bot'},
     {command: '/info', description: '❕ Get information about you'},
     {command: '/change_role', description: '❕ Change your role'},
     {command: '/can_start_quiz', description: '❕ Provide an opportunity to take the test (teacher)'},
