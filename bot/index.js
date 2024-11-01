@@ -9,8 +9,8 @@ import {fileURLToPath} from 'url'
 // My scripts
 import * as dbFunctions from './db/db_functions.js'
 
-import * as quizFuncs from './quiz-functional.js'
-import * as botFuncs from './bot-functions.js'
+import * as quizFuncs from './modules/quiz-functional.js'
+import * as botFuncs from './modules/bot-functions.js'
 
 dotenv.config({path: '../.env'})
 
