@@ -25,6 +25,8 @@ const uploadFilesDir = path.join(__dirname, 'uploaded_files')
 
 // Variable to which the questions will be written after parsing the file.json
 let questions = {}
+let answerMessageId = null
+let currentMessageText = ""
 
 export const completedQuizzes = {}
 
@@ -182,22 +184,57 @@ bot.on('callback_query', async function(query) {
     let userProgressJSON
 
     if (isCorrect) {
-        await bot.sendMessage(chatId, "✅ That's the right answer! ✅")
-
+        const correctAnswerText = "✅ That's the right answer! ✅"
+        
         questionResult[numberQuestion] = 1
         quizFuncs.userProgress.push(questionResult)
 
+        if (answerMessageId) {
+            // console.log(currentMessageText)
+            // console.log(correctAnswerText)
+            if (currentMessageText !== correctAnswerText) {
+                await bot.editMessageText(correctAnswerText, {
+                    chat_id: chatId,
+                    message_id: answerMessageId
+                })
+                currentMessageText = correctAnswerText
+            }
+        } else {
+            const sentMessage = await bot.sendMessage(chatId, correctAnswerText)
+            answerMessageId = sentMessage.message_id
+            currentMessageText = correctAnswerText
+        }
+        
+        console.log(11111)
         userProgressJSON = JSON.stringify(quizFuncs.userProgress)
         dbFunctions.updateProgress(userProgressJSON, userId)
     } else {
-        await bot.sendMessage(chatId, `❌ Wrong answer! The correct answer: ${currentQuestion.options[currentQuestion.correct]} ❌`)
+        const wrongAnswerText = `❌ Wrong answer! The correct answer: ${currentQuestion.options[currentQuestion.correct]} ❌`
         
         questionResult[numberQuestion] = 0
         quizFuncs.userProgress.push(questionResult)
 
+        if (answerMessageId) {
+            // console.log(currentMessageText)
+            // console.log(wrongAnswerText)
+            if (currentMessageText !== wrongAnswerText) {
+                await bot.editMessageText(wrongAnswerText, {
+                    chat_id: chatId,
+                    message_id: answerMessageId
+                })
+                currentMessageText = wrongAnswerText
+            }
+        } else {
+            const sentMessage = await bot.sendMessage(chatId, wrongAnswerText)
+            answerMessageId = sentMessage.message_id
+            currentMessageText = wrongAnswerText
+        }
+        
+        console.log(11111)
         userProgressJSON = JSON.stringify(quizFuncs.userProgress)
         dbFunctions.updateProgress(userProgressJSON, userId)
-    }
+    } 
+    
 
     await bot.editMessageReplyMarkup({inline_keyboard: []}, {chat_id: chatId, message_id: messageId})
 
