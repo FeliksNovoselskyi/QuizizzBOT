@@ -27,7 +27,9 @@ const uploadFilesDir = path.join(__dirname, 'uploaded_files')
 let questions = {}
 
 // Variables for quiz functionality (in one message)
-let answerMessageId = null
+export const answerMsgIdState = {
+    answerMessageId: null
+}
 let currentMessageText = ""
 
 export const completedQuizzes = {}
@@ -190,22 +192,21 @@ bot.on('callback_query', async function(query) {
         questionResult[numberQuestion] = 1
         quizFuncs.userProgress.push(questionResult)
 
-
         // Determining whether a reply message has been sent or not
         // it's done by its message_id
-        if (answerMessageId) {
+        if (answerMsgIdState.answerMessageId) {
             // Check if the existing text matches the text that will be added
             // If they match, an error will occur
             if (currentMessageText !== correctAnswerText) {
                 await bot.editMessageText(correctAnswerText, {
                     chat_id: chatId,
-                    message_id: answerMessageId
+                    message_id: answerMsgIdState.answerMessageId
                 })
                 currentMessageText = correctAnswerText
             }
         } else {
             const sentMessage = await bot.sendMessage(chatId, correctAnswerText)
-            answerMessageId = sentMessage.message_id
+            answerMsgIdState.answerMessageId = sentMessage.message_id
             currentMessageText = correctAnswerText
         }
         
@@ -219,19 +220,19 @@ bot.on('callback_query', async function(query) {
 
         // Determining whether a reply message has been sent or not
         // it's done by its message_id
-        if (answerMessageId) {
+        if (answerMsgIdState.answerMessageId) {
             // Check if the existing text matches the text that will be added
             // If they match, an error will occur
             if (currentMessageText !== wrongAnswerText) {
                 await bot.editMessageText(wrongAnswerText, {
                     chat_id: chatId,
-                    message_id: answerMessageId
+                    message_id: answerMsgIdState.answerMessageId
                 })
                 currentMessageText = wrongAnswerText
             }
         } else {
             const sentMessage = await bot.sendMessage(chatId, wrongAnswerText)
-            answerMessageId = sentMessage.message_id
+            answerMsgIdState.answerMessageId = sentMessage.message_id
             currentMessageText = wrongAnswerText
         }
         

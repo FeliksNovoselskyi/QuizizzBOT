@@ -1,5 +1,6 @@
 // My scripts
 import * as indexFile from '../index.js'
+import {answerMsgIdState} from '../index.js'
 
 // Indexes of current issues for each user
 export const userQuestions = {}
@@ -9,8 +10,6 @@ export let userProgress = []
 export async function sendQuestion(chatId, messageId, questions, bot) {
     try {
         const userIndex = userQuestions[chatId] || 0
-
-        
     
         if (userIndex < questions.length) {
             const currentQuestion = questions[userIndex]
@@ -52,6 +51,7 @@ export async function sendQuestion(chatId, messageId, questions, bot) {
             // Resetting the status for the user
             delete userQuestions[chatId]
             userProgress = []
+            answerMsgIdState.answerMessageId = null
             indexFile.completedQuizzes[chatId] = true
         }
     } catch (error) {
