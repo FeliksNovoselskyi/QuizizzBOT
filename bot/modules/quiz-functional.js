@@ -11,7 +11,6 @@ export let userProgress = []
 
 // Function for sending a question with inline buttons
 export async function sendQuestion(chatId, messageId, questions, bot) {
-    // console.log(questions)
     try {
         const userIndex = userQuestions[chatId] || 0
     
@@ -55,15 +54,14 @@ export async function sendQuestion(chatId, messageId, questions, bot) {
             // Resetting the status for the user
             delete userQuestions[chatId]
             userProgress = []
-            indexFile.addedFile.addedJsonFile = false
             answerMsgIdState.answerMessageId = null
-            indexFile.completedQuizzes[chatId] = true
 
+            indexFile.completedQuizzes[chatId] = true
+            indexFile.addedFile.addedJsonFile = false
+            
             const copiedFileName = indexFile.jsonFileName[chatId]
 
-            console.log(copiedFileName)
-            console.log(indexFile.__dirname)
-
+            // Deleting a copy of the .json file with questions from the teacher
             const filePath = path.join(indexFile.__dirname, 'uploaded_files', copiedFileName)
             fs.unlink(filePath, (error) => {
                 if (error) {
