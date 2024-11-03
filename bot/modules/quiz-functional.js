@@ -1,3 +1,6 @@
+import fs from 'fs'
+import path from 'path'
+
 // My scripts
 import * as indexFile from '../index.js'
 import {answerMsgIdState} from '../index.js'
@@ -8,6 +11,7 @@ export let userProgress = []
 
 // Function for sending a question with inline buttons
 export async function sendQuestion(chatId, messageId, questions, bot) {
+    // console.log(questions)
     try {
         const userIndex = userQuestions[chatId] || 0
     
@@ -51,8 +55,21 @@ export async function sendQuestion(chatId, messageId, questions, bot) {
             // Resetting the status for the user
             delete userQuestions[chatId]
             userProgress = []
+            indexFile.addedFile.addedJsonFile = false
             answerMsgIdState.answerMessageId = null
             indexFile.completedQuizzes[chatId] = true
+
+            const copiedFileName = indexFile.jsonFileName[chatId]
+
+            console.log(copiedFileName)
+            console.log(indexFile.__dirname)
+
+            const filePath = path.join(indexFile.__dirname, 'uploaded_files', copiedFileName)
+            fs.unlink(filePath, (error) => {
+                if (error) {
+                    console.error(error)
+                }
+            })
         }
     } catch (error) {
         console.log(error)

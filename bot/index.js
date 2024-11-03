@@ -18,7 +18,7 @@ const botToken = process.env.token
 const bot = new telegramApi(botToken, {polling: true})
 
 const __filename = fileURLToPath(import.meta.url)
-const __dirname = dirname(__filename)
+export const __dirname = dirname(__filename)
 
 // Get the directory where we will save json files sent by the user
 const uploadFilesDir = path.join(__dirname, 'uploaded_files') 
@@ -34,6 +34,7 @@ export const answerMsgIdState = {
     answerMessageId: null
 }
 export const completedQuizzes = {}
+export const jsonFileName = {}
 
 // Bot message (only huge messages)
 let helpMessage = `
@@ -53,7 +54,9 @@ Also remember that you always have a menu of my commands that can help you 🤗
 
 // Flags
 let canStart = false
-let addedJsonFile = false
+export const addedFile = {
+    addedJsonFile: false
+}
 export const isTeacherLogin = {
     isLogin: false
 }
@@ -142,9 +145,10 @@ bot.on('message', async function(message) {
     if (message.text === '/can_start_quiz') {
         dbFunctions.getUserById(userId).then(async (user) => {
             if (user.role === 'teacher') {
-                if (addedJsonFile) {
+                if (addedFile.addedJsonFile) {
                     canStart = true
                     completedQuizzes[chatId] = false
+                    console.log(completedQuizzes)
                     bot.sendMessage(chatId, '🔥👍 You have successfully created a quiz!\n🤔 Now your students can start quiz with command /quiz')
                 } else {
                     bot.sendMessage(chatId, '❗️ You did not upload a .json file with questions ❗️')
@@ -318,22 +322,36 @@ bot.on('document', async function(message) {
             // then save this file in the /uploaded_files/
             await bot.downloadFile(fileId, uploadFilesDir)
 
-            // Read the contents of the file at the specified path
-            fs.readFile(localFilePath, 'utf8', function(error, data) {
-                if (error) {
-                    return bot.sendMessage(chatId, '❗️ Error during reading a file ❗️')
+            fs.readdir(uploadFilesDir, (err, files) => {
+                if (err) {
+                    return bot.sendMessage(chatId, '❗️ Error reading the directory ❗️')
                 }
 
-                try {
-                    // Try parsing the contents of the file
-                    const json_file = JSON.parse(data)
-                    questions = json_file.questions
+                const copiedFileName = files.find(file => file.startsWith('file_'))
+                const copiedFilePath = path.join(uploadFilesDir, copiedFileName)
 
-                    bot.sendMessage(chatId, '🔥👍 The file with questions has been uploaded successfully! To start the quiz, please write /can_start_quiz')
-                    addedJsonFile = true
-                } catch {
-                    bot.sendMessage(chatId, '❗️ Error parsing JSON file. Check the file format is correct ❗️')
-                }
+                console.log(`Копия файла сохранена под именем: ${copiedFileName}`)
+
+                // Read the contents of the file at the specified path
+                fs.readFile(localFilePath, 'utf8', function(error, data) {
+                    if (error) {
+                        return bot.sendMessage(chatId, '❗️ Error during reading a file ❗️')
+                    }
+
+                    try {
+                        // Try parsing the contents of the file
+                        const json_file = JSON.parse(data)
+                        questions = json_file.questions
+
+                        jsonFileName[chatId] = copiedFileName
+                        
+
+                        bot.sendMessage(chatId, '🔥👍 The file with questions has been uploaded successfully! To start the quiz, please write /can_start_quiz')
+                        addedFile.addedJsonFile = true
+                    } catch {
+                        bot.sendMessage(chatId, '❗️ Error parsing JSON file. Check the file format is correct ❗️')
+                    }
+                })
             })
         })
     } else {
