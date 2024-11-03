@@ -1,3 +1,6 @@
+import fs from 'fs'
+import path from 'path'
+
 // My scripts
 import * as indexFile from '../index.js'
 import {answerMsgIdState} from '../index.js'
@@ -52,7 +55,19 @@ export async function sendQuestion(chatId, messageId, questions, bot) {
             delete userQuestions[chatId]
             userProgress = []
             answerMsgIdState.answerMessageId = null
+
             indexFile.completedQuizzes[chatId] = true
+            indexFile.addedFile.addedJsonFile = false
+            
+            const copiedFileName = indexFile.jsonFileName[chatId]
+
+            // Deleting a copy of the .json file with questions from the teacher
+            const filePath = path.join(indexFile.__dirname, 'uploaded_files', copiedFileName)
+            fs.unlink(filePath, (error) => {
+                if (error) {
+                    console.error(error)
+                }
+            })
         }
     } catch (error) {
         console.log(error)

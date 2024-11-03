@@ -18,7 +18,7 @@ const botToken = process.env.token
 const bot = new telegramApi(botToken, {polling: true})
 
 const __filename = fileURLToPath(import.meta.url)
-const __dirname = dirname(__filename)
+export const __dirname = dirname(__filename)
 
 // Get the directory where we will save json files sent by the user
 const uploadFilesDir = path.join(__dirname, 'uploaded_files') 
@@ -34,6 +34,7 @@ export const answerMsgIdState = {
     answerMessageId: null
 }
 export const completedQuizzes = {}
+export const jsonFileName = {}
 
 // Bot message (only huge messages)
 let helpMessage = `
@@ -53,7 +54,12 @@ Also remember that you always have a menu of my commands that can help you 🤗
 
 // Flags
 let canStart = false
-let addedJsonFile = false
+export const addedFile = {
+    addedJsonFile: false
+}
+export const isTeacherLogin = {
+    isLogin: false
+}
 
 // Create a menu of commands for the bot
 bot.setMyCommands([
@@ -61,8 +67,8 @@ bot.setMyCommands([
     {command: '/help', description: '❕ Get help from the bot'},
     {command: '/info', description: '❕ Get information about you'},
     {command: '/change_role', description: '❕ Change your role'},
-    {command: '/can_start_quiz', description: '❕ Provide an opportunity to take the test (teacher)'},
-    {command: '/quiz', description: '❕ Start taking the test if given the opportunity to do so (student)'},
+    {command: '/can_start_quiz', description: '❕ Provide an opportunity to take the quiz (teacher)'},
+    {command: '/quiz', description: '❕ Start taking the quiz if given the opportunity to do so (student)'},
 ])
 
 // User messages
@@ -110,10 +116,17 @@ bot.on('message', async function(message) {
 
     // Command to change role
     if (message.text === '/change_role')  {
-        botFuncs.checkUserRole(userId, bot, chatId)
+        dbFunctions.getUserById(userId).then(async (user) => {
+
+            if (user) {
+                botFuncs.checkUserRole(userId, bot, chatId)
+            } else {
+                await bot.sendMessage(chatId, '❗️ You are not logged into this bot! ❗️')
+            }
+        })
     }
 
-    // If the user wants to start taking the test
+    // If the user wants to start taking the quiz
     if (message.text === '/quiz') {
         dbFunctions.getUserById(userId).then(async (user) => {
             if (user.role === 'student' && canStart && !completedQuizzes[chatId]) {
@@ -123,16 +136,16 @@ bot.on('message', async function(message) {
                 quizFuncs.userQuestions[chatId] = 0
                 await quizFuncs.sendQuestion(chatId, messageId, questions, bot)
             } else {
-                await bot.sendMessage(chatId, '❗️ Passing the test is not allowed!\n❗️ Or, if you are a teacher, you cannot take the test')
+                await bot.sendMessage(chatId, '❗️ Passing the quiz is not allowed!\n❗️ Or, if you are a teacher, you cannot take the quiz')
             }
         })
     }
 
-    // Command authorising to start the test (available only to the teacher)
+    // Command authorising to start the quiz (available only to the teacher)
     if (message.text === '/can_start_quiz') {
         dbFunctions.getUserById(userId).then(async (user) => {
             if (user.role === 'teacher') {
-                if (addedJsonFile) {
+                if (addedFile.addedJsonFile) {
                     canStart = true
                     completedQuizzes[chatId] = false
                     bot.sendMessage(chatId, '🔥👍 You have successfully created a quiz!\n🤔 Now your students can start quiz with command /quiz')
@@ -147,7 +160,7 @@ bot.on('message', async function(message) {
 
     if (
     !message.document &&
-    message.text !== process.env.teacherPassword &&
+    !isTeacherLogin.isLogin &&
     message.text !== '/start' &&
     message.text !== '/info' &&
     message.text !== '/help' &&
@@ -182,12 +195,14 @@ bot.on('callback_query', async function(query) {
 
     // Sign in as a teacher
     if (query.data === 'login_teacher') {
+        isTeacherLogin.isLogin = true
         botFuncs.teacherLogin(chatId, bot, messageId, userId, username, firstName, lastName, false)
         return
     }
 
     // Role change from student to teacher
     if (query.data === 'switch_to_teacher') {
+        isTeacherLogin.isLogin = true
         botFuncs.teacherLogin(chatId, bot, messageId, userId, username, firstName, lastName, true)
         return
     } 
@@ -285,7 +300,7 @@ bot.on('callback_query', async function(query) {
     await quizFuncs.sendQuestion(chatId, messageId, questions, bot)
 })
 
-// Teacher uploading .json file with test questions
+// Teacher uploading .json file with quiz questions
 bot.on('document', async function(message) {
     const chatId = message.chat.id
     const userId = message.from.id
@@ -306,22 +321,36 @@ bot.on('document', async function(message) {
             // then save this file in the /uploaded_files/
             await bot.downloadFile(fileId, uploadFilesDir)
 
-            // Read the contents of the file at the specified path
-            fs.readFile(localFilePath, 'utf8', function(error, data) {
+            // Read the directory with copies of the files uploaded by the teacher
+            // to get the name of the newly downloaded file
+            // and at the end of the quiz, delete this .json file
+            fs.readdir(uploadFilesDir, (error, files) => {
                 if (error) {
-                    return bot.sendMessage(chatId, '❗️ Error during reading a file ❗️')
+                    return bot.sendMessage(chatId, '❗️ Error reading the directory ❗️')
                 }
 
-                try {
-                    // Try parsing the contents of the file
-                    const json_file = JSON.parse(data)
-                    questions = json_file.questions
+                const copiedFileName = files.find(file => file.startsWith('file_'))
 
-                    bot.sendMessage(chatId, '🔥👍 The file with questions has been uploaded successfully! To start the quiz, please write /can_start_quiz')
-                    addedJsonFile = true
-                } catch {
-                    bot.sendMessage(chatId, '❗️ Error parsing JSON file. Check the file format is correct ❗️')
-                }
+                // Read the contents of the file at the specified path
+                fs.readFile(localFilePath, 'utf8', function(error, data) {
+                    if (error) {
+                        return bot.sendMessage(chatId, '❗️ Error during reading a file ❗️')
+                    }
+
+                    try {
+                        // Try parsing the contents of the file
+                        const json_file = JSON.parse(data)
+                        questions = json_file.questions
+
+                        jsonFileName[chatId] = copiedFileName
+                        
+
+                        bot.sendMessage(chatId, '🔥👍 The file with questions has been uploaded successfully! To start the quiz, please write /can_start_quiz')
+                        addedFile.addedJsonFile = true
+                    } catch {
+                        bot.sendMessage(chatId, '❗️ Error parsing JSON file. Check the file format is correct ❗️')
+                    }
+                })
             })
         })
     } else {
