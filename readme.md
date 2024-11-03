@@ -47,7 +47,13 @@ npm install
 cd bot
 ```
 
-8. Run the project (run `index.js`)
+8. Create the `/uploaded_files` directory
+(copies of the quiz files you upload as a teacher will be saved there)
+```
+mkdir uploaded_files
+```
+
+9. Run the project (run `index.js`)
 ```
 node index.js
 ```
