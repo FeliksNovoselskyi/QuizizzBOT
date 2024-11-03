@@ -54,6 +54,9 @@ Also remember that you always have a menu of my commands that can help you 🤗
 // Flags
 let canStart = false
 let addedJsonFile = false
+export const isTeacherLogin = {
+    isLogin: false
+}
 
 // Create a menu of commands for the bot
 bot.setMyCommands([
@@ -110,7 +113,14 @@ bot.on('message', async function(message) {
 
     // Command to change role
     if (message.text === '/change_role')  {
-        botFuncs.checkUserRole(userId, bot, chatId)
+        dbFunctions.getUserById(userId).then(async (user) => {
+
+            if (user) {
+                botFuncs.checkUserRole(userId, bot, chatId)
+            } else {
+                await bot.sendMessage(chatId, '❗️ You are not logged into this bot! ❗️')
+            }
+        })
     }
 
     // If the user wants to start taking the test
@@ -147,7 +157,7 @@ bot.on('message', async function(message) {
 
     if (
     !message.document &&
-    message.text !== process.env.teacherPassword &&
+    !isTeacherLogin.isLogin &&
     message.text !== '/start' &&
     message.text !== '/info' &&
     message.text !== '/help' &&
@@ -182,12 +192,14 @@ bot.on('callback_query', async function(query) {
 
     // Sign in as a teacher
     if (query.data === 'login_teacher') {
+        isTeacherLogin.isLogin = true
         botFuncs.teacherLogin(chatId, bot, messageId, userId, username, firstName, lastName, false)
         return
     }
 
     // Role change from student to teacher
     if (query.data === 'switch_to_teacher') {
+        isTeacherLogin.isLogin = true
         botFuncs.teacherLogin(chatId, bot, messageId, userId, username, firstName, lastName, true)
         return
     } 

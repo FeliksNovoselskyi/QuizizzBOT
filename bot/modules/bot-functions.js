@@ -1,31 +1,33 @@
 // My scripts
 import * as dbFunctions from '../db/db_functions.js'
+import * as IndexFile from '../index.js'
 
 // Function that handles login as a teacher, with password verification
 export async function teacherLogin(chatId, bot, messageId, userId, username, firstName, lastName, changeToTeacherRole) {
     await bot.sendMessage(chatId, '❕ Enter your teacher account password (password only, no extra characters)')
 
-        const teacherPassword = process.env.teacherPassword
-        bot.once('message', async (message) => {
-            const userInputPassword = message.text
+    const teacherPassword = process.env.teacherPassword
+    bot.once('message', async (message) => {
+        const userInputPassword = message.text
 
-            // Checking the validity of the password entered by the user
-            if (userInputPassword === teacherPassword) {
-                await bot.editMessageReplyMarkup({inline_keyboard: []}, {chat_id: chatId, message_id: messageId})
-                if (changeToTeacherRole) {
-                    // Role change from student to teacher
-                    dbFunctions.updateUserRole(userId, 'teacher', () => {
-                        bot.sendMessage(chatId, "👨‍🏫 Your role has been changed to teacher")
-                    })
-                    return
-                }
-                
-                dbFunctions.addUser(userId, username, firstName, lastName, 'teacher')
-                await bot.sendMessage(chatId, '👨‍🏫 You have successfully logged in as a teacher! \n❕ Now you can upload a JSON file with your test questions, and give your students the opportunity to start the test with command /can_start_quiz!')
-            } else {
-                await bot.sendMessage(chatId, '❗️ Incorrect password! \nTry again \nTo do this, press the login button again ❗️')
+        // Checking the validity of the password entered by the user
+        if (userInputPassword === teacherPassword) {
+            await bot.editMessageReplyMarkup({inline_keyboard: []}, {chat_id: chatId, message_id: messageId})
+            if (changeToTeacherRole) {
+                // Role change from student to teacher
+                dbFunctions.updateUserRole(userId, 'teacher', () => {
+                    IndexFile.isTeacherLogin.isLogin = false
+                    bot.sendMessage(chatId, "👨‍🏫 Your role has been changed to teacher")
+                })
+                return
             }
-        })
+            
+            dbFunctions.addUser(userId, username, firstName, lastName, 'teacher')
+            await bot.sendMessage(chatId, '👨‍🏫 You have successfully logged in as a teacher! \n❕ Now you can upload a JSON file with your test questions, and give your students the opportunity to start the test with command /can_start_quiz!')
+        } else {
+            await bot.sendMessage(chatId, '❗️ Incorrect password! \nTry again \nTo do this, press the login button again ❗️')
+        }
+    })
 }
 
 // Check the current user role
