@@ -85,7 +85,7 @@ You can use it to create a quiz when the **bot** asks you to upload a `.json` fi
 | [JavaScript](https://developer.mozilla.org/en-US/docs/Web/JavaScript)  | The primary programming language  |
 | [Sequelize ORM](https://sequelize.org/)  | ORM (Object-Relational Mapping) used for interacting with the database  |
 | [node-telegram-bot-api](https://www.npmjs.com/package/node-telegram-bot-api)  | API used to develop a Telegram bot  |
-| [EJS](https://ejs.co/)      | A simple templating language used for developing website templates |
+| [EJS](https://ejs.co/)      | A simple templates language used for developing website templates |
 | [jQuery](https://jquery.com/)                                                  | A JavaScript library that simplifies development and interaction within the project.                              |
 | [Sortable](https://jqueryui.com/sortable/)                                     | A jQuery plugin that allows smooth and quick drag-and-drop functionality for reordering items.                    |
 | [AJAX](https://api.jquery.com/category/ajax/)                                  | A technology for fast and convenient data handling without page refreshes.                                        |
@@ -101,7 +101,7 @@ You can use it to create a quiz when the **bot** asks you to upload a `.json` fi
 ```mermaid
 graph TD;
     A[**QuizizzBOT**] --> B[**bot** 
-    Telegram bot acting as a quiz organiser, ensuring their uploading and launching] --> b1[*modules*];
+    Telegram bot acting as a quiz organizer, ensuring their uploading and launching] --> b1[*modules*];
     B --> b2[*db*];
     B --> b3[***questions.json***];
     B --> b4[***index.js***];

@@ -141,7 +141,7 @@ bot.on('message', async function(message) {
         })
     }
 
-    // Command authorising to start the quiz (available only to the teacher)
+    // Command authorizing to start the quiz (available only to the teacher)
     if (message.text === '/can_start_quiz') {
         dbFunctions.getUserById(userId).then(async (user) => {
             if (user.role === 'teacher') {
