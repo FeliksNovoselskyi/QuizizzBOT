@@ -1,9 +1,7 @@
 // My scripts
 import {
     bot, 
-    uploadFilesDir, 
     completedQuizzes, 
-    jsonFileName, 
     canStart, 
     addedFile, 
     isTeacherLogin, 
@@ -14,10 +12,10 @@ import {
 import handleCallbackQuery from './modules/callbackHandlers.js'
 import handleFileUpload from './modules/filesHandlers.js'
 
-import * as dbFunctions from './db/db_functions.js'
+import * as dbFunctions from './db/dbFunctions.js'
 
-import * as quizFuncs from './modules/quiz-functional.js'
-import * as botFuncs from './modules/bot-functions.js'
+import * as quizFuncs from './modules/quizFunctional.js'
+import * as botFuncs from './modules/botFunctions.js'
 
 // Create a menu of commands for the bot
 bot.setMyCommands([

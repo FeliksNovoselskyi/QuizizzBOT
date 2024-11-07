@@ -1,5 +1,5 @@
 // My scripts
-import * as dbFunctions from '../db/db_functions.js'
+import * as dbFunctions from '../db/dbFunctions.js'
 
 import {
     bot,

@@ -22,7 +22,6 @@ export async function sendQuestion(chatId, messageId) {
         const userIndex = userQuestions[chatId] || 0
     
         if (userIndex < allQuestions.questions.length) {
-            console.log(allQuestions.questions)
             const currentQuestion = allQuestions.questions[userIndex]
     
             // Generate options for the inline keyboard under the message
@@ -69,13 +68,9 @@ export async function sendQuestion(chatId, messageId) {
             
             const copiedFileName = jsonFileName[chatId]
 
-            console.log(copiedFileName)
-
             // Deleting a copy of the .json file with questions from the teacher
             const filePath = path.join(__dirname, 'uploaded_files', copiedFileName)
-            
-            console.log(filePath)
-            
+
             fs.unlink(filePath, (error) => {
                 if (error) {
                     console.error(error)
