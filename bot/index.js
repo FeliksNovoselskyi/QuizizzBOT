@@ -1,65 +1,30 @@
 import fs from 'fs'
 import path from 'path'
-import dotenv from 'dotenv'
-import telegramApi from 'node-telegram-bot-api'
-
-import {dirname} from 'path'
-import {fileURLToPath} from 'url'
 
 // My scripts
+import {
+    bot, 
+    uploadFilesDir, 
+    answerMsgIdState, 
+    completedQuizzes, 
+    jsonFileName, 
+    canStart, 
+    addedFile, 
+    isTeacherLogin, 
+    helpMessage,
+    __dirname
+} from "./config.js"
+
 import * as dbFunctions from './db/db_functions.js'
 
 import * as quizFuncs from './modules/quiz-functional.js'
 import * as botFuncs from './modules/bot-functions.js'
-
-dotenv.config({path: '../.env'})
-
-const botToken = process.env.token
-const bot = new telegramApi(botToken, {polling: true})
-
-const __filename = fileURLToPath(import.meta.url)
-export const __dirname = dirname(__filename)
-
-// Get the directory where we will save json files sent by the user
-const uploadFilesDir = path.join(__dirname, 'uploaded_files') 
 
 // Variable to which the questions will be written after parsing the file.json
 let questions = {}
 // Variable storing the text of the message with the result of the answer to the question
 // is used when checking for a match between a new text and an existing text.
 let currentMessageText = ""
-
-// Variables for quiz functionality (quiz in one message)
-export const answerMsgIdState = {
-    answerMessageId: null
-}
-export const completedQuizzes = {}
-export const jsonFileName = {}
-
-// Bot message (only huge messages)
-let helpMessage = `
-Hi! 👋🤘
-Do you need some help? 🤔
-Here's a list of my commands that can help you:
-
-/start - starts your communication with me
-/help - will give you a list of commands that can help you
-/info - will give you information about yourself, your status, whether you are registered or not
-/change_role - allows you to change your role, for example from student to teacher
-/can_start_quiz - command that allows you to pass quiz. Available only to teacher 👨‍🏫
-/quiz - command to start a quiz. Available only to the student 🧑‍🎓
-
-Also remember that you always have a menu of my commands that can help you 🤗
-`
-
-// Flags
-let canStart = false
-export const addedFile = {
-    addedJsonFile: false
-}
-export const isTeacherLogin = {
-    isLogin: false
-}
 
 // Create a menu of commands for the bot
 bot.setMyCommands([
@@ -129,7 +94,7 @@ bot.on('message', async function(message) {
     // If the user wants to start taking the quiz
     if (message.text === '/quiz') {
         dbFunctions.getUserById(userId).then(async (user) => {
-            if (user.role === 'student' && canStart && !completedQuizzes[chatId]) {
+            if (user.role === 'student' && canStart.canStartQuiz && !completedQuizzes[chatId]) {
                 await dbFunctions.clearProgress(userId)
 
                 // Resetting the question index for a user
@@ -146,7 +111,7 @@ bot.on('message', async function(message) {
         dbFunctions.getUserById(userId).then(async (user) => {
             if (user.role === 'teacher') {
                 if (addedFile.addedJsonFile) {
-                    canStart = true
+                    canStart.canStartQuiz = true
                     completedQuizzes[chatId] = false
                     bot.sendMessage(chatId, '🔥👍 You have successfully created a quiz!\n🤔 Now your students can start quiz with command /quiz')
                 } else {

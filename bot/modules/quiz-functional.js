@@ -2,8 +2,13 @@ import fs from 'fs'
 import path from 'path'
 
 // My scripts
-import * as indexFile from '../index.js'
-import {answerMsgIdState} from '../index.js'
+import {
+    answerMsgIdState, 
+    completedQuizzes, 
+    jsonFileName, 
+    addedFile, 
+    __dirname
+} from "../config.js"
 
 // Indexes of current issues for each user
 export const userQuestions = {}
@@ -56,13 +61,13 @@ export async function sendQuestion(chatId, messageId, questions, bot) {
             userProgress = []
             answerMsgIdState.answerMessageId = null
 
-            indexFile.completedQuizzes[chatId] = true
-            indexFile.addedFile.addedJsonFile = false
+            completedQuizzes[chatId] = true
+            addedFile.addedJsonFile = false
             
-            const copiedFileName = indexFile.jsonFileName[chatId]
+            const copiedFileName = jsonFileName[chatId]
 
             // Deleting a copy of the .json file with questions from the teacher
-            const filePath = path.join(indexFile.__dirname, 'uploaded_files', copiedFileName)
+            const filePath = path.join(__dirname, 'uploaded_files', copiedFileName)
             fs.unlink(filePath, (error) => {
                 if (error) {
                     console.error(error)
