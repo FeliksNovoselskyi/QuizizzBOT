@@ -34,6 +34,16 @@ export const isTeacherLogin = {
     isLogin: false
 }
 
+// Constant to which the questions will be written after parsing the file.json
+export const allQuestions = {
+    questions: {}
+}
+
+// Constant storing the text of the message with the result of the answer to the question
+// is used when checking for a match between a new text and an existing text.
+export const currentMessageText = {
+    messageText: ""
+}
 
 
 // Bot message (only huge messages)

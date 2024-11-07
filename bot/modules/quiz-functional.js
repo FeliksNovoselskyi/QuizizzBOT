@@ -6,7 +6,8 @@ import {
     answerMsgIdState, 
     completedQuizzes, 
     jsonFileName, 
-    addedFile, 
+    addedFile,
+    allQuestions, 
     __dirname
 } from "../config.js"
 
@@ -15,12 +16,13 @@ export const userQuestions = {}
 export let userProgress = []
 
 // Function for sending a question with inline buttons
-export async function sendQuestion(chatId, messageId, questions, bot) {
+export async function sendQuestion(chatId, messageId, bot) {
     try {
         const userIndex = userQuestions[chatId] || 0
     
-        if (userIndex < questions.length) {
-            const currentQuestion = questions[userIndex]
+        if (userIndex < allQuestions.questions.length) {
+            console.log(allQuestions.questions)
+            const currentQuestion = allQuestions.questions[userIndex]
     
             // Generate options for the inline keyboard under the message
             const options = currentQuestion.options.map((option, index) => {
