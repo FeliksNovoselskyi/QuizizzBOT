@@ -3,12 +3,16 @@ import path from 'path'
 
 // My scripts
 import {
+    bot,
     allQuestions,
+    jsonFileName,
+    uploadFilesDir,
+    addedFile,
     __dirname
 } from "../config.js"
 
 // Teacher uploading .json file with quiz questions
-export default async function handleFileUpload(bot, dbFunctions, uploadFilesDir, jsonFileName, addedFile, message) {
+export default async function handleFileUpload(dbFunctions, message) {
     const chatId = message.chat.id
     const userId = message.from.id
     

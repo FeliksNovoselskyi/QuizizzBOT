@@ -1,10 +1,13 @@
 // My scripts
 import * as dbFunctions from '../db/db_functions.js'
 
-import {isTeacherLogin} from "../config.js"
+import {
+    bot,
+    isTeacherLogin
+} from "../config.js"
 
 // Function that handles login as a teacher, with password verification
-export async function teacherLogin(chatId, bot, messageId, userId, username, firstName, lastName, changeToTeacherRole) {
+export async function teacherLogin(chatId, messageId, userId, username, firstName, lastName, changeToTeacherRole) {
     await bot.sendMessage(chatId, '❕ Enter your teacher account password (password only, no extra characters)')
 
     const teacherPassword = process.env.teacherPassword
@@ -32,7 +35,7 @@ export async function teacherLogin(chatId, bot, messageId, userId, username, fir
 }
 
 // Check the current user role
-export function checkUserRole(userId, bot, chatId) {
+export function checkUserRole(userId, chatId) {
     dbFunctions.getUserById(userId).then(async (user) => {
         if (user) {
             if (user.role === 'student') {

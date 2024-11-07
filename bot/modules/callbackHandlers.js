@@ -1,5 +1,6 @@
 // My scripts
 import {
+    bot,
     allQuestions,
     answerMsgIdState,
     isTeacherLogin,
@@ -9,7 +10,7 @@ import {
 
 // Processing callback functions
 // bot.on('callback_query', async function(query) {
-export default async function handleCallbackQuery(bot, query, quizFuncs, dbFunctions, botFuncs) {
+export default async function handleCallbackQuery(query, quizFuncs, dbFunctions, botFuncs) {
     const chatId = query.message.chat.id
     const userId = query.from.id
     const messageId = query.message.message_id
@@ -32,14 +33,14 @@ export default async function handleCallbackQuery(bot, query, quizFuncs, dbFunct
     // Sign in as a teacher
     if (query.data === 'login_teacher') {
         isTeacherLogin.isLogin = true
-        botFuncs.teacherLogin(chatId, bot, messageId, userId, username, firstName, lastName, false)
+        botFuncs.teacherLogin(chatId, messageId, userId, username, firstName, lastName, false)
         return
     }
 
     // Role change from student to teacher
     if (query.data === 'switch_to_teacher') {
         isTeacherLogin.isLogin = true
-        botFuncs.teacherLogin(chatId, bot, messageId, userId, username, firstName, lastName, true)
+        botFuncs.teacherLogin(chatId, messageId, userId, username, firstName, lastName, true)
         return
     } 
     
@@ -133,5 +134,5 @@ export default async function handleCallbackQuery(bot, query, quizFuncs, dbFunct
 
     // Moving on to the next question
     quizFuncs.userQuestions[chatId] = userIndex + 1
-    await quizFuncs.sendQuestion(chatId, messageId, bot)
+    await quizFuncs.sendQuestion(chatId, messageId)
 }

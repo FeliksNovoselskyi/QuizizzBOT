@@ -3,6 +3,7 @@ import path from 'path'
 
 // My scripts
 import {
+    bot,
     answerMsgIdState, 
     completedQuizzes, 
     jsonFileName, 
@@ -16,7 +17,7 @@ export const userQuestions = {}
 export let userProgress = []
 
 // Function for sending a question with inline buttons
-export async function sendQuestion(chatId, messageId, bot) {
+export async function sendQuestion(chatId, messageId) {
     try {
         const userIndex = userQuestions[chatId] || 0
     
@@ -68,8 +69,13 @@ export async function sendQuestion(chatId, messageId, bot) {
             
             const copiedFileName = jsonFileName[chatId]
 
+            console.log(copiedFileName)
+
             // Deleting a copy of the .json file with questions from the teacher
             const filePath = path.join(__dirname, 'uploaded_files', copiedFileName)
+            
+            console.log(filePath)
+            
             fs.unlink(filePath, (error) => {
                 if (error) {
                     console.error(error)

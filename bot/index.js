@@ -2,7 +2,6 @@
 import {
     bot, 
     uploadFilesDir, 
-    answerMsgIdState, 
     completedQuizzes, 
     jsonFileName, 
     canStart, 
@@ -78,7 +77,7 @@ bot.on('message', async function(message) {
         dbFunctions.getUserById(userId).then(async (user) => {
 
             if (user) {
-                botFuncs.checkUserRole(userId, bot, chatId)
+                botFuncs.checkUserRole(userId, chatId)
             } else {
                 await bot.sendMessage(chatId, '❗️ You are not logged into this bot! ❗️')
             }
@@ -94,7 +93,7 @@ bot.on('message', async function(message) {
                 console.log(allQuestions.questions)
                 // Resetting the question index for a user
                 quizFuncs.userQuestions[chatId] = 0
-                await quizFuncs.sendQuestion(chatId, messageId, bot)
+                await quizFuncs.sendQuestion(chatId, messageId)
             } else {
                 await bot.sendMessage(chatId, '❗️ Passing the quiz is not allowed!\n❗️ Or, if you are a teacher, you cannot take the quiz')
             }
@@ -134,7 +133,6 @@ bot.on('message', async function(message) {
 
 bot.on('callback_query', async function(query) {
     await handleCallbackQuery(
-        bot, 
         query, 
         quizFuncs, 
         dbFunctions, 
@@ -144,11 +142,7 @@ bot.on('callback_query', async function(query) {
 
 bot.on('document', async function(message) {
     await handleFileUpload(
-        bot,
         dbFunctions,
-        uploadFilesDir,
-        jsonFileName,
-        addedFile,
         message
     )
 })
