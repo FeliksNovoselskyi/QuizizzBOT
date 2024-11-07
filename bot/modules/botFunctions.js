@@ -1,9 +1,13 @@
 // My scripts
-import * as dbFunctions from '../db/db_functions.js'
-import * as IndexFile from '../index.js'
+import * as dbFunctions from '../db/dbFunctions.js'
+
+import {
+    bot,
+    isTeacherLogin
+} from "../config.js"
 
 // Function that handles login as a teacher, with password verification
-export async function teacherLogin(chatId, bot, messageId, userId, username, firstName, lastName, changeToTeacherRole) {
+export async function teacherLogin(chatId, messageId, userId, username, firstName, lastName, changeToTeacherRole) {
     await bot.sendMessage(chatId, '❕ Enter your teacher account password (password only, no extra characters)')
 
     const teacherPassword = process.env.teacherPassword
@@ -16,7 +20,7 @@ export async function teacherLogin(chatId, bot, messageId, userId, username, fir
             if (changeToTeacherRole) {
                 // Role change from student to teacher
                 dbFunctions.updateUserRole(userId, 'teacher', () => {
-                    IndexFile.isTeacherLogin.isLogin = false
+                    isTeacherLogin.isLogin = false
                     bot.sendMessage(chatId, "👨‍🏫 Your role has been changed to teacher")
                 })
                 return
@@ -31,7 +35,7 @@ export async function teacherLogin(chatId, bot, messageId, userId, username, fir
 }
 
 // Check the current user role
-export function checkUserRole(userId, bot, chatId) {
+export function checkUserRole(userId, chatId) {
     dbFunctions.getUserById(userId).then(async (user) => {
         if (user) {
             if (user.role === 'student') {
