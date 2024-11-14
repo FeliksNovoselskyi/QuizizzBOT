@@ -146,10 +146,12 @@ app.post('/', csrfProtection, async (req, res) => {
     // If a teacher wants a .json file of questions
     if (action === "downloadFile") {
         try {
+            // Receiving questions in the order they appear in the db
             const questions = await models.Questions.findAll({
                 order: [['order', 'ASC']]
             })
 
+            // Creates an object with an array of questions, converting data from the database into a format suitable for JSON
             const questionsData = {
                 questions: questions.map((q) => ({
                     question: q.questionText,
@@ -158,11 +160,15 @@ app.post('/', csrfProtection, async (req, res) => {
                 }))
             }
 
+            // Sets the content type as JSON so that the browser knows it is JSON data
             const jsonContent = JSON.stringify(questionsData, null, 2)
 
+            // Sets the header to prompt the browser to download a file named “questions.json”
+            // Sets the content type as JSON so that the browser knows it is JSON data
             res.setHeader('Content-Disposition', 'attachment; filename="questions.json"')
             res.setHeader('Content-Type', 'application/json')
 
+            // Sends JSON data to the client (for downloading)
             res.send(jsonContent)
         } catch (error) {
             console.log("Error when creating JSON file", error)
