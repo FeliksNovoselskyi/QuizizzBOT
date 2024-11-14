@@ -145,7 +145,29 @@ app.post('/', csrfProtection, async (req, res) => {
 
     // If a teacher wants a .json file of questions
     if (action === "downloadFile") {
-        return res.status(200).json({downloadFile: true})
+        try {
+            const questions = await models.Questions.findAll({
+                order: [['order', 'ASC']]
+            })
+
+            const questionsData = {
+                questions: questions.map((q) => ({
+                    question: q.questionText,
+                    options: [q.answer1, q.answer2, q.answer3, q.answer4],
+                    correct: q.correctAnswer
+                }))
+            }
+
+            const jsonContent = JSON.stringify(questionsData)
+
+            res.setHeader('Content-Disposition', 'attachment; filename="questions.json"')
+            res.setHeader('Content-Type', 'application/json')
+
+            res.send(jsonContent)
+        } catch (error) {
+            console.log(error)
+            res.status(500).json({error: "Failed to create JSON file"})
+        }
     }
 })
 

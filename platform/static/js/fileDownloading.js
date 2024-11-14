@@ -15,9 +15,16 @@ $(document).ready(function() {
                 action: 'downloadFile'
             }),
             success: function(response) {
-                if (response.downloadFile) {
-                    console.log(111111)
-                }
+                const jsonString = JSON.stringify(response)
+
+                const link = document.createElement('a')
+                link.href = 'data:application/json;charset=utf-8,' + encodeURIComponent(jsonString)
+                link.download = 'questions.json'
+
+                // Simulate clicking on a newly created link to instantly download a file
+                document.body.appendChild(link)
+                link.click()
+                document.body.removeChild(link)
             },
             // error: function(response) {
             //     console.log(response.responseJSON.error)
