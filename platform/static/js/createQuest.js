@@ -54,8 +54,6 @@ $(document).ready(function() {
             }),
             success: function(response) {
                 function getCorrectAnswer(index) {
-                    console.log(response.correctAnswer)
-                    console.log(index)
                     if (response.correctAnswer === index) {
                         return 'corr-answer'
                     } else {

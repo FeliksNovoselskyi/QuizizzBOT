@@ -21,7 +21,8 @@ main {
     gap: 10px;
 }
 
-#add-button {
+.control-buttons {
+    width: 100%;
     font-size: 26px;
     background-color: transparent;
     border: transparent;
@@ -31,8 +32,15 @@ main {
     cursor: pointer;
 }
 
-#add-button:hover {
+.control-buttons:hover {
     background-color: rgb(235, 235, 235);
+}
+
+#download-form {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
 }
 
 #created-questions {

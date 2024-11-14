@@ -30,7 +30,7 @@ $(document).ready(function () {
                         contentType: 'application/json',
                         data: JSON.stringify({
                             cell_order: order,
-                            action: "cell_order_upgrade",
+                            action: "cellOrderUpgrade",
                         })
                     })
                 }

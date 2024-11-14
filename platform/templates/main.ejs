@@ -20,7 +20,8 @@
     <script src="../static/js/createQuest.js" defer></script>
     <script src="../static/js/deleteQuest.js" defer></script>
     <script src="../static/js/sortableElements.js" defer></script>
-    
+    <script src="../static/js/fileDownloading.js" defer></script>
+
     <script src="../static/js/preloadScreen.js" defer></script>
 
     <!-- If you wanna use fetch api -->
@@ -35,7 +36,7 @@
 
     <main>
         <div id="questions-block">            
-            <button id="add-button" data-bs-toggle="modal" data-bs-target="#exampleModal">Add question</button>
+            <button class="control-buttons" data-bs-toggle="modal" data-bs-target="#exampleModal">Add question</button>
 
             <!-- All created questions block -->
             <div id="created-questions">
@@ -67,6 +68,10 @@
                     <% }) %>
                 <% } %>
             </div>
+
+            <form action="/" method="post" id="download-form">
+                <button class="control-buttons" type="submit">Download file</button>
+            </form>
         </div>
     </main>
 

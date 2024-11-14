@@ -1,9 +1,7 @@
 window.addEventListener("load", () => {
-    const loadingScreen = document.getElementById("loading-screen")
-    const content = document.getElementById("content")
+    const loadingScreen = document.querySelector("#loading-screen")
+    const content = document.querySelector("main")
     
-    setTimeout(() => {
-        loadingScreen.style.display = "none"
-        content.style.display = "block"
-    }, 1000)
+    loadingScreen.style.display = "none"
+    content.style.display = "block"
 })
