@@ -119,6 +119,99 @@ graph TD;
 * [Figma](https://www.figma.com/design/jMjdkaAEDIh5ONLtelxzi7/QuizizzBOT-Platform?node-id=0-1&t=Y2RKr0VkKNAYPncM-1)
 * [FigJam](https://www.figma.com/board/AZD4TR2pNnDRlWKSJgVxKp/QuizizzBOT-Structure?node-id=0-1&t=FxYQlPNAcjUQaIe8-1)
 
+
+---
+## Documentation
+>[Back to top](#quizizz-telegram-bot)
+
+Full-fledged documentation for the project, contains introductory information for further acquaintance and work on the project for other developers
+
+---
+### For platform
+First of all, we familiarize ourselves with the structure of the database, platform models
+
+In the platform's file system, there is a `/db` folder (as well as in the bot's file system)
+
+A database will be created in the `/db` folder, with the name you specify in the `.env` file (fill it according to the example in `.env-sample`)
+
+In the database, you will be able to track:
+- Adding test questions
+- Deleting questions
+- Changing their order
+
+And so, let's move on to the files
+File `dbSetup.js`:
+```javascript
+import {Sequelize} from 'sequelize'
+import dotenv from 'dotenv'
+
+import {fileURLToPath} from 'url'
+import {dirname, join} from 'path'
+
+
+dotenv.config({path: '../.env'})
+
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = dirname(__filename)
+
+// Create an instance of the Sequelize class, which will be an ORM, to work with the db
+export const sequelize = new Sequelize(process.env.PLATFORM_DB_NAME, process.env.PLATFORM_DB_ADMIN_NAME, process.env.PLATFORM_DB_PASSWORD, {
+    host: 'localhost',
+    dialect: 'sqlite',
+    storage: join(__dirname, `${process.env.PLATFORM_DB_NAME}.db`)
+})
+
+// Sync DB
+sequelize.sync()
+    .then(() => {
+        console.log('Database created successfully')
+    })
+    .catch((error) => {
+        console.log('Error during creating database:', error)
+    })
+```
+
+This file prepares the database for further use and synchronizes it
+
+Sequelize ORM is used
+
+The data required to create the database is uploaded from the `.env` file, such as:
+- Database Name
+- Database administrator name
+- Database password
+
+Traditionally, as in all project files, there are comments, sometimes short and clear, sometimes clearly described in detail
+All for the sake of convenience of further use and development, as well as simple and qualitative familiarization with the project code
+
+Let's move on
+
+File `models.js`:
+```javascript
+import {DataTypes} from 'sequelize'
+
+// My scripts
+import * as dataBase from './dbSetup.js'
+
+// Questions model
+export const Questions = dataBase.sequelize.define('Questions', {
+    id: {
+        type: DataTypes.INTEGER,
+        autoIncrement: true,
+        primaryKey: true
+    },
+    questionText: {type: DataTypes.STRING},
+    answer1: {type: DataTypes.STRING},
+    answer2: {type: DataTypes.STRING},
+    answer3: {type: DataTypes.STRING},
+    answer4: {type: DataTypes.STRING},
+    correctAnswer: {type: DataTypes.INTEGER},
+    order: {type: DataTypes.INTEGER, defaultValue: 0}
+})
+```
+
+A file containing absolutely all the models for the platform database
+
+
 ---
 ## Want to get back to the top?
 >[Back to top](#quizizz-telegram-bot)
