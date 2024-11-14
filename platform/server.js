@@ -132,7 +132,7 @@ app.post('/', csrfProtection, async (req, res) => {
     }
 
     // If the item order (in this case, QUESTIONS) has been updated
-    if (action === "cell_order_upgrade") {
+    if (action === "cellOrderUpgrade") {
         for (const item_order of cell_order) {
             await models.Questions.update(
                 {order: item_order.order},
@@ -141,6 +141,11 @@ app.post('/', csrfProtection, async (req, res) => {
                 }
             )
         }
+    }
+
+    // If a teacher wants a .json file of questions
+    if (action === "downloadFile") {
+        return res.status(200).json({downloadFile: true})
     }
 })
 
