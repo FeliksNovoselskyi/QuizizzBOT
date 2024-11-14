@@ -158,14 +158,14 @@ app.post('/', csrfProtection, async (req, res) => {
                 }))
             }
 
-            const jsonContent = JSON.stringify(questionsData)
+            const jsonContent = JSON.stringify(questionsData, null, 2)
 
             res.setHeader('Content-Disposition', 'attachment; filename="questions.json"')
             res.setHeader('Content-Type', 'application/json')
 
             res.send(jsonContent)
         } catch (error) {
-            console.log(error)
+            console.log("Error when creating JSON file", error)
             res.status(500).json({error: "Failed to create JSON file"})
         }
     }

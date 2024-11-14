@@ -15,7 +15,7 @@ $(document).ready(function() {
                 action: 'downloadFile'
             }),
             success: function(response) {
-                const jsonString = JSON.stringify(response)
+                const jsonString = JSON.stringify(response, null, 2)
 
                 const link = document.createElement('a')
                 link.href = 'data:application/json;charset=utf-8,' + encodeURIComponent(jsonString)
