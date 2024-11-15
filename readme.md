@@ -48,7 +48,7 @@ cd bot
 ```
 
 8. Create the `/uploaded_files` directory
-(copies of the quiz files you upload as a teacher will be saved there)
+(copies of the quiz files you upload as a *teacher* will be saved there)
 ```
 mkdir uploaded_files
 ```
@@ -80,18 +80,18 @@ You can use it to create a quiz when the **bot** asks you to upload a `.json` fi
 
 | **Technology**  | **Description** |
 | ------------- | -------------      |
-| [NodeJS](https://nodejs.org/uk)       | The main framework on which the bot and the platform are built  |
-| [Express](https://expressjs.com/)  | Web framework used to build the platform  |
+| [NodeJS](https://nodejs.org/uk)       | The *main framework* on which the **bot** and the **platform** are built  |
+| [Express](https://expressjs.com/)  | *Web framework* used to build the **platform**  |
 | [JavaScript](https://developer.mozilla.org/en-US/docs/Web/JavaScript)  | The primary programming language  |
-| [Sequelize ORM](https://sequelize.org/)  | ORM (Object-Relational Mapping) used for interacting with the database  |
-| [node-telegram-bot-api](https://www.npmjs.com/package/node-telegram-bot-api)  | API used to develop a Telegram bot  |
-| [EJS](https://ejs.co/)      | A simple templates language used for developing website templates |
-| [jQuery](https://jquery.com/)                                                  | A JavaScript library that simplifies development and interaction within the project.                              |
-| [Sortable](https://jqueryui.com/sortable/)                                     | A jQuery plugin that allows smooth and quick drag-and-drop functionality for reordering items.                    |
+| [Sequelize ORM](https://sequelize.org/)  | **ORM** (Object-Relational Mapping) used for interacting with the database  |
+| [node-telegram-bot-api](https://www.npmjs.com/package/node-telegram-bot-api)  | **API** used to develop a **Telegram bot**  |
+| [EJS](https://ejs.co/)      | A simple templates language used for developing *website templates* |
+| [jQuery](https://jquery.com/)                                                  | A **JavaScript** library that simplifies development and interaction within the project.                              |
+| [Sortable](https://jqueryui.com/sortable/)                                     | A **jQuery** plugin that allows smooth and quick drag-and-drop *functionality* for reordering items.                    |
 | [AJAX](https://api.jquery.com/category/ajax/)                                  | A technology for fast and convenient data handling without page refreshes.                                        |
 | [Fetch API](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API)        | Used for asynchronous operations on the site without constant page refreshes.                                     |
-| [HTML](https://developer.mozilla.org/en-US/docs/Web/HTML)/[CSS](https://developer.mozilla.org/en-US/docs/Learn/CSS) | Languages used for website layout, structure, and styling.                   |
-| [Bootstrap 5](https://getbootstrap.com/)                                       | A frontend framework used to create various elements on the pages.                                                |
+| [HTML](https://developer.mozilla.org/en-US/docs/Web/HTML)/[CSS](https://developer.mozilla.org/en-US/docs/Learn/CSS) | Languages used for *website* layout, *structure*, and *styling*.                   |
+| [Bootstrap 5](https://getbootstrap.com/)                                       | A ***frontend framework*** used to create various elements on the pages.                                                |
 | [Figma](https://help.figma.com/hc/en-us)                                       | An online service used for designing the site's layout.                                                           |
 | [SQLite3](https://www.sqlite.org/docs.html)                                    | A database used for site development.                                                                             |
 
@@ -128,9 +128,9 @@ Full-fledged documentation for the project, contains introductory information fo
 
 ---
 ### For platform
-First of all, we familiarize ourselves with the structure of the database, platform models
+First of all, we familiarize ourselves with the structure of the database, **platform models**
 
-In the platform's file system, there is a `/db` directory (as well as in the bot's file system)
+In the **platform's** file system, there is a `/db` directory (as well as in the **bot's** file system)
 
 A database will be created in the `/db` directory, with the name you specify in the `.env` file (fill it according to the example in `.env-sample`)
 
@@ -177,17 +177,17 @@ sequelize.sync()
     })
 ```
 
-This file prepares the database for further use and synchronizes it
+This file *prepares the database* for further use and *synchronizes* it
 
-[Sequelize ORM](https://sequelize.org/) is used
+**[Sequelize ORM](https://sequelize.org/)** is used
 
 The data required to create the database is uploaded from the `.env` file, such as:
-- Database Name
-- Database administrator name
-- Database password
+- *Database Name*
+- *Database administrator name*
+- *Database password*
 
-Traditionally, as in all project files, there are comments, sometimes short and clear, sometimes clearly described in detail
-All for the sake of convenience of further use and development, as well as simple and qualitative familiarization with the project code
+Traditionally, as in all *project files*, there are comments, sometimes short and clear, sometimes clearly described in detail
+All for the sake of convenience of further use and *development*, as well as simple and qualitative familiarization with the project code
 
 Let's move on
 
@@ -215,9 +215,9 @@ export const Questions = dataBase.sequelize.define('Questions', {
 })
 ```
 
-A file containing absolutely all the models for the platform database
+A file containing absolutely all the *models* for the **platform** database
 
-Let's move on to the rest of the platform structure:
+Let's move on to the rest of the **platform** structure:
 - `server.js`
 - `/templates`
 - `/static`
@@ -413,17 +413,18 @@ app.listen(PORT, HOST, () => {
 })
 ```
 
-Platform core file, server side using server-side [JavaScript](https://developer.mozilla.org/en-US/docs/Web/JavaScript)
-[Express](https://expressjs.com/) is used, basic protection against CSRF-attacks is connected
+**Platform** core file, server side using server-side **[JavaScript](https://developer.mozilla.org/en-US/docs/Web/JavaScript)**
 
-This file accepts requests from the frontend part and responds to them, which makes the platform fast and easy to use
+**[Express](https://expressjs.com/)** is used, basic protection against **CSRF-attacks** is connected
+
+This file accepts requests from the **frontend** part and responds to them, which makes the **platform** fast and easy to use
 
 Here such events as:
-- Question creation
-- Question deletions
-- Error handling
-- Changing the order of questions
-- Uploading a .json file with questions for the quiz
+- *Question creation*
+- *Question deletions*
+- *Error handling*
+- *Changing the order* of questions
+- *Uploading a `.json`* file with questions for the quiz
 
 There are extensive comments that will make it easier and faster to understand the code of the `server.js` file
 
@@ -434,7 +435,7 @@ There are extensive comments that will make it easier and faster to understand t
 The `/templates` directory contains these project templates:
 - `main.ejs`
 
-As you can see, a simple templates language [EJS](https://ejs.co/) is used for templates.
+As you can see, a simple templates language **[EJS](https://ejs.co/)** is used for templates.
 
 `main.ejs` - file in which the main project template is stored, with the necessary blocks for it
 
@@ -447,7 +448,7 @@ The `/static` directory contains directories such as:
 `/js` - directory with `.js` files that provide comfortable use of the client part for the user
 
 Let's break down `/js` in more detail:
-- `/fetch_api` - (directory) option to use [Fetch API](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API) instead of [AJAX](https://api.jquery.com/category/ajax/) and [jQuery](https://jquery.com/)
+- `/fetch_api` - (directory) option to use **[Fetch API](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API)** instead of **[AJAX](https://api.jquery.com/category/ajax/)** and **[jQuery](https://jquery.com/)**
 - `createQuest.js` - creating a question
 - `deleteQuest.js` - deleting a question
 - `fileDownloading.js` - unload `.json` file
@@ -558,8 +559,8 @@ $(document).ready(function() {
 
 In this file, an asynchronous request is sent to the server when adding a question, in order to speed up the site, and also to avoid regular reloading of the site at each action
 The above mentioned technologies are used here:
-- [AJAX](https://api.jquery.com/category/ajax/)
-- [jQuery](https://jquery.com/)
+- **[AJAX](https://api.jquery.com/category/ajax/)**
+- **[jQuery](https://jquery.com/)**
 
 ##### File `deleteQuest.js`:
 ```javascript
@@ -602,7 +603,7 @@ $(document).ready(function() {
 
 Similarly, allows you to delete questions asynchronously and without reloading the page, both on the page and in the database, which is logical
 The technologies used are similar
-Also connected protection from CSRF-attacks as in other static files from the `/static` folder
+Also connected protection from **CSRF-attacks** as in other static files from the `/static` directory
 
 ##### File `fileDownloading.js`:
 ```javascript
@@ -647,11 +648,11 @@ $(document).ready(function() {
 
 The file provides convenient and fast `.json` uploading at the moment when the teacher needs it
 
-After clicking on the button to upload `.json` file, on the server the necessary information is collected from the database and formed into a `.json` file, this file will be sent by the teacher to the bot personally to process it and the teacher can run the quiz for his students
+After clicking on the button to upload `.json` file, on the server the necessary information is collected from the database and formed into a `.json` file, this file will be sent by the **teacher** to the bot personally to process it and the teacher can run the quiz for his students
 
 On the client side, a temporary link is formed, when you click on it, it opens a window of your computer's file system:
-- macOS - Finder
-- Windows - Explorer
+- **macOS** - Finder
+- **Windows** - Explorer
 
 Then you choose a convenient place on your computer to save the new file
 
@@ -669,10 +670,10 @@ window.addEventListener("load", () => {
 ```
 
 As you can see, a compact file
-Participates in the work of a beautiful and minimalistic loading screen for the platform, to brighten up your wait for loading the site if you have a weak computer)))))
+Participates in the work of a beautiful and minimalistic loading screen for the **platform**, to brighten up your wait for loading the site if you have a weak computer)))))
 Well, or, it is heavily loaded with other processes
 
-The basic DOM tree, its methods, and `css` styles are used
+The basic **DOM-tree**, its *methods*, and `css` *styles* are used
 
 ##### File `sortableElements.js`:
 The last file in this directory
@@ -728,9 +729,9 @@ Used for smooth, and most importantly beautiful change of the order of questions
 There is a function that allows you to compactly sort and other groups of elements on the site
 
 Used such technologies as:
-- [jQuery](https://jquery.com/)
-- [Sortable](https://jqueryui.com/sortable/)
-- [AJAX](https://api.jquery.com/category/ajax/) 
+- **[jQuery](https://jquery.com/)**
+- **[Sortable](https://jqueryui.com/sortable/)**
+- **[AJAX](https://api.jquery.com/category/ajax/)**
 
 The new order of questions, which are displayed on the page after dragging and dropping them, will be processed and saved in the database
 That will allow to save the order of questions after page refresh, as well as to place them in the necessary order in the generated `.json` file when uploading it
@@ -744,7 +745,7 @@ What it consists of:
 - `deleteQuestFetch.js`
 
 These files perform similar functionality to the `createQuest.js` and `deleteQuest.js` files
-However, the [Fetch API](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API) is used here
+However, the **[Fetch API](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API)** is used here
 
 ##### File `createQuestFetch.js`:
 ```javascript
@@ -856,8 +857,8 @@ $(document).ready(function() {
 // It returns a promise that resolves to the result of parsing the response body as a string
 ```
 
-It is used for what its counterpart - asynchronous question creation, is also used for
-Check out the comments, and if you have ideas on how to improve this part of the project, I'd love to see your suggestions in the form of a Pull Request!
+It is used for what its counterpart - *asynchronous* question creation, is also used for
+Check out the comments, and if you have ideas on how to improve this part of the project, I'd love to see your suggestions in the form of a **Pull Request**!
 
 ##### File `deleteQuestFetch.js`:
 ```javascript
@@ -912,11 +913,11 @@ $(document).ready(function() {
 ```
 
 File deletion, using the same technology
-Read the comments to familiarize yourself, if you have additional questions, contact me at my [Github profile](https://github.com/FeliksNovoselskyi)
+Read the comments to familiarize yourself, if you have additional questions, contact me at my **[GitHub Profile](https://github.com/FeliksNovoselskyi)**
 
-These files provide an alternative for those developers who are either not familiar with [jQuery](https://jquery.com/) and [AJAX](https://api.jquery.com/category/ajax/) at all, or you're just more used to [Fetch API](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API)
+These files provide an alternative for those developers who are either not familiar with **[jQuery](https://jquery.com/)** and **[AJAX](https://api.jquery.com/category/ajax/)** at all, or you're just more used to **[Fetch API](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API)**
 
-If I have time, in the future I will try to make an alternative on [Fetch API](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API) and for the rest of the client part, and also, to finalize these files
+If I have time, in the future I will try to make an alternative on **[Fetch API](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API)** and for the rest of the *client part*, and also, to finalize these files
 
 And you will have an opportunity to work on this project with more familiar and familiar technology, if you are interested in it, of course
 
