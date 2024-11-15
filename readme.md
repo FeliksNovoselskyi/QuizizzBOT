@@ -141,7 +141,10 @@ In the database, you will be able to track:
 
 And so, let's move on to the files
 
+---
 #### DB functionality
+>[Back to top](#quizizz-telegram-bot)
+
 Let's get started
 ##### File `dbSetup.js`:
 ```javascript
@@ -176,7 +179,7 @@ sequelize.sync()
 
 This file prepares the database for further use and synchronizes it
 
-Sequelize ORM is used
+[Sequelize ORM](https://sequelize.org/) is used
 
 The data required to create the database is uploaded from the `.env` file, such as:
 - Database Name
@@ -221,6 +224,8 @@ Let's move on to the rest of the platform structure:
 
 ---
 #### Server part
+>[Back to top](#quizizz-telegram-bot)
+
 ##### File `server.js`:
 ```javascript
 import express from 'express'
@@ -408,8 +413,8 @@ app.listen(PORT, HOST, () => {
 })
 ```
 
-Platform core file, server side using server-side JavaScript
-Express is used, basic protection against CSRF-attacks is connected
+Platform core file, server side using server-side [JavaScript](https://developer.mozilla.org/en-US/docs/Web/JavaScript)
+[Express](https://expressjs.com/) is used, basic protection against CSRF-attacks is connected
 
 This file accepts requests from the frontend part and responds to them, which makes the platform fast and easy to use
 
@@ -424,6 +429,8 @@ There are extensive comments that will make it easier and faster to understand t
 
 ---
 #### Folders (`/templates`)
+>[Back to top](#quizizz-telegram-bot)
+
 The `/templates` directory contains these project templates:
 - `main.ejs`
 
@@ -730,6 +737,8 @@ That will allow to save the order of questions after page refresh, as well as to
 
 ---
 #### The last thing left in the `/static` directory is the `/fetch_api`
+>[Back to top](#quizizz-telegram-bot)
+
 What it consists of:
 - `createQuestFetch.js`
 - `deleteQuestFetch.js`
