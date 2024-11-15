@@ -23,7 +23,7 @@ export default async function handleFileUpload(dbFunctions, message) {
     if (path.extname(fileName) === '.json') {
         dbFunctions.getUserById(userId).then(async function (user) {
             if (!user || user.role !== 'teacher') {
-                return bot.sendMessage(chatId, '❗️ Only teachers are allowed to upload files! ❗️');
+                return bot.sendMessage(chatId, '❗️ Only teachers are allowed to upload files! ❗️')
             }
 
             try {

@@ -21,7 +21,7 @@ export async function teacherLogin(chatId, messageId, userId, username, firstNam
                 // Role change from student to teacher
                 dbFunctions.updateUserRole(userId, 'teacher', () => {
                     isTeacherLogin.isLogin = false
-                    bot.sendMessage(chatId, "👨‍🏫 Your role has been changed to teacher")
+                    bot.sendMessage(chatId, "👨‍🏫 Your role has been changed to teacher! \n\n❕ Now you can upload a JSON file with your test questions, and give your students the opportunity to start the test with command /can_start_quiz!")
                 })
                 return
             }
