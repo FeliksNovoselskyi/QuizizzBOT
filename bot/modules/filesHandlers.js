@@ -15,55 +15,52 @@ import {
 export default async function handleFileUpload(dbFunctions, message) {
     const chatId = message.chat.id
     const userId = message.from.id
-    
+
     const fileId = message.document.file_id
     const fileName = message.document.file_name
 
-    // Checking that the file is .json and that it is a teacher account
+    
     if (path.extname(fileName) === '.json') {
-        dbFunctions.getUserById(userId).then(async function(user) {
+        dbFunctions.getUserById(userId).then(async function (user) {
             if (!user || user.role !== 'teacher') {
-                return bot.sendMessage(chatId, '❗️ Only teachers are allowed to upload files! ❗️')
+                return bot.sendMessage(chatId, '❗️ Only teachers are allowed to upload files! ❗️');
             }
 
-            const localFilePath = path.join(__dirname, fileName)
+            const uploadFilesDir = path.join(__dirname, 'uploaded_files')
+            const localFilePath = path.join(uploadFilesDir, fileName)
 
-            // Download the file that the user uploaded to us
-            // then save this file in the /uploaded_files/
-            await bot.downloadFile(fileId, uploadFilesDir)
+            try {
+                const downloadedPath = await bot.downloadFile(fileId, uploadFilesDir)
+                const renamedPath = path.join(uploadFilesDir, fileName)
+                fs.renameSync(downloadedPath, renamedPath)
 
-            // Read the directory with copies of the files uploaded by the teacher
-            // to get the name of the newly downloaded file
-            // and at the end of the quiz, delete this .json file
-            fs.readdir(uploadFilesDir, (error, files) => {
-                if (error) {
-                    return bot.sendMessage(chatId, '❗️ Error reading the directory ❗️')
-                }
+                
+                // if (!fs.existsSync(renamedPath)) {
+                //     console.log('File not found:', renamedPath)
+                //     return bot.sendMessage(chatId, '❗️ File not found in the directory ❗️')
+                // }
 
-                const copiedFileName = files.find(file => file.startsWith('file_'))
-
-                // Read the contents of the file at the specified path
-                fs.readFile(localFilePath, 'utf8', function(error, data) {
+                
+                fs.readFile(renamedPath, 'utf8', (error, data) => {
                     if (error) {
                         return bot.sendMessage(chatId, '❗️ Error during reading a file ❗️')
                     }
 
                     try {
-                        // Try parsing the contents of the file
                         const json_file = JSON.parse(data)
-                        
-                        allQuestions.questions = json_file.questions
 
-                        jsonFileName[chatId] = copiedFileName
-                        
+                        allQuestions.questions = json_file.questions
                         bot.sendMessage(chatId, '🔥👍 The file with questions has been uploaded successfully! To start the quiz, please write /can_start_quiz')
                         addedFile.addedJsonFile = true
-
-                    } catch {
+                    } catch (parseError) {
+                        console.log('Error parsing JSON:', parseError.message)
                         bot.sendMessage(chatId, '❗️ Error parsing JSON file. Check the file format is correct ❗️')
                     }
                 })
-            })
+            } catch (downloadError) {
+                console.log('Error downloading file:', downloadError.message)
+                bot.sendMessage(chatId, '❗️ Error downloading the file ❗️')
+            }
         })
     } else {
         bot.sendMessage(chatId, '❗️ You can only upload a .json file for the quiz! ❗️')

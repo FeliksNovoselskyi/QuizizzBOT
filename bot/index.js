@@ -36,6 +36,7 @@ bot.on('message', async function(message) {
     // If a user has written /start we get data about him/her
     // whether it is stored in the database or not
     if (message.text === '/start') {
+        console.log(allQuestions)
         dbFunctions.getUserById(userId).then(async (user) => {
             if (user) {
                 await bot.sendMessage(chatId, `Hi! 👋\nYou are already registered with this bot as ${user.role}`)
