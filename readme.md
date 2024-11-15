@@ -142,7 +142,8 @@ In the database, you will be able to track:
 And so, let's move on to the files
 
 #### DB functionality
-File `dbSetup.js`:
+Let's get started
+##### File `dbSetup.js`:
 ```javascript
 import {Sequelize} from 'sequelize'
 import dotenv from 'dotenv'
@@ -187,7 +188,7 @@ All for the sake of convenience of further use and development, as well as simpl
 
 Let's move on
 
-File `models.js`:
+##### File `models.js`:
 ```javascript
 import {DataTypes} from 'sequelize'
 
@@ -218,8 +219,9 @@ Let's move on to the rest of the platform structure:
 - `/templates`
 - `/static`
 
+---
 #### Server part
-File `server.js`:
+##### File `server.js`:
 ```javascript
 import express from 'express'
 import dotenv from 'dotenv'
@@ -420,6 +422,7 @@ Here such events as:
 
 There are extensive comments that will make it easier and faster to understand the code of the `server.js` file
 
+---
 #### Folders (`/templates`)
 The `/templates` directory contains these project templates:
 - `main.ejs`
@@ -444,7 +447,7 @@ Let's break down `/js` in more detail:
 - `preloadScreen.js` - loading screen
 - `sortableElements.js` - sorting questions on the page
 
-File `createQuest.js`:
+##### File `createQuest.js`:
 ```javascript
 $(document).ready(function() {
     $('.correct-answer-checkbox').change(function() {
@@ -551,7 +554,7 @@ The above mentioned technologies are used here:
 - [AJAX](https://api.jquery.com/category/ajax/)
 - [jQuery](https://jquery.com/)
 
-File `deleteQuest.js`:
+##### File `deleteQuest.js`:
 ```javascript
 $(document).ready(function() {
     // Delegation of events
@@ -594,7 +597,7 @@ Similarly, allows you to delete questions asynchronously and without reloading t
 The technologies used are similar
 Also connected protection from CSRF-attacks as in other static files from the `/static` folder
 
-File `fileDownloading.js`:
+##### File `fileDownloading.js`:
 ```javascript
 $(document).ready(function() {
     // Process a button click to load a .json file with test questions
@@ -647,7 +650,7 @@ Then you choose a convenient place on your computer to save the new file
 
 The technologies used are similar
 
-File `preloadScreen.js`:
+##### File `preloadScreen.js`:
 ```javascript
 window.addEventListener("load", () => {
     const loadingScreen = document.querySelector("#loading-screen")
@@ -664,8 +667,8 @@ Well, or, it is heavily loaded with other processes
 
 The basic DOM tree, its methods, and `css` styles are used
 
+##### File `sortableElements.js`:
 The last file in this directory
-File `sortableElements.js`:
 ```javascript
 $(document).ready(function () {
     const $questions = $("#created-questions")
@@ -724,6 +727,189 @@ Used such technologies as:
 
 The new order of questions, which are displayed on the page after dragging and dropping them, will be processed and saved in the database
 That will allow to save the order of questions after page refresh, as well as to place them in the necessary order in the generated `.json` file when uploading it
+
+---
+#### The last thing left in the `/static` directory is the `/fetch_api`
+What it consists of:
+- `createQuestFetch.js`
+- `deleteQuestFetch.js`
+
+These files perform similar functionality to the `createQuest.js` and `deleteQuest.js` files
+However, the [Fetch API](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API) is used here
+
+##### File `createQuestFetch.js`:
+```javascript
+$(document).ready(function() {
+    $('.correct-answer-checkbox').change(function() {
+        // If the current checkbox is selected, deselect all other checkboxes
+        if ($(this).prop('checked')) {
+            $('.correct-answer-checkbox').not(this).prop('checked', false)
+        }
+    })
+
+    // Create question ajax request
+    $(".question-form").submit(function(event) {
+        event.preventDefault()
+
+        // Get form input values
+        // using jQuery
+        const questionTextInput = $('#questionTextInput').val()
+        const answer1Input = $('#answer1Input').val()
+        const answer2Input = $('#answer2Input').val()
+        const answer3Input = $('#answer3Input').val()
+        const answer4Input = $('#answer4Input').val()
+
+        const checkboxAnswers = [
+            $('#correctAnswer1Input'),
+            $('#correctAnswer2Input'),
+            $('#correctAnswer3Input'),
+            $('#correctAnswer4Input')
+        ]
+
+        function chooseCorrectAnswer() {
+            const correctAnswers = checkboxAnswers.filter(checkbox => checkbox.prop('checked'))
+
+            if (correctAnswers.length === 1) {
+                const correctAnswerIndex = checkboxAnswers.indexOf(correctAnswers[0])
+                return correctAnswerIndex
+            }
+            return null
+        }
+
+        const correctAnswerIndex = chooseCorrectAnswer()
+
+        fetch('/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                questionTextInput,
+                answer1Input,
+                answer2Input,
+                answer3Input,
+                answer4Input,
+                correctAnswerIndex,
+                action: 'createQuest'
+            })
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw response
+            }
+            return response.json()
+        })
+        // Successfully created question
+        .then(data => {
+            const newQuestionHtml = `
+                <div class="question">
+                    <div class="question-header">
+                        <h3 class="question-text">${data.questionText}</h3>
+                        <form action="/" method="post" class="delete-quest-form">
+                            <input type="hidden" name="questionId" value="${data.id}">
+                            <button type="submit" class="delete-quest-button" name="action" value="deleteQuest" data-question-id="${data.id}">Delete question</button>
+                        </form>
+                    </div>
+                    <div class="answers">
+                        <p class="answers-text">${data.answer1}</p>
+                        <p class="answers-text">${data.answer2}</p>
+                        <p class="answers-text">${data.answer3}</p>
+                        <p class="answers-text">${data.answer4}</p>
+                    </div>
+                </div>
+            `
+
+            // Add new question on page
+            // insertAdjacentHTML method is used to correctly add new code
+            // using dom-tree
+            document.getElementById('created-questions').insertAdjacentHTML('beforeend', newQuestionHtml)
+            
+            // Clear error message and reset form inputs
+            document.querySelector('.error-message').textContent = ""
+            document.querySelector('.question-form').reset()
+        })
+        // Errors during form validation
+        .catch(error => {
+            // Check if error is an instance of Response class
+            // It is checked to ensure that the request has been sent, even if it is not correct
+            if (error instanceof Response) {
+                error.json().then(err => {
+                    document.querySelector('.error-message').textContent = err.error
+                })
+            } else {
+                console.error(error)
+            }
+        })
+    })
+})
+
+// Response.json() takes the Response stream and reads it to the end
+// It returns a promise that resolves to the result of parsing the response body as a string
+```
+
+It is used for what its counterpart - asynchronous question creation, is also used for
+Check out the comments, and if you have ideas on how to improve this part of the project, I'd love to see your suggestions in the form of a Pull Request!
+
+##### File `deleteQuestFetch.js`:
+```javascript
+$(document).ready(function() {
+    // Delegation of events
+    // to be able to handle events of dynamically added elements
+    $(document).on('submit', '.delete-quest-form', function(event) {
+        event.preventDefault()
+
+        // Get form using jQuery for correctly questions deleting
+        let $form = $(this)
+        let questionId = $form.find("input[name=questionId]").val()
+
+        fetch('/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                questionId,
+                action: 'deleteQuest'
+            })
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw response
+            }
+            return response.json()
+        })
+        // Successfully deleted question
+        .then(data => {
+            if (data.deleteQuestion) {
+                $form.closest('.question').remove()
+            }
+        })
+
+        // Possible errors
+        .catch(error => {
+            // Check if error is an instance of Response class
+            // It is checked to ensure that the request has been sent, even if it is not correct
+            if (error instanceof Response) {
+                error.json().then(err => {
+                    console.error(err.error)
+                })
+            }
+        })
+    })
+})
+
+// Response.json() takes the Response stream and reads it to the end
+// It returns a promise that resolves to the result of parsing the response body as a string
+```
+
+File deletion, using the same technology
+Read the comments to familiarize yourself, if you have additional questions, contact me at my [Github profile](https://github.com/FeliksNovoselskyi)
+
+These files provide an alternative for those developers who are either not familiar with [jQuery](https://jquery.com/) and [AJAX](https://api.jquery.com/category/ajax/) at all, or you're just more used to [Fetch API](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API)
+
+If I have time, in the future I will try to make an alternative on [Fetch API](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API) and for the rest of the client part, and also, to finalize these files
+
+And you will have an opportunity to work on this project with more familiar and familiar technology, if you are interested in it, of course
 
 ---
 ## Want to get back to the top?
