@@ -23,6 +23,14 @@ A ***two-part*** project
 **Bot** - provides access levels for *teacher* and *student*, *teacher* is able to upload `.json` files and start the quiz. At the time the *student* is able to take it
 
 ---
+## Navigation
+- [Installation](#installation)
+- [Technologies Used](#technologies-used)
+- [Project structure](#project-structure)
+- [Figma and FigJam](#figma-and-figjam)
+- [Documentation](#documentation)
+
+---
 ## Installation
 *Of course install [NodeJS](https://nodejs.org/en) previously
 
@@ -124,10 +132,20 @@ graph TD;
 ## Documentation
 >[Back to top](#quizizz-telegram-bot)
 
+- [For platform](#for-platform)
+- [For bot](#for-bot)
+
 Full-fledged documentation for the project, contains introductory information for further acquaintance and work on the project for other developers
 
 ---
 ### For platform
+- [DB functionality](#db-functionality)
+- [Server part](#server-part)
+- [`/templates` directory](#folders-templates)
+- [`/static` directory](#static)
+- [`/fetch_api` directory](#the-last-thing-left-in-the-static-directory-is-the-fetch_api)
+
+
 First of all, we familiarize ourselves with the structure of the database, **platform models**
 
 In the **platform's** file system, there is a `/db` directory (as well as in the **bot's** file system)
@@ -144,6 +162,8 @@ And so, let's move on to the files
 ---
 #### DB functionality
 >[Back to top](#quizizz-telegram-bot)
+
+>[Back to top of the documentation](#documentation)
 
 Let's get started
 ##### File `dbSetup.js`:
@@ -225,6 +245,8 @@ Let's move on to the rest of the **platform** structure:
 ---
 #### Server part
 >[Back to top](#quizizz-telegram-bot)
+
+>[Back to top of the documentation](#documentation)
 
 ##### File `server.js`:
 ```javascript
@@ -429,8 +451,10 @@ Here such events as:
 There are extensive comments that will make it easier and faster to understand the code of the `server.js` file
 
 ---
-#### Folders (`/templates`)
+#### Directories (`/templates`)
 >[Back to top](#quizizz-telegram-bot)
+
+>[Back to top of the documentation](#documentation)
 
 The `/templates` directory contains these project templates:
 - `main.ejs`
@@ -739,6 +763,8 @@ That will allow to save the order of questions after page refresh, as well as to
 ---
 #### The last thing left in the `/static` directory is the `/fetch_api`
 >[Back to top](#quizizz-telegram-bot)
+
+>[Back to top of the documentation](#documentation)
 
 What it consists of:
 - `createQuestFetch.js`
