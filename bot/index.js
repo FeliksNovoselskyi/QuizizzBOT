@@ -88,7 +88,6 @@ bot.on('message', async function(message) {
             if (user.role === 'student' && canStart.canStartQuiz && !completedQuizzes[chatId]) {
                 await dbFunctions.clearProgress(userId)
 
-                console.log(allQuestions.questions)
                 // Resetting the question index for a user
                 quizFuncs.userQuestions[chatId] = 0
                 await quizFuncs.sendQuestion(chatId, messageId)
@@ -115,6 +114,8 @@ bot.on('message', async function(message) {
         })
     }
 
+    // Handling the condition when absolutely any message has been written
+    // in this case, help for the user will be displayed
     if (
     !message.document &&
     !isTeacherLogin.isLogin &&
@@ -129,6 +130,7 @@ bot.on('message', async function(message) {
     }
 })
 
+// Callbacks handling
 bot.on('callback_query', async function(query) {
     await handleCallbackQuery(
         query, 
@@ -138,6 +140,7 @@ bot.on('callback_query', async function(query) {
     )
 })
 
+// Files handling
 bot.on('document', async function(message) {
     await handleFileUpload(
         dbFunctions,
