@@ -36,7 +36,6 @@ bot.on('message', async function(message) {
     // If a user has written /start we get data about him/her
     // whether it is stored in the database or not
     if (message.text === '/start') {
-        console.log(allQuestions)
         dbFunctions.getUserById(userId).then(async (user) => {
             if (user) {
                 await bot.sendMessage(chatId, `Hi! 👋\nYou are already registered with this bot as ${user.role}`)
@@ -89,7 +88,6 @@ bot.on('message', async function(message) {
             if (user.role === 'student' && canStart.canStartQuiz && !completedQuizzes[chatId]) {
                 await dbFunctions.clearProgress(userId)
 
-                console.log(allQuestions.questions)
                 // Resetting the question index for a user
                 quizFuncs.userQuestions[chatId] = 0
                 await quizFuncs.sendQuestion(chatId, messageId)
@@ -116,6 +114,8 @@ bot.on('message', async function(message) {
         })
     }
 
+    // Handling the condition when absolutely any message has been written
+    // in this case, help for the user will be displayed
     if (
     !message.document &&
     !isTeacherLogin.isLogin &&
@@ -130,6 +130,7 @@ bot.on('message', async function(message) {
     }
 })
 
+// Callbacks handling
 bot.on('callback_query', async function(query) {
     await handleCallbackQuery(
         query, 
@@ -139,6 +140,7 @@ bot.on('callback_query', async function(query) {
     )
 })
 
+// Files handling
 bot.on('document', async function(message) {
     await handleFileUpload(
         dbFunctions,
