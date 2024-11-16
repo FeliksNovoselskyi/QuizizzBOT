@@ -18,7 +18,7 @@
 ## About
 A ***two-part*** project
 
-**Platform** - provides the ability to build a quiz on the site and get an output `.json` file with quiz info that the bot needs to start the quiz
+**Platform** - provides the ability to build a quiz on the site and get an output `.json` file with quiz info that the ***bot*** needs to start the quiz
 
 **Bot** - provides access levels for *teacher* and *student*, *teacher* is able to upload `.json` files and start the quiz. At the time the *student* is able to take it
 
@@ -109,13 +109,13 @@ You can use it to create a quiz when the **bot** asks you to upload a `.json` fi
 ```mermaid
 graph TD;
     A[**QuizizzBOT**] --> B[**bot** 
-    Telegram bot acting as a quiz organizer, ensuring their uploading and launching] --> b1[*modules*];
+    **Telegram bot** acting as a quiz organizer, *ensuring* their *uploading* and *launching*] --> b1[*modules*];
     B --> b2[*db*];
     B --> b3[***questions.json***];
     B --> b4[***index.js***];
 
     A --> D[**platform**
-    A web application to create a quiz to be sent to a bot] --> d1[*templates*];
+    A web application to create a quiz to be sent to a **bot**] --> d1[*templates*];
     D --> d2[*static*];
     D --> d3[*db*];
     D --> d4[***server.js***];
@@ -141,7 +141,7 @@ Full-fledged documentation for the project, contains introductory information fo
 ### For platform
 - [DB functionality](#platform-db-functionality)
 - [Server part](#server-part)
-- [`/templates` directory](#folders-templates)
+- [`/templates` directory](#directories-templates)
 - [`/static` directory](#static)
 - [`/fetch_api` directory](#the-last-thing-left-in-the-static-directory-is-the-fetch_api)
 
@@ -672,7 +672,7 @@ $(document).ready(function() {
 
 The file provides convenient and fast `.json` uploading at the moment when the teacher needs it
 
-After clicking on the button to upload `.json` file, on the server the necessary information is collected from the database and formed into a `.json` file, this file will be sent by the **teacher** to the bot personally to process it and the teacher can run the quiz for his students
+After clicking on the button to upload `.json` file, on the server the necessary information is collected from the database and formed into a `.json` file, this file will be sent by the **teacher** to the **bot** personally to process it and the teacher can run the quiz for his students
 
 On the client side, a temporary link is formed, when you click on it, it opens a window of your computer's file system:
 - **macOS** - Finder
@@ -949,16 +949,16 @@ And you will have an opportunity to work on this project with more familiar and 
 
 ---
 ### For bot
-Documentation of the bot, I think we should start with its models
-In the bot's directory there is a `/db` directory
+Documentation of the **bot**, I think we should start with its models
+In the **bot's** directory there is a `/db` directory
 Let's have a look at its contents:
 - `dbFunctions.js`
 - `dbSetup.js`
 - `models.js`.
 
-The `dbFunctions.js` file is present here, unlike in the platform, because in the Telegram bot some operations with the database were repeated, because of which, it was decided to put some functions in a separate file for convenience
+The `dbFunctions.js` file is present here, unlike in the **platform**, because in the **Telegram bot** some operations with the database were repeated, because of which, it was decided to put some functions in a separate file for convenience
 
-As you can see, the structure that ensures the operation of the database is very similar to the same structure for the platform, this is done on purpose, so that the structure of projects was maximally similar, simple, and most importantly understandable
+As you can see, the structure that ensures the operation of the database is very similar to the same structure for the **platform**, this is done on purpose, so that the structure of projects was maximally similar, simple, and most importantly understandable
 
 Let's analyze each file in this directory separately
 
@@ -996,11 +996,11 @@ sequelize.sync()
 This file configures, creates and synchronizes the database, using the familiar **[Sequelize ORM](https://sequelize.org/)**
 
 The values needed for the database, such as:
-- Database Administrator Name
-- Database Password
-- Database Name
+- *Database Administrator Name*
+- *Database Password*
+- *Database Name*
 
-Similarly with the platform, taken from the `.env` file
+Similarly with the **platform**, taken from the `.env` file
 
 File `models.js`:
 ```javascript
@@ -1020,15 +1020,16 @@ export const Users = dataBase.sequelize.define('Users', {
 })
 ```
 
-This file contains models for the bot, for example, the `Users` model, which stores such information about users:
-- userId - primary key of the user from Telegram itself
-- username - full user name
-- firstName - user's first name
-- lastName - user's last name
-- role - user's role for the bot (teacher or student)
-- progress - user's progress after passing the quiz
+This file contains models for the **bot**, for example, the `Users` model, which stores such information about users:
+- `userId` - primary key of the user from *Telegram* itself
+- `username` - full user name
+- `firstName` - user's first name
+- `lastName` - user's last name
+- `role` - user's role for the **bot** (*teacher* or *student*)
+- `progress` - user's progress after passing the quiz
 
-Наконец, самое интересное, перейдем к файлу `dbFunctions.js`
+Finally, the fun part, let's go to the `dbFunctions.js` file
+
 File `dbFunctions.js`:
 ```javascript
 // My scripts
@@ -1096,9 +1097,9 @@ export async function clearProgress(userId) {
 }
 ```
 
-As you can see, there are quite a lot of functions in this file, which are used in almost all pieces of code for the bot
-It was possible to use already existing methods, but creating your own functions allowed you to add logging, for additional checks of the code and with the database specifically
-At the same time getting a more detailed description of errors, which [NodeJS](https://nodejs.org/uk) has quite big problems with
+As you can see, there are quite a lot of functions in this file, which are used in almost all pieces of code for the **bot**
+It was possible to use already existing methods, but creating your own functions allowed you to add ***logging***, for additional checks of the code and with the database specifically
+At the same time getting a more detailed description of errors, which **[NodeJS](https://nodejs.org/uk)** has quite big problems with
 
 In short, the point of the file is to improve the existing methods in **[Sequelize ORM](https://sequelize.org/)**, while gathering them in one place and giving a more detailed description of each of them
 
