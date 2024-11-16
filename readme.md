@@ -139,7 +139,7 @@ Full-fledged documentation for the project, contains introductory information fo
 
 ---
 ### For platform
-- [DB functionality](#db-functionality)
+- [DB functionality](#platform-db-functionality)
 - [Server part](#server-part)
 - [`/templates` directory](#folders-templates)
 - [`/static` directory](#static)
@@ -160,7 +160,7 @@ In the database, you will be able to track:
 And so, let's move on to the files
 
 ---
-#### DB functionality
+#### Platform DB functionality
 >[Back to top](#quizizz-telegram-bot)
 
 >[Back to top of the documentation](#documentation)
@@ -946,6 +946,166 @@ These files provide an alternative for those developers who are either not famil
 If I have time, in the future I will try to make an alternative on **[Fetch API](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API)** and for the rest of the *client part*, and also, to finalize these files
 
 And you will have an opportunity to work on this project with more familiar and familiar technology, if you are interested in it, of course
+
+---
+### For bot
+Documentation of the bot, I think we should start with its models
+In the bot's directory there is a `/db` directory
+Let's have a look at its contents:
+- `dbFunctions.js`
+- `dbSetup.js`
+- `models.js`.
+
+The `dbFunctions.js` file is present here, unlike in the platform, because in the Telegram bot some operations with the database were repeated, because of which, it was decided to put some functions in a separate file for convenience
+
+As you can see, the structure that ensures the operation of the database is very similar to the same structure for the platform, this is done on purpose, so that the structure of projects was maximally similar, simple, and most importantly understandable
+
+Let's analyze each file in this directory separately
+
+#### BOT DB functionality
+File `dbSetup.js`:
+```javascript
+import {Sequelize} from 'sequelize'
+import dotenv from 'dotenv'
+
+import {fileURLToPath} from 'url'
+import {dirname, join} from 'path'
+
+dotenv.config({path: '../.env'})
+
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = dirname(__filename)
+
+// Create an instance of the Sequelize class, which will be an ORM, to work with the db
+export const sequelize = new Sequelize(process.env.BOT_DB_NAME, process.env.BOT_DB_ADMIN_NAME, process.env.BOT_DB_PASSWORD, {
+    host: 'localhost',
+    dialect: 'sqlite',
+    storage: join(__dirname, `${process.env.BOT_DB_NAME}.db`)
+})
+
+// Sync BOT DB
+sequelize.sync()
+    .then(() => {
+        console.log('Database created successfully')
+    })
+    .catch((error) => {
+        console.log('Error during database creation:', error)
+    })
+```
+
+This file configures, creates and synchronizes the database, using the familiar **[Sequelize ORM](https://sequelize.org/)**
+
+The values needed for the database, such as:
+- Database Administrator Name
+- Database Password
+- Database Name
+
+Similarly with the platform, taken from the `.env` file
+
+File `models.js`:
+```javascript
+import {DataTypes} from 'sequelize'
+
+// My scripts
+import * as dataBase from './dbSetup.js'
+
+// Users model
+export const Users = dataBase.sequelize.define('Users', {
+    userId: {type: DataTypes.INTEGER},
+    username: {type: DataTypes.TEXT},
+    firstName: {type: DataTypes.TEXT},
+    lastName: {type: DataTypes.TEXT},
+    role: {type: DataTypes.TEXT},
+    progress: {type: DataTypes.TEXT}
+})
+```
+
+This file contains models for the bot, for example, the `Users` model, which stores such information about users:
+- userId - primary key of the user from Telegram itself
+- username - full user name
+- firstName - user's first name
+- lastName - user's last name
+- role - user's role for the bot (teacher or student)
+- progress - user's progress after passing the quiz
+
+Наконец, самое интересное, перейдем к файлу `dbFunctions.js`
+File `dbFunctions.js`:
+```javascript
+// My scripts
+import * as models from './models.js'
+
+// Function in which user information is added to the database
+export async function addUser(userId, username, firstName, lastName, role) {
+    try {
+        models.Users.create({
+            userId: userId,
+            username: username,
+            firstName: firstName,
+            lastName: lastName,
+            role: role,
+        })
+    } catch (error) {
+        console.error('Error adding a user:', error.message)
+    }
+}
+
+// Function to get information about the user when he/she wants it
+export async function getUserById(userId) {
+    try {
+        const user = await models.Users.findOne({where: {userId}})
+        return user
+    } catch (error) {
+        console.error('Error when receiving a user:', error.message)
+        return null
+    }
+}
+
+// Function updating the user role in the database
+// depending on the one he's got now
+export async function updateUserRole(userId, newRole, callback) {
+    try {
+        const [updated] = await models.Users.update({role: newRole}, {where: {userId}})
+        
+        if (updated) {
+            callback()
+        } else {
+            console.error("Error: user with this id was not found")
+        }
+    } catch (error) {
+        console.error("Error updating a role:", error.message)
+    }
+}
+
+// Function that updates the user's progress
+export async function updateProgress(newList, userId) {
+    try {
+        await models.Users.update({progress: newList}, {where: {userId}})
+    } catch (error) {
+        console.error("Error when updating user progress:", error.message)
+    }
+}
+
+
+// Function to clearing user progress from the database
+export async function clearProgress(userId) {
+    try {
+        await models.Users.update({progress: null}, {where: {userId}})
+    } catch (error) {
+        console.error("Error during clearing progress", error.message)
+    }
+}
+```
+
+As you can see, there are quite a lot of functions in this file, which are used in almost all pieces of code for the bot
+It was possible to use already existing methods, but creating your own functions allowed you to add logging, for additional checks of the code and with the database specifically
+At the same time getting a more detailed description of errors, which [NodeJS](https://nodejs.org/uk) has quite big problems with
+
+In short, the point of the file is to improve the existing methods in **[Sequelize ORM](https://sequelize.org/)**, while gathering them in one place and giving a more detailed description of each of them
+
+As always, there are comments in the code, which will help you to understand the project, and if you want to make your own changes, which I will be extremely glad and grateful to you
+
+#### Main bot files
+123
 
 ---
 ## Want to get back to the top?
