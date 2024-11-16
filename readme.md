@@ -949,6 +949,11 @@ And you will have an opportunity to work on this project with more familiar and 
 
 ---
 ### For bot
+>[Back to top of the documentation](#documentation)
+
+- [BOT DB functionality](#bot-db-functionality)
+- [Main bot files](#main-bot-files)
+
 Documentation of the **bot**, I think we should start with its models
 In the **bot's** directory there is a `/db` directory
 Let's have a look at its contents:
@@ -963,6 +968,10 @@ As you can see, the structure that ensures the operation of the database is very
 Let's analyze each file in this directory separately
 
 #### BOT DB functionality
+>[Back to top](#quizizz-telegram-bot)
+
+>[Back to top of the documentation](#documentation)
+
 File `dbSetup.js`:
 ```javascript
 import {Sequelize} from 'sequelize'
@@ -1106,7 +1115,16 @@ In short, the point of the file is to improve the existing methods in **[Sequeli
 As always, there are comments in the code, which will help you to understand the project, and if you want to make your own changes, which I will be extremely glad and grateful to you
 
 #### Main bot files
-123
+>[Back to top](#quizizz-telegram-bot)
+
+>[Back to top of the documentation](#documentation)
+
+Now, let's move on to the main **bot** files:
+- `index.js` - the main **bot** file, where all its processes are managed
+- `config.js` - **bot** configuration, its main variables and constants
+- `questions.json` - an example `.json` file to run a quiz
+
+These files are located in the main **bot** directory
 
 ---
 ## Want to get back to the top?
