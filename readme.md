@@ -953,6 +953,7 @@ And you will have an opportunity to work on this project with more familiar and 
 
 - [BOT DB functionality](#bot-db-functionality)
 - [Main bot files](#main-bot-files)
+- [Modules directory](#modules-directory)
 
 Documentation of the **bot**, I think we should start with its models
 In the **bot's** directory there is a `/db` directory
@@ -1440,12 +1441,16 @@ This is an example file that shows a sample `.json` file that will be sent to th
 
 Added so that you can quickly grab an already built file that will serve as an example for the **bot** to work from
 
-If you are interested in this, you can already create your own `.json`, but with the help of the platform, in a convenient and simple interface, instead of manually writing the code
+If you are interested in this, you can already create your own `.json`, but with the help of the **platform**, in a convenient and simple interface, instead of manually writing the code
 
 I think it will be very convenient for you, as well as those with whom you can work on this project
 
-# Modules directory
-So, we have familiarized ourselves with the main part of the bot's file system
+#### Modules directory
+>[Back to top](#quizizz-telegram-bot)
+
+>[Back to top of the documentation](#documentation)
+
+So, we have familiarized ourselves with the main part of the **bot's** file system
 Now we can move on to the `/modules` directory
 
 What `/modules` consists of:
@@ -1454,7 +1459,438 @@ What `/modules` consists of:
 - `filesHandlers.js`
 - `quizFunctional.js`
 
-These are the bot's service files, which provide the lion's share of its functionality, and are also designed to unload the main file, which is obviously more convenient when working on the project
+These are the **bot's** service files, which provide the lion's share of its functionality, and are also designed to unload the main file, which is obviously more convenient when working on the project
+
+File `botFunctions.js`:
+```javascript
+// My scripts
+import * as dbFunctions from '../db/dbFunctions.js'
+
+import {
+    bot,
+    isTeacherLogin
+} from "../config.js"
+
+// Function that handles login as a teacher, with password verification
+export async function teacherLogin(chatId, messageId, userId, username, firstName, lastName, changeToTeacherRole) {
+    await bot.sendMessage(chatId, '❕ Enter your teacher account password (password only, no extra characters)')
+
+    const teacherPassword = process.env.teacherPassword
+    bot.once('message', async (message) => {
+        const userInputPassword = message.text
+
+        // Checking the validity of the password entered by the user
+        if (userInputPassword === teacherPassword) {
+            await bot.editMessageReplyMarkup({inline_keyboard: []}, {chat_id: chatId, message_id: messageId})
+            if (changeToTeacherRole) {
+                // Role change from student to teacher
+                dbFunctions.updateUserRole(userId, 'teacher', () => {
+                    isTeacherLogin.isLogin = false
+                    bot.sendMessage(chatId, "👨‍🏫 Your role has been changed to teacher! \n\n❕ Now you can upload a JSON file with your test questions, and give your students the opportunity to start the test with command /can_start_quiz!")
+                })
+                return
+            }
+            
+            dbFunctions.addUser(userId, username, firstName, lastName, 'teacher')
+            await bot.sendMessage(chatId, '👨‍🏫 You have successfully logged in as a teacher! \n❕ Now you can upload a JSON file with your test questions, and give your students the opportunity to start the test with command /can_start_quiz!')
+        } else {
+            await bot.sendMessage(chatId, '❗️ Incorrect password! \nTry again \nTo do this, press the login button again ❗️')
+        }
+    })
+}
+
+// Check the current user role
+export function checkUserRole(userId, chatId) {
+    dbFunctions.getUserById(userId).then(async (user) => {
+        if (user) {
+            if (user.role === 'student') {
+                // If the current role is student, offer a change to teacher
+                bot.sendMessage(chatId, "🧑‍🎓 You are logged in as a student. Would you like to log in as a teacher 👨‍🏫?", {
+                    reply_markup: {
+                        inline_keyboard: [
+                            [{text: "Yes", callback_data: "switch_to_teacher"}],
+                            [{text: "No", callback_data: "cancel_change_role"}]
+                        ]
+                    }
+                })
+            } else if (user.role === 'teacher') {
+                // If the current role is teacher, offer a change to student
+                bot.sendMessage(chatId, "👨‍🏫 You are logged in as a teacher. Would you like to log in as a student 🧑‍🎓?", {
+                    reply_markup: {
+                        inline_keyboard: [
+                            [{text: "Yes", callback_data: "switch_to_student"}],
+                            [{text: "No", callback_data: "cancel_change_role"}]
+                        ]
+                    }
+                })
+            }
+        }
+    })
+}
+```
+
+This file contains some of the main functions of the bot, which are used in many cases, which simplifies the code and writing of the project
+- `teacherLogin()`
+- `checkUserRole()`
+
+`teacherLogin()` - Logs the user in as a *teacher*, and checks if the user is already logged in (and accordingly tries to change his *role* to *teacher*), or creates an account immediately as a *teacher*
+
+`checkUserRole()` - checks the user's *role* before offering to change it, so that if you are a *student*, you can successfully change your *role* to *teacher* (if you know the password, of course)
+And being a *teacher*, you can become a *student*
+
+The "`teacher` / `student`" functionality was created for this purpose:
+- First of all for convenient testing of the project
+- To get rid of the need to maintain 2 accounts in **Telegram**
+- Allow users to change their *role*
+
+As everywhere else, there are comments that will help you to understand the file code in detail in practice
+
+File `callbackHandlers.js`:
+```javascript
+// My scripts
+import {
+    bot,
+    allQuestions,
+    answerMsgIdState,
+    isTeacherLogin,
+    currentMessageText,
+    __dirname
+} from "../config.js"
+
+// Processing callback functions
+// bot.on('callback_query', async function(query) {
+export default async function handleCallbackQuery(query, quizFuncs, dbFunctions, botFuncs) {
+    const chatId = query.message.chat.id
+    const userId = query.from.id
+    const messageId = query.message.message_id
+
+    const username = query.from.username || ''
+    const firstName = query.from.first_name || ''
+    const lastName = query.from.last_name || ''
+
+    const userIndex = quizFuncs.userQuestions[chatId] || 0
+    const currentQuestion = allQuestions.questions[userIndex]
+
+    // Sign up as a student
+    if (query.data === 'register_student') {
+        dbFunctions.addUser(userId, username, firstName, lastName, 'student')
+        await bot.editMessageReplyMarkup({inline_keyboard: []}, {chat_id: chatId, message_id: messageId})
+        await bot.sendMessage(chatId, '🧑‍🎓 You are registered in this bot as a student')
+        return
+    }
+
+    // Sign in as a teacher
+    if (query.data === 'login_teacher') {
+        isTeacherLogin.isLogin = true
+        botFuncs.teacherLogin(chatId, messageId, userId, username, firstName, lastName, false)
+        return
+    }
+
+    // Role change from student to teacher
+    if (query.data === 'switch_to_teacher') {
+        isTeacherLogin.isLogin = true
+        botFuncs.teacherLogin(chatId, messageId, userId, username, firstName, lastName, true)
+        return
+    } 
+    
+    if (query.data === 'switch_to_student') {
+        // Role change from teacher to student
+        delete quizFuncs.userQuestions[chatId]
+        dbFunctions.updateUserRole(userId, 'student', () => {
+            bot.sendMessage(chatId, "🧑‍🎓 Your role has been changed to student")
+        })
+        await bot.editMessageReplyMarkup({inline_keyboard: []}, {chat_id: chatId, message_id: messageId})
+        return
+    }
+    
+    if (query.data === 'cancel_change_role') {
+        // Cancelling a role change
+        await bot.sendMessage(chatId, "🤨 Role change cancelled")
+        await bot.editMessageReplyMarkup({inline_keyboard: []}, {chat_id: chatId, message_id: messageId})
+        return
+    }
+
+    // Check if there is no current issue, avoid executing the code
+    if (!currentQuestion) {
+        return // If there is no question, we don't do anything further
+    }
+
+    // Processing of responses to questions
+    const answerIndex = parseInt(query.data)
+    const isCorrect = answerIndex === currentQuestion.correct
+
+    const numberQuestion = quizFuncs.userQuestions[userId]
+
+    let questionResult = {}
+    let userProgressJSON
+
+    if (isCorrect) {
+        const correctAnswerText = "✅ That's the right answer! ✅"
+        
+        questionResult[numberQuestion] = 1
+        quizFuncs.userProgress.push(questionResult)
+
+        // Determining whether a reply message has been sent or not
+        // it's done by its message_id
+        if (answerMsgIdState.answerMessageId) {
+            // Check if the existing text matches the text that will be added
+            // If they match, an error will occur
+            if (currentMessageText.messageText !== correctAnswerText) {
+                await bot.editMessageText(correctAnswerText, {
+                    chat_id: chatId,
+                    message_id: answerMsgIdState.answerMessageId
+                })
+                currentMessageText.messageText = correctAnswerText
+            }
+        } else {
+            const sentMessage = await bot.sendMessage(chatId, correctAnswerText)
+            answerMsgIdState.answerMessageId = sentMessage.message_id
+            currentMessageText.messageText = correctAnswerText
+        }
+        
+        userProgressJSON = JSON.stringify(quizFuncs.userProgress)
+        dbFunctions.updateProgress(userProgressJSON, userId)
+    } else {
+        const wrongAnswerText = `❌ Wrong answer! The correct answer: ${currentQuestion.options[currentQuestion.correct]} ❌`
+        
+        questionResult[numberQuestion] = 0
+        quizFuncs.userProgress.push(questionResult)
+
+        // Determining whether a reply message has been sent or not
+        // it's done by its message_id
+        if (answerMsgIdState.answerMessageId) {
+            // Check if the existing text matches the text that will be added
+            // If they match, an error will occur
+            if (currentMessageText.messageText !== wrongAnswerText) {
+                await bot.editMessageText(wrongAnswerText, {
+                    chat_id: chatId,
+                    message_id: answerMsgIdState.answerMessageId
+                })
+                currentMessageText.messageText = wrongAnswerText
+            }
+        } else {
+            const sentMessage = await bot.sendMessage(chatId, wrongAnswerText)
+            answerMsgIdState.answerMessageId = sentMessage.message_id
+            currentMessageText.messageText = wrongAnswerText
+        }
+        
+        userProgressJSON = JSON.stringify(quizFuncs.userProgress)
+        dbFunctions.updateProgress(userProgressJSON, userId)
+    } 
+    
+
+    await bot.editMessageReplyMarkup({inline_keyboard: []}, {chat_id: chatId, message_id: messageId})
+
+    // Moving on to the next question
+    quizFuncs.userQuestions[chatId] = userIndex + 1
+    await quizFuncs.sendQuestion(chatId, messageId)
+}
+```
+
+This file was created as a result of unloading the main file (`index.js`)
+It contains one function - `handleCallbackQuery()`
+
+In this function absolutely all ***callback requests*** from users are processed, this function is exported, and used in the main project file (`index.js`)
+
+The comments will help to understand its conditions and cases of its use in more detail, and they will speak for themselves
+
+The processing of requests in each case tends to keep the same style and format, which will maximally preserve the integrity and identity of the code, which will make it easier to study and work on it
+
+Let's move on
+
+File `filesHandlers.js`:
+```javascript
+import fs from 'fs'
+import path from 'path'
+
+// My scripts
+import {
+    bot,
+    allQuestions,
+    jsonFileName,
+    uploadFilesDir,
+    addedFile,
+    __dirname
+} from "../config.js"
+
+// Teacher uploading .json file with quiz questions
+export default async function handleFileUpload(dbFunctions, message) {
+    const chatId = message.chat.id
+    const userId = message.from.id
+
+    const fileId = message.document.file_id
+    const fileName = message.document.file_name
+
+    // Checking that the file is .json and that it is a teacher account
+    if (path.extname(fileName) === '.json') {
+        dbFunctions.getUserById(userId).then(async function (user) {
+            if (!user || user.role !== 'teacher') {
+                return bot.sendMessage(chatId, '❗️ Only teachers are allowed to upload files! ❗️')
+            }
+
+            try {
+                // Download the file that the user uploaded to us
+                // then save this file in the /uploaded_files/
+                const downloadedPath = await bot.downloadFile(fileId, uploadFilesDir)
+                const renamedPath = path.join(uploadFilesDir, fileName)
+                fs.renameSync(downloadedPath, renamedPath)
+                
+                // Search for the file by the new name (the new name is the same as the one with which the user uploaded it)
+                // and parsing it for further use of data from it
+                fs.readFile(renamedPath, 'utf8', (error, data) => {
+                    if (error) {
+                        return bot.sendMessage(chatId, '❗️ Error during reading a file ❗️')
+                    }
+
+                    try {
+                        const json_file = JSON.parse(data)
+
+                        allQuestions.questions = json_file.questions
+
+                        jsonFileName[chatId] = fileName
+
+                        bot.sendMessage(chatId, '🔥👍 The file with questions has been uploaded successfully! To start the quiz, please write /can_start_quiz')
+                        addedFile.addedJsonFile = true
+                    } catch (parseError) {
+                        console.log('Error parsing JSON:', parseError.message)
+                        bot.sendMessage(chatId, '❗️ Error parsing JSON file. Check the file format is correct ❗️')
+                    }
+                })
+            } catch (downloadError) {
+                console.log('Error downloading file:', downloadError.message)
+                bot.sendMessage(chatId, '❗️ Error downloading the file ❗️')
+            }
+        })
+    } else {
+        bot.sendMessage(chatId, '❗️ You can only upload a .json file for the quiz! ❗️')
+    }
+}
+```
+
+This file handles the file loading, to be more specific, it handles the loading of the `.json` file, parses it, and executes the necessary functionality so that the test can start
+
+Similarly with the `handleCallbackQuery()` function.
+The `handleFileUpload()` function is exported, and called in the main project file (`index.js`)
+
+Here, as well as in the rest of the files, logging is maximally specified, which will make it easier to find errors
+As you can see, the construct:
+```javascript
+try {
+    console.log(“PERFECT”)
+} catch (error) {
+    console.log(“ERROR”)
+}
+```
+
+Makes life much easier during development
+
+Finally, the last file in this directory
+
+File `quizFunctional.js`:
+```javascript
+import fs from 'fs'
+import path from 'path'
+
+// My scripts
+import {
+    bot,
+    answerMsgIdState, 
+    completedQuizzes, 
+    jsonFileName, 
+    addedFile,
+    allQuestions, 
+    __dirname
+} from "../config.js"
+
+// Indexes of current issues for each user
+export const userQuestions = {}
+export let userProgress = []
+
+// Function for sending a question with inline buttons
+export async function sendQuestion(chatId, messageId) {
+    try {
+        const userIndex = userQuestions[chatId] || 0
+    
+        if (userIndex < allQuestions.questions.length) {
+            const currentQuestion = allQuestions.questions[userIndex]
+    
+            // Generate options for the inline keyboard under the message
+            const options = currentQuestion.options.map((option, index) => {
+                return [{text: option, callback_data: String(index)}]
+            })
+
+            if (userIndex === 0) {
+                // Sending a message with an inline keyboard
+                await bot.sendMessage(chatId, currentQuestion.question, {
+                    reply_markup: {
+                        inline_keyboard: options
+                    }
+                })
+            } else {
+                await bot.editMessageText(currentQuestion.question, {
+                    chat_id: chatId,
+                    message_id: messageId,
+                    reply_markup: {
+                        inline_keyboard: options
+                    }
+                })
+            }
+
+        } else {
+            let allQuestions = userProgress.length
+            let allCorrectAnswers = 0
+
+            userProgress.forEach((question) => {
+                let objectValues = Object.values(question)
+
+                allCorrectAnswers = allCorrectAnswers + parseInt(objectValues)
+            })
+
+            await bot.sendMessage(chatId, `✋🛑 The test is over! \n\n👉 Number of questions: ${allQuestions} \n\n👉 The number of correct answers: ${allCorrectAnswers} \n\nThank you for all your answers! 🤗`)
+            
+            // Resetting the status for the user
+            delete userQuestions[chatId]
+            userProgress = []
+            answerMsgIdState.answerMessageId = null
+
+            completedQuizzes[chatId] = true
+            addedFile.addedJsonFile = false
+            
+            const copiedFileName = jsonFileName[chatId]
+
+            // Deleting a copy of the .json file with questions from the teacher
+            const filePath = path.join(__dirname, 'uploaded_files', copiedFileName)
+
+            fs.unlink(filePath, (error) => {
+                if (error) {
+                    console.error(error)
+                }
+            })
+        }
+    } catch (error) {
+        console.log(error)
+    }
+}
+```
+
+At the moment, there is only one function defined in this file, and that is `sendQuestion()`
+This function is responsible for sending each new question to the student, 
+This function, traditionally for this project, has logging
+
+Here it handles whether it is the first question or not, and whether it is the first answer to the question or not
+
+***If it is the first question*** - a new message is sent.
+***If it is the second question*** - it modifies the existing one (including the inline keyboard)
+
+***If it was the first answer to a question*** - a new message is sent to indicate whether the answer is correct or not
+***If it is the second, third, fourth, etc. answer to the question*** - the existing message is modified
+
+This functionality is designed to make the quiz compact, in just two messages, 
+and not in dozens of posts as it was before, because it is logically not convenient
+
+Also, when the quiz is completed, the results of the quiz are calculated here, and a corresponding message about the results is displayed
+
+Also, when the quiz is finished, the `.json` file that contained the data for the past quiz is deleted
 
 ---
 ## Want to get back to the top?
