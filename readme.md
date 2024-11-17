@@ -1126,6 +1126,336 @@ Now, let's move on to the main **bot** files:
 
 These files are located in the main **bot** directory
 
+Let's start with the main file, `index.js`
+File `index.js`:
+```javascript
+// My scripts
+import {
+    bot, 
+    completedQuizzes, 
+    canStart, 
+    addedFile, 
+    isTeacherLogin, 
+    helpMessage,
+    allQuestions,
+    __dirname
+} from "./config.js"
+import handleCallbackQuery from './modules/callbackHandlers.js'
+import handleFileUpload from './modules/filesHandlers.js'
+
+import * as dbFunctions from './db/dbFunctions.js'
+
+import * as quizFuncs from './modules/quizFunctional.js'
+import * as botFuncs from './modules/botFunctions.js'
+
+// Create a menu of commands for the bot
+bot.setMyCommands([
+    {command: '/start', description: '❕ Start communicating with the bot'},
+    {command: '/help', description: '❕ Get help from the bot'},
+    {command: '/info', description: '❕ Get information about you'},
+    {command: '/change_role', description: '❕ Change your role'},
+    {command: '/can_start_quiz', description: '❕ Provide an opportunity to take the quiz (teacher)'},
+    {command: '/quiz', description: '❕ Start taking the quiz if given the opportunity to do so (student)'},
+])
+
+// User messages
+bot.on('message', async function(message) {
+    const chatId = message.chat.id
+    const userId = message.from.id
+    const messageId = message.message_id
+
+    // If a user has written /start we get data about him/her
+    // whether it is stored in the database or not
+    if (message.text === '/start') {
+        dbFunctions.getUserById(userId).then(async (user) => {
+            if (user) {
+                await bot.sendMessage(chatId, `Hi! 👋\nYou are already registered with this bot as ${user.role}`)
+            } else {
+                const startOptions = {
+                    reply_markup: {
+                        inline_keyboard: [
+                            [{text: '🧑‍🎓 Register as a student', callback_data: 'register_student'}],
+                            [{text: '👨‍🏫 Log in as a teacher', callback_data: 'login_teacher'}],
+                        ],
+                    },
+                }
+        
+                await bot.sendMessage(chatId, 'Hello! 👋\nYou can sign up for this bot as a student 🧑‍🎓 or log in as a teacher 👨‍🏫 to create quizzes! \n❕ Find out your status: /info', startOptions)
+            }
+        })
+    }
+
+    // If the user wants to retrieve data about him/herself
+    if (message.text === '/info')  {
+        dbFunctions.getUserById(userId).then(async (user) => {
+            if (user) {
+                await bot.sendMessage(chatId, `👉 Your first and last names: ${user.firstName} ${user.lastName} \n👉 Your status: ${user.role}`)
+            } else {
+                await bot.sendMessage(chatId, '😓 You are not logged into this bot')
+            }
+        })
+    }
+
+    // If the user wants to take help with bot commands
+    if (message.text === '/help')  {
+        await bot.sendMessage(chatId, helpMessage)
+    }
+
+    // Command to change role
+    if (message.text === '/change_role')  {
+        dbFunctions.getUserById(userId).then(async (user) => {
+
+            if (user) {
+                botFuncs.checkUserRole(userId, chatId)
+            } else {
+                await bot.sendMessage(chatId, '❗️ You are not logged into this bot! ❗️')
+            }
+        })
+    }
+
+    // If the user wants to start taking the quiz
+    if (message.text === '/quiz') {
+        dbFunctions.getUserById(userId).then(async (user) => {
+            if (user.role === 'student' && canStart.canStartQuiz && !completedQuizzes[chatId]) {
+                await dbFunctions.clearProgress(userId)
+
+                // Resetting the question index for a user
+                quizFuncs.userQuestions[chatId] = 0
+                await quizFuncs.sendQuestion(chatId, messageId)
+            } else {
+                await bot.sendMessage(chatId, '❗️ Passing the quiz is not allowed!\n❗️ Or, if you are a teacher, you cannot take the quiz')
+            }
+        })
+    }
+
+    // Command authorizing to start the quiz (available only to the teacher)
+    if (message.text === '/can_start_quiz') {
+        dbFunctions.getUserById(userId).then(async (user) => {
+            if (user.role === 'teacher') {
+                if (addedFile.addedJsonFile) {
+                    canStart.canStartQuiz = true
+                    completedQuizzes[chatId] = false
+                    bot.sendMessage(chatId, '🔥👍 You have successfully created a quiz!\n🤔 Now your students can start quiz with command /quiz')
+                } else {
+                    bot.sendMessage(chatId, '❗️ You did not upload a .json file with questions ❗️')
+                }
+            } else {
+                await bot.sendMessage(chatId, '❗️ Only the teacher has the right to start the quiz ❗️')
+            }
+        })
+    }
+
+    // Handling the condition when absolutely any message has been written
+    // in this case, help for the user will be displayed
+    if (
+    !message.document &&
+    !isTeacherLogin.isLogin &&
+    message.text !== '/start' &&
+    message.text !== '/info' &&
+    message.text !== '/help' &&
+    message.text !== '/change_role' &&
+    message.text !== '/quiz' &&
+    message.text !== '/can_start_quiz'
+        ) {
+        await bot.sendMessage(chatId, helpMessage)
+    }
+})
+
+// Callbacks handling
+bot.on('callback_query', async function(query) {
+    await handleCallbackQuery(
+        query, 
+        quizFuncs, 
+        dbFunctions, 
+        botFuncs
+    )
+})
+
+// Files handling
+bot.on('document', async function(message) {
+    await handleFileUpload(
+        dbFunctions,
+        message
+    )
+})
+```
+
+The main file in the **bot's** structure, at the same time the largest one
+This file manages all the processes of the **bot**, which also take place in other files
+
+The main variables and constants from `config.js` are imported here, as well as functions from other modules
+
+This is where it is processed:
+- Commands
+- Callback requests
+- Document upload (basically, `.json` file with quiz)
+- A universal menu for **bot** commands is set up
+
+About the menu of commands, yes, it can be done through **BotFather**, but, in this case, the menu will be unique for a particular **bot**, and when cloning the project, this menu in your **bot** with your *token* will not be displayed
+The menu of course takes extra space in the code, but makes the transition to work on the project more convenient, fast and comfortable
+
+If you have additional questions about this and other files:
+First of all, familiarize yourself with the comments
+Second, contact me at my **[GitHub Profile](https://github.com/FeliksNovoselskyi)**
+
+Let's move on
+
+File `config.js`:
+```javascript
+import {dirname} from 'path'
+import {fileURLToPath} from 'url'
+
+import path from 'path'
+import telegramApi from 'node-telegram-bot-api'
+import dotenv from 'dotenv'
+
+dotenv.config({path: '../.env'})
+
+const __filename = fileURLToPath(import.meta.url)
+export const __dirname = dirname(__filename)
+
+const botToken = process.env.token
+export const bot = new telegramApi(botToken, {polling: true})
+
+// Get the directory where we will save json files sent by the user
+export const uploadFilesDir = path.join(__dirname, 'uploaded_files')
+
+// Variables for quiz functionality (quiz in one message)
+export const answerMsgIdState = {
+    answerMessageId: null
+}
+export const completedQuizzes = {}
+export const jsonFileName = {}
+
+// Flags
+export const canStart = {
+    canStartQuiz: false
+}
+export const addedFile = {
+    addedJsonFile: false
+}
+export const isTeacherLogin = {
+    isLogin: false
+}
+
+// Constant to which the questions will be written after parsing the file.json
+export const allQuestions = {
+    questions: {}
+}
+
+// Constant storing the text of the message with the result of the answer to the question
+// is used when checking for a match between a new text and an existing text.
+export const currentMessageText = {
+    messageText: ""
+}
+
+
+// Bot message (only huge messages)
+export let helpMessage = `
+Hi! 👋🤘
+Do you need some help? 🤔
+Here's a list of my commands that can help you:
+
+/start - starts your communication with me
+/help - will give you a list of commands that can help you
+/info - will give you information about yourself, your status, whether you are registered or not
+/change_role - allows you to change your role, for example from student to teacher
+/can_start_quiz - command that allows you to pass quiz. Available only to teacher 👨‍🏫
+/quiz - command to start a quiz. Available only to the student 🧑‍🎓
+
+Also remember that you always have a menu of my commands that can help you 🤗
+`
+```
+
+A configuration file for the bot, which contains the main constants and variables that are exported and used in other bot modules in the future
+
+The reason for the creation of the file was the overloading of `index.js`, because of which it was split into many files, which remain to this day
+
+Likewise, extensive comments are present, giving you a chance to familiarize yourself with every point that is difficult to understand at a glance
+
+Good luck!
+
+Next, the last file in the main directory
+
+File `questions.json`:
+```json
+{
+    "questions": [
+        {
+            "question": "What language is used to develop with Node.js?",
+            "options": ["Python", "C#", "JavaScript", "Ruby"],
+            "correct": 2
+        },
+        {
+            "question": "What is the name of the package manager for Node.js?",
+            "options": ["npm", "pip", "composer", "gem"],
+            "correct": 0
+        },
+        {
+            "question": "What is an API?",
+            "options": ["Data transfer protocol", "Versioning system", "Interface for application interaction", "Python module"],
+            "correct": 2
+        },
+        {
+            "question": "What method is used to output information to the console in JavaScript?",
+            "options": ["print()", "echo()", "console.log()", "alert()"],
+            "correct": 2
+        },
+        {
+            "question": "What is a variable in programming?",
+            "options": ["Fixed value", "Named container for saving data", "Data type", "System team"],
+            "correct": 1
+        },
+        {
+            "question": "What character is used to assign a value in JavaScript?",
+            "options": ["==", "=", "=>", "==="],
+            "correct": 1
+        },
+        {
+            "question": "Which data type is primitive in JavaScript?",
+            "options": ["Object", "Array", "Function", "String"],
+            "correct": 3
+        },
+        {
+            "question": "What does the ‘===’ operator do in JavaScript?",
+            "options": ["Compares only the value of", "Compares types and values", "Compares object references", "Converts data types before comparing"],
+            "correct": 1
+        },
+        {
+            "question": "What function is used to convert a string to a number in JavaScript?",
+            "options": ["Number()", "String()", "parseInt()", "float()"],
+            "correct": 2
+        },
+        {
+            "question": "What is DOM in web development?",
+            "options": ["Markup language", "Software library", "Interface for working with HTML and XML documents", "A framework for JS"],
+            "correct": 2
+        }
+    ]
+}
+```
+
+This file is not used in other modules, or the functioning of the project as a whole
+This is an example file that shows a sample `.json` file that will be sent to the **bot** to allow it to start your quiz
+
+Added so that you can quickly grab an already built file that will serve as an example for the **bot** to work from
+
+If you are interested in this, you can already create your own `.json`, but with the help of the platform, in a convenient and simple interface, instead of manually writing the code
+
+I think it will be very convenient for you, as well as those with whom you can work on this project
+
+# Modules directory
+So, we have familiarized ourselves with the main part of the bot's file system
+Now we can move on to the `/modules` directory
+
+What `/modules` consists of:
+- `botFunctions.js`
+- `callbackHandlers.js`
+- `filesHandlers.js`
+- `quizFunctional.js`
+
+These are the bot's service files, which provide the lion's share of its functionality, and are also designed to unload the main file, which is obviously more convenient when working on the project
+
 ---
 ## Want to get back to the top?
 >[Back to top](#quizizz-telegram-bot)
