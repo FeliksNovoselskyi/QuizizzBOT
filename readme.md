@@ -124,6 +124,12 @@ graph TD;
 ---
 ## Figma and FigJam
 >[Back to top](#quizizz-telegram-bot)
+
+Here are links to Figma and FigJam
+
+In FigJam - there is a complete project plan and its functioning, in the form of a scheme
+In Figma you can find the design project of the platform
+
 * [Figma](https://www.figma.com/design/jMjdkaAEDIh5ONLtelxzi7/QuizizzBOT-Platform?node-id=0-1&t=Y2RKr0VkKNAYPncM-1)
 * [FigJam](https://www.figma.com/board/AZD4TR2pNnDRlWKSJgVxKp/QuizizzBOT-Structure?node-id=0-1&t=FxYQlPNAcjUQaIe8-1)
 
@@ -134,6 +140,7 @@ graph TD;
 
 - [For platform](#for-platform)
 - [For bot](#for-bot)
+- [Finalising](#finalising-documentation)
 
 Full-fledged documentation for the project, contains introductory information for further acquaintance and work on the project for other developers
 
@@ -1891,6 +1898,22 @@ and not in dozens of posts as it was before, because it is logically not conveni
 Also, when the quiz is completed, the results of the quiz are calculated here, and a corresponding message about the results is displayed
 
 Also, when the quiz is finished, the `.json` file that contained the data for the past quiz is deleted
+
+
+---
+### Finalising documentation
+>[Back to top](#quizizz-telegram-bot)
+
+>[Back to top of the documentation](#documentation)
+
+At the moment, this is all the documentation for this project, as I develop this project, and as your improvements and contributions, the documentation will expand
+
+It is quite possible that even on the **platform** itself there will be documentation in a more convenient form, but this is in the not too distant or maybe even distant future, depending on my busyness
+
+Also, describing changes to `readme.md` after your changes, in the **[Documentation](#documentation)** block, is also welcome
+However, in any case, your changes after they are added will be spelled out in the documentation, the question is - by me, or by you
+
+I hope you enjoyed reading the documentation of this project, and I wish you a good work and familiarization with this project. Have a nice day!
 
 ---
 ## Want to get back to the top?
