@@ -140,7 +140,7 @@ In Figma you can find the design project of the platform
 
 - [For platform](#for-platform)
 - [For bot](#for-bot)
-- [Finalising](#finalising-documentation)
+- [End of documentation](#end-of-documentation)
 
 Full-fledged documentation for the project, contains introductory information for further acquaintance and work on the project for other developers
 
@@ -1491,6 +1491,9 @@ What `/modules` consists of:
 
 These are the **bot's** service files, which provide the lion's share of its functionality, and are also designed to unload the main file, which is obviously more convenient when working on the project
 
+---
+![](readme_files/botFunctions.gif)
+
 File `botFunctions.js`:
 ```javascript
 // My scripts
@@ -1574,6 +1577,9 @@ The "`teacher` / `student`" functionality was created for this purpose:
 - Allow users to change their *role*
 
 As everywhere else, there are comments that will help you to understand the file code in detail in practice
+
+---
+![](readme_files/callbackHandlers.gif)
 
 File `callbackHandlers.js`:
 ```javascript
@@ -1728,6 +1734,9 @@ The processing of requests in each case tends to keep the same style and format,
 
 Let's move on
 
+---
+![](readme_files/filesHandlers.gif)
+
 File `filesHandlers.js`:
 ```javascript
 import fs from 'fs'
@@ -1815,6 +1824,9 @@ try {
 Makes life much easier during development
 
 Finally, the last file in this directory
+
+---
+![](readme_files/quizFunctional.gif)
 
 File `quizFunctional.js`:
 ```javascript
@@ -1909,11 +1921,11 @@ This function, traditionally for this project, has logging
 
 Here it handles whether it is the first question or not, and whether it is the first answer to the question or not
 
-***If it is the first question*** - a new message is sent.
-***If it is the second question*** - it modifies the existing one (including the inline keyboard)
+- ***If it is the first question*** - a new message is sent.
+- ***If it is the second question*** - it modifies the existing one (including the inline keyboard)
 
-***If it was the first answer to a question*** - a new message is sent to indicate whether the answer is correct or not
-***If it is the second, third, fourth, etc. answer to the question*** - the existing message is modified
+- ***If it was the first answer to a question*** - a new message is sent to indicate whether the answer is correct or not
+- ***If it is the second, third, fourth, etc. answer to the question*** - the existing message is modified
 
 This functionality is designed to make the quiz compact, in just two messages, 
 and not in dozens of posts as it was before, because it is logically not convenient
@@ -1924,7 +1936,7 @@ Also, when the quiz is finished, the `.json` file that contained the data for th
 
 
 ---
-### Finalising documentation
+### End of documentation
 >[Back to top](#quizizz-telegram-bot)
 
 >[Back to top of the documentation](#documentation)
