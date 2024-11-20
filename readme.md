@@ -795,6 +795,9 @@ What it consists of:
 These files perform similar functionality to the `createQuest.js` and `deleteQuest.js` files
 However, the **[Fetch API](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API)** is used here
 
+---
+![](readme_files/create_question.gif)
+
 ##### File `createQuestFetch.js`:
 ```javascript
 $(document).ready(function() {
@@ -908,6 +911,9 @@ $(document).ready(function() {
 It is used for what its counterpart - *asynchronous* question creation, is also used for
 Check out the comments, and if you have ideas on how to improve this part of the project, I'd love to see your suggestions in the form of a **Pull Request**!
 
+---
+![](readme_files/delete_question.gif)
+
 ##### File `deleteQuestFetch.js`:
 ```javascript
 $(document).ready(function() {
@@ -971,6 +977,8 @@ And you will have an opportunity to work on this project with more familiar and 
 
 ---
 ### For bot
+>[Back to top](#quizizz-telegram-bot)
+
 >[Back to top of the documentation](#documentation)
 
 - [BOT DB functionality](#bot-db-functionality)
