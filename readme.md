@@ -486,6 +486,9 @@ Let's break down `/js` in more detail:
 - `preloadScreen.js` - loading screen
 - `sortableElements.js` - sorting questions on the page
 
+---
+![](readme_files/create_question.gif)
+
 ##### File `createQuest.js`:
 ```javascript
 $(document).ready(function() {
@@ -593,6 +596,9 @@ The above mentioned technologies are used here:
 - **[AJAX](https://api.jquery.com/category/ajax/)**
 - **[jQuery](https://jquery.com/)**
 
+---
+![](readme_files/delete_question.gif)
+
 ##### File `deleteQuest.js`:
 ```javascript
 $(document).ready(function() {
@@ -635,6 +641,9 @@ $(document).ready(function() {
 Similarly, allows you to delete questions asynchronously and without reloading the page, both on the page and in the database, which is logical
 The technologies used are similar
 Also connected protection from **CSRF-attacks** as in other static files from the `/static` directory
+
+---
+![](readme_files/file_downloading.gif)
 
 ##### File `fileDownloading.js`:
 ```javascript
@@ -689,6 +698,9 @@ Then you choose a convenient place on your computer to save the new file
 
 The technologies used are similar
 
+---
+![](readme_files/preload_screen.gif)
+
 ##### File `preloadScreen.js`:
 ```javascript
 window.addEventListener("load", () => {
@@ -705,6 +717,9 @@ Participates in the work of a beautiful and minimalistic loading screen for the 
 Well, or, it is heavily loaded with other processes
 
 The basic **DOM-tree**, its *methods*, and `css` *styles* are used
+
+---
+![](readme_files/sortable_elements.gif)
 
 ##### File `sortableElements.js`:
 The last file in this directory
