@@ -1,4 +1,7 @@
 # Quizizz Telegram Bot
+<!-- ![](readme_files/README HEADER.png) -->
+<img width="100%" height="auto" style="border-radius: 16px" src="readme_files/README HEADER.png">
+
 ---
 ![Node.js](https://img.shields.io/badge/Node.js-339933?style=for-the-badge&logo=nodedotjs&logoColor=white)
 ![node-telegram-bot-api](https://img.shields.io/badge/Node--Telegram--Bot--API-2CA5E0?style=for-the-badge&logo=telegram&logoColor=white)
