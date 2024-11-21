@@ -1959,6 +1959,17 @@ However, in any case, your changes after they are added will be spelled out in t
 I hope you enjoyed reading the documentation of this project, and I wish you a good work and familiarization with this project. Have a nice day!
 
 ---
+## Contacts
+Let's find out what to do if my **documentation** didn't help you or didn't give you a sufficient answer
+In such a case, it would be useful to get help from the person who directly developed this project for which you have **documentation**
+There is such a possibility, and this is my **[community](https://t.me/feliks_novo)**
+
+This **[community](https://t.me/feliks_novo)** discusses not only this project, but my other projects as well
+So, join and learn something new for yourself! 😄
+
+#### We will be glad to see you!
+
+---
 ## Want to get back to the top?
 >[Back to top](#quizizz-telegram-bot)
 # Enjoy using it!
