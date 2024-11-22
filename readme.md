@@ -36,6 +36,7 @@ A ***two-part*** project
 - [Technologies Used](#technologies-used)
 - [Project structure](#project-structure)
 - [Figma and FigJam](#figma-and-figjam)
+- [Contribute](#contribute)
 - [Documentation](#documentation)
 - [Contacts](#contacts)
 
@@ -142,6 +143,97 @@ In Figma you can find the design project of the platform
 * [Figma](https://www.figma.com/design/jMjdkaAEDIh5ONLtelxzi7/QuizizzBOT-Platform?node-id=0-1&t=Y2RKr0VkKNAYPncM-1)
 * [FigJam](https://www.figma.com/board/AZD4TR2pNnDRlWKSJgVxKp/QuizizzBOT-Structure?node-id=0-1&t=FxYQlPNAcjUQaIe8-1)
 
+---
+## Contribute
+>[Back to top](#quizizz-telegram-bot)
+
+For a project developer, it's always nice when his project someone wants to improve, but to make it as easy as possible for another developer to contribute
+
+You have full **[documentation](#documentation)**, with visual demonstrations that explain how the main parts of the project work, with detailed commentary
+
+Everything you need for a quick entry and minimum entry threshold, as well as the fastest possible start of development
+
+All that's left is to figure out how to contribute!
+
+### Here are the full-size instructions:
+1. Make a **Fork** of this repository, there is a button for that, in the top right corner of the repository page:
+
+![](readme_files/fork_image.png)
+
+After you do **Fork** you will have a copy of the project
+
+2. **Clone a copy of the project** to your local computer:
+```
+git clone https://github.com/FeliksNovoselskyi/QuizizzBOT.git
+```
+
+3. **Select the project directory**, for this purpose you can use the command:
+```
+cd QuizizzBOT
+```
+
+4. **Create a new branch** for your changes, and navigate to it with the command:
+```
+git checkout -b your-branch-name
+```
+This is so that I can then conveniently review your changes, and add them if I find them useful rather than malicious
+
+5. Now make the changes you would like to add, at your discretion:
+- Add a new feature in a **bot** or **platform**
+- Fix bugs that I haven't noticed or haven't solved yet, but you've encountered them
+- Improve the documentation, in general my `readme.md`
+- Improve the design part of the project (this is more for the **platform**)
+- Additional optimization, speeding up both **bot** and **platform** performance
+- Improved file structure, code, and improved comments
+As it is, any changes that pump this project up are welcome
+
+#### Important!
+All your changes will be scrutinized and verified by me, after which I will merge your branch with the main branch and you will become a contributor to my repository!
+
+#### Important!
+A request, not an obligation, but I'd love it - put your code changes in the documentation, if possible, it will be easier for me to spell it out. But this is purely at your request
+
+#### Important!
+Please test your own, improved version of the project thoroughly before creating a **Pull Request**
+
+You can read more about testing in the corresponding section of my `readme.md` - **[Testing](#contribute)**
+
+6. **Commit** your changes:
+
+**Add changes** to the tracking:
+```
+git add .
+```
+
+Make a **commit**:
+```
+git commit -m "Description of changes"
+```
+
+7. Push changes to your copy of the repository:
+```
+git push origin your-branch-name
+```
+
+8. Create a **Pull Request**
+
+To do this, go to **[original repository](https://github.com/FeliksNovoselskyi/QuizizzBOT)** and click on the tab labeled **Pull requests**:
+
+![](readme_files/pull_request_image.png)
+
+Next, click on the button labeled **New Pull Request**:
+
+![](readme_files/new_pull_request_button_image.png)
+
+Describe your changes and submit the **merge** request
+
+I realize that many people have never done **Contribute** to **Open Source**, for that you have the **[instructions](#here-are-the-full-size-instructions)** above
+
+But if there are additional questions about **contributing**, you always have a link to my **[community](https://t.me/feliks_novo)**
+
+In it, we will be able to discuss your concerns in a separate thread for that called **[Contribute](https://t.me/feliks_novo)**
+
+**Thank you for contributing to the project. It will help to make this project better, and most importantly, in a shorter time!**
 
 ---
 ## Documentation
