@@ -37,6 +37,7 @@ A ***two-part*** project
 - [Project structure](#project-structure)
 - [Figma and FigJam](#figma-and-figjam)
 - [Documentation](#documentation)
+- [Contacts](#contacts)
 
 ---
 ## Installation
@@ -1960,6 +1961,8 @@ I hope you enjoyed reading the documentation of this project, and I wish you a g
 
 ---
 ## Contacts
+>[Back to top](#quizizz-telegram-bot)
+
 Let's find out what to do if my **documentation** didn't help you or didn't give you a sufficient answer
 In such a case, it would be useful to get help from the person who directly developed this project for which you have **documentation**
 There is such a possibility, and this is my **[community](https://t.me/feliks_novo)**
