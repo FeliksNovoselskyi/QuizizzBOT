@@ -21,6 +21,7 @@
 ![AJAX](https://img.shields.io/badge/AJAX-00A7E1?style=for-the-badge&logo=ajax&logoColor=white)
 ![Fetch API](https://img.shields.io/badge/Fetch%20API-Enabled-007acc?style=for-the-badge&logo=javascript)
 ![Async](https://img.shields.io/badge/Async-Enabled-007acc?style=for-the-badge&logo=javascript)
+![Contributions Welcome](https://img.shields.io/badge/Contributions-Welcome-brightgreen?style=for-the-badge&logo=github&logoColor=white)
 ![Open Source](https://img.shields.io/badge/Open%20Source-%E2%9D%A4-red?style=for-the-badge)
 
 ## About
@@ -33,12 +34,14 @@ A ***two-part*** project
 ---
 ## Navigation
 - [Installation](#installation)
-- [Technologies Used](#technologies-used)
+- [Technologies used](#technologies-used)
 - [Project structure](#project-structure)
 - [Figma and FigJam](#figma-and-figjam)
 - [Contribute](#contribute)
+- [Testing](#testing)
 - [Documentation](#documentation)
 - [Contacts](#contacts)
+- [Project future](#project-future)
 
 ---
 ## Installation
@@ -196,7 +199,7 @@ A request, not an obligation, but I'd love it - put your code changes in the doc
 #### Important!
 Please test your own, improved version of the project thoroughly before creating a **Pull Request**
 
-You can read more about testing in the corresponding section of my `readme.md` - **[Testing](#contribute)**
+You can read more about testing in the corresponding section of my `readme.md` - **[Testing](#testing)**
 
 6. **Commit** your changes:
 
@@ -234,6 +237,12 @@ But if there are additional questions about **contributing**, you always have a 
 In it, we will be able to discuss your concerns in a separate thread for that called **[Contribute](https://t.me/feliks_novo)**
 
 **Thank you for contributing to the project. It will help to make this project better, and most importantly, in a shorter time!**
+
+---
+## Testing
+>[Back to top](#quizizz-telegram-bot)
+
+Coming soon...
 
 ---
 ## Documentation
@@ -2063,6 +2072,35 @@ This **[community](https://t.me/feliks_novo)** discusses not only this project, 
 So, join and learn something new for yourself! 😄
 
 #### We will be glad to see you!
+
+---
+## Project future
+>[Back to top](#quizizz-telegram-bot)
+
+Also, the project has some pretty big plans for the future:
+- Platform design project
+- Detailed structure and logic of both the **platform** and the **bot** in the form of a diagram
+- Adaptability of the **platform** for all kinds of devices
+- More detailed quiz results (Bot)
+- Saving of quiz results, linked to teacher's account (Bot)
+- Ability to change password for teacher (Bot)
+- Administrator account in the **bot**
+- Registration and authorization on the **platform**
+- Modern validation of authorization and registration on the **platform**
+- Adaptability of the **bot** for groups, with the ability to universally conduct quiz for a large number of group members at the same time. At the same time retaining its functionality in private messages
+- Improved user interface for creating quiz on the **platform**
+- Different types of questions, both for creation (**platform**) and for passing (**bot**). For example - on inputting information, not just clicking buttons
+- Fully finalize `readme.md` file
+- Create Ukrainian copy of `readme.md` file
+- Hosting **bot** and **platform**
+
+As you can see, the project has a great future
+
+What I'm saying is that what we have now is only the beginning
+
+>**Further - more**
+
+>**Further - better 😊**
 
 ---
 ## Want to get back to the top?
