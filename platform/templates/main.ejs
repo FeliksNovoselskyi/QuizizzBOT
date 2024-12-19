@@ -44,8 +44,11 @@
                     <% questionData.forEach(function(question) { %>
                         <div class="question" data-question-id="<%= question.id %>">
                             <div class="question-header">
-                                <h3 class="question-text"><%=question.questionText %></h3>
-        
+                                <div class="question-name-seconds">
+                                    <h3 class="question-text"><%=question.questionText %></h3>
+                                    <p class="question-answer-time"><%= question.questionAnswerTime%> sec</p>
+                                </div>
+                                
                                 <form action="/" method="post" class="delete-quest-form">
                                     <input type="hidden" name="questionId" value="<%=question.id %>">
                                     <button type="submit" class="delete-quest-button" name="action" value="deleteQuest" data-question-id="<%=question.id %>">Delete question</button>

@@ -48,8 +48,6 @@ $(document).ready(function() {
         const correctAnswerIndex = chooseCorrectAnswer(checkboxCorrectAnswers)
         const questionTimeIndex = chooseCorrectAnswer(checkboxQuestionTime)
 
-        console.log(questionTimeIndex, correctAnswerIndex)
-
         const csrfToken = $('meta[name="csrf-token"]').attr('content')
 
         $.ajax({

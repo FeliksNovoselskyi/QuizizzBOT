@@ -84,10 +84,8 @@ app.post('/', csrfProtection, async (req, res) => {
         } else if (correctAnswerIndex == null) {
             return res.status(400).json({ error: 'Choose only one correct answer within the valid range (1-4)' })
         } else if (questionTimeIndex == null) {
-            return res.status(400).json({ error: 'Choose only one correct answer within the valid range (1-4)' })
+            return res.status(400).json({ error: 'Choose the time that will be allowed to answer the question' })
         } else {
-            console.log(questionTimeIndex)
-
             if (questionTimeIndex == 0) {
                 questionTime = 15
             } else if (questionTimeIndex == 1) {
@@ -118,6 +116,7 @@ app.post('/', csrfProtection, async (req, res) => {
                 answer3: answer3Input,
                 answer4: answer4Input,
                 correctAnswer: correctAnswerIndex,
+                questionAnswerTime: questionTime,
                 message: 'Question added successfully!'
             })
         }

@@ -103,6 +103,17 @@ main {
     width: 95%;
 }
 
+.question-name-seconds {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-end;
+    gap: 4px;
+}
+
+.question-answer-time {
+    margin-bottom: 8px;
+}
+
 .delete-quest-button {
     padding: 10px;
     border: transparent;
