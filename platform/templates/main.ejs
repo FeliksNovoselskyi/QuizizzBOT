@@ -87,29 +87,58 @@
                     <form action="/" class="question-form" method="post">
                         <div id="question-answers-block">
                             <!-- question text -->
-                            <p>Question text</p> 
-                            <input type="text" maxlength="100" id="questionTextInput" name="questionTextInput">
+                            <div class="inputs-block">
+                                <h5>Question text</h5> 
+                                <input type="text" maxlength="100" id="questionTextInput" name="questionTextInput">
+                            </div>
 
                             <!-- answers -->
-                            <p>Question answers</p>
-                            <div class="answer-block">
-                                <input type="text" maxlength="100" id="answer1Input" name="answer1Input" class="answer-text-input">
-                                <input type="checkbox" name="correctAnswer1" id="correctAnswer1Input" class="correct-answer-checkbox">
+                            <div class="inputs-block">
+                                <h5>Question answers</h5>
+                                <div class="answer-block">
+                                    <input type="text" maxlength="100" id="answer1Input" name="answer1Input" class="answer-text-input">
+                                    <input type="checkbox" name="correctAnswer1" id="correctAnswer1Input" class="correct-answer-checkbox">
+                                </div>
+    
+                                <div class="answer-block">
+                                    <input type="text" maxlength="100" id="answer2Input" name="answer2Input" class="answer-text-input">
+                                    <input type="checkbox" name="correctAnswer2" id="correctAnswer2Input" class="correct-answer-checkbox">
+                                </div>
+    
+                                <div class="answer-block">
+                                    <input type="text" maxlength="100" id="answer3Input" name="answer3Input" class="answer-text-input">
+                                    <input type="checkbox" name="correctAnswer3" id="correctAnswer3Input" class="correct-answer-checkbox">
+                                </div>
+                                
+                                <div class="answer-block">
+                                    <input type="text" maxlength="100" id="answer4Input" name="answer4Input" class="answer-text-input">
+                                    <input type="checkbox" name="correctAnswer4" id="correctAnswer4Input" class="correct-answer-checkbox">
+                                </div>
                             </div>
 
-                            <div class="answer-block">
-                                <input type="text" maxlength="100" id="answer2Input" name="answer2Input" class="answer-text-input">
-                                <input type="checkbox" name="correctAnswer2" id="correctAnswer2Input" class="correct-answer-checkbox">
-                            </div>
-
-                            <div class="answer-block">
-                                <input type="text" maxlength="100" id="answer3Input" name="answer3Input" class="answer-text-input">
-                                <input type="checkbox" name="correctAnswer3" id="correctAnswer3Input" class="correct-answer-checkbox">
-                            </div>
-                            
-                            <div class="answer-block">
-                                <input type="text" maxlength="100" id="answer4Input" name="answer4Input" class="answer-text-input">
-                                <input type="checkbox" name="correctAnswer4" id="correctAnswer4Input" class="correct-answer-checkbox">
+                            <div class="inputs-block">
+                                <h5>Question answer time</h5>
+                                <div id="time-block">
+                                    <div class="time-checkbox-block">
+                                        <p>15 sec</p>
+                                        <input type="checkbox" name="15Second" id="15SecondInput" class="time-checkbox">
+                                    </div>
+    
+                                    <div class="time-checkbox-block">
+                                        <p>30 sec</p>
+                                        <input type="checkbox" name="30Second" id="30SecondInput" class="time-checkbox">
+                                    </div>
+    
+                                    <div class="time-checkbox-block">
+                                        <p>45 sec</p>
+                                        <input type="checkbox" name="45Second" id="45SecondInput" class="time-checkbox">
+                                    </div>
+    
+                                    <div class="time-checkbox-block">
+                                        <p>60 sec</p>
+                                        <input type="checkbox" name="60Second" id="60SecondInput" class="time-checkbox">
+                                    </div>
+                                </div>
                             </div>
 
                             <p class="error-message"></p>

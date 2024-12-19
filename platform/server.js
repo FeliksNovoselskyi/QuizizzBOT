@@ -44,6 +44,7 @@ app.use((req, res, next) => {
 })
 
 let context = {}
+let questionTime
 
 // Render of the main page
 app.get('/', async (req, res) => {
@@ -70,6 +71,7 @@ app.post('/', csrfProtection, async (req, res) => {
         answer3Input, 
         answer4Input, 
         correctAnswerIndex, 
+        questionTimeIndex,
         action, 
         cell_order
     } = req.body
@@ -81,14 +83,29 @@ app.post('/', csrfProtection, async (req, res) => {
             return res.status(400).json({error: 'Fill all inputs to create a question'})
         } else if (correctAnswerIndex == null) {
             return res.status(400).json({ error: 'Choose only one correct answer within the valid range (1-4)' })
+        } else if (questionTimeIndex == null) {
+            return res.status(400).json({ error: 'Choose only one correct answer within the valid range (1-4)' })
         } else {
+            console.log(questionTimeIndex)
+
+            if (questionTimeIndex == 0) {
+                questionTime = 15
+            } else if (questionTimeIndex == 1) {
+                questionTime = 30
+            } else if (questionTimeIndex == 2) {
+                questionTime = 45
+            } else if (questionTimeIndex == 3) {
+                questionTime = 60
+            }
+
             const newQuestion = await models.Questions.create({
                 questionText: questionTextInput,
                 answer1: answer1Input,
                 answer2: answer2Input,
                 answer3: answer3Input,
                 answer4: answer4Input,
-                correctAnswer: correctAnswerIndex
+                correctAnswer: correctAnswerIndex,
+                questionAnswerTime: questionTime,
             })
 
             // Successfully created question
