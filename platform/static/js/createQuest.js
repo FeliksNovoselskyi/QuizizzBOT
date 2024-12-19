@@ -79,7 +79,12 @@ $(document).ready(function() {
                 const newQuestionHtml = `
                     <div class="question" data-question-id="${response.id}">
                         <div class="question-header">
-                            <h3 class="question-text">${response.questionText}</h3>
+                            <div class="question-name-seconds">
+                                <h3 class="question-text">${response.questionText}</h3>
+                                <p class="question-answer-time">${response.questionAnswerTime} sec</p>
+                            </div>
+
+                            <h3 class="question-text"></h3>
                             <form action="/" method="post" class="delete-quest-form">
                                 <input type="hidden" name="questionId" value="${response.id}">
                                 <button type="submit" class="delete-quest-button" name="action" value="deleteQuest" data-question-id="${response.id}">Delete question</button>
