@@ -1,10 +1,15 @@
 $(document).ready(function() {
-    $('.correct-answer-checkbox').change(function() {
-        // If the current checkbox is selected, deselect all other checkboxes
-        if ($(this).prop('checked')) {
-            $('.correct-answer-checkbox').not(this).prop('checked', false)
-        }
-    })
+    function deselectOtherCheckboxes(className) {
+        $(`.${className}`).change(function() {
+            // If the current checkbox is selected, deselect all other checkboxes
+            if ($(this).prop('checked')) {
+                $(`.${className}`).not(this).prop('checked', false)
+            }
+        })
+    }
+
+    deselectOtherCheckboxes('correct-answer-checkbox')
+    deselectOtherCheckboxes('time-checkbox')
 
     // Create question ajax request
     $(".question-form").submit(function(event) {
@@ -16,14 +21,21 @@ $(document).ready(function() {
         const answer3Input = $('#answer3Input').val()
         const answer4Input = $('#answer4Input').val()
 
-        const checkboxAnswers = [
+        const checkboxCorrectAnswers = [
             $('#correctAnswer1Input'),
             $('#correctAnswer2Input'),
             $('#correctAnswer3Input'),
             $('#correctAnswer4Input')
         ]
 
-        function chooseCorrectAnswer() {
+        const checkboxQuestionTime = [
+            $('#15SecondInput'),
+            $('#30SecondInput'),
+            $('#45SecondInput'),
+            $('#60SecondInput')
+        ]
+
+        function chooseCorrectAnswer(checkboxAnswers) {
             const correctAnswers = checkboxAnswers.filter(checkbox => checkbox.prop('checked'))
 
             if (correctAnswers.length === 1) {
@@ -33,7 +45,9 @@ $(document).ready(function() {
             return null
         }
 
-        const correctAnswerIndex = chooseCorrectAnswer()
+        const correctAnswerIndex = chooseCorrectAnswer(checkboxCorrectAnswers)
+        const questionTimeIndex = chooseCorrectAnswer(checkboxQuestionTime)
+
         const csrfToken = $('meta[name="csrf-token"]').attr('content')
 
         $.ajax({
@@ -50,6 +64,7 @@ $(document).ready(function() {
                 answer3Input,
                 answer4Input,
                 correctAnswerIndex,
+                questionTimeIndex,
                 action: 'createQuest'
             }),
             success: function(response) {
@@ -64,7 +79,12 @@ $(document).ready(function() {
                 const newQuestionHtml = `
                     <div class="question" data-question-id="${response.id}">
                         <div class="question-header">
-                            <h3 class="question-text">${response.questionText}</h3>
+                            <div class="question-name-seconds">
+                                <h3 class="question-text">${response.questionText}</h3>
+                                <p class="question-answer-time">${response.questionAnswerTime} sec</p>
+                            </div>
+
+                            <h3 class="question-text"></h3>
                             <form action="/" method="post" class="delete-quest-form">
                                 <input type="hidden" name="questionId" value="${response.id}">
                                 <button type="submit" class="delete-quest-button" name="action" value="deleteQuest" data-question-id="${response.id}">Delete question</button>

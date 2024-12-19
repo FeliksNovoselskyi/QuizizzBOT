@@ -87,7 +87,7 @@ main {
 #question-answers-block {
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 20px;
 }
 
 .error-message {
@@ -101,6 +101,17 @@ main {
     align-items: center;
     gap: 10px;
     width: 95%;
+}
+
+.question-name-seconds {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-end;
+    gap: 4px;
+}
+
+.question-answer-time {
+    margin-bottom: 8px;
 }
 
 .delete-quest-button {
@@ -163,6 +174,32 @@ main {
     border-radius: 50%;
     border-top-color: #ffffff;
     animation: spin 1s ease-in-out infinite;
+}
+
+#time-block {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.time-checkbox {
+    width: 45px;
+    height: 45px;
+    cursor: pointer;
+}
+
+.time-checkbox-block {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    
+}
+
+.inputs-block {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
 }
 
 @keyframes spin {
