@@ -1,0 +1,132 @@
+
+body {
+    background-color: #ffffff;
+    color: #ffffff;
+    gap: 10px;
+    transition: all 350ms ease-in-out;
+}
+
+.dark-theme {
+    background-color: #000000;
+    color: #ebebeb;
+}
+
+body.dark-theme #created-questions {
+    background-color: rgb(27, 27, 27);
+    border: 3px solid rgb(239, 239, 239);
+}
+
+body.dark-theme .answers {
+    background-color: rgb(47, 47, 47);
+}
+
+/* Modal window */
+body.dark-theme .modal-content {
+    background-color: rgb(18, 18, 18);
+}
+
+body.dark-theme .btn-close {
+    background-color: #ebebeb;
+    transition: all 300ms ease-in-out;
+}
+
+body.dark-theme .modal.fade {
+    background-color: #f0f0f038;
+    transition: all 300ms ease-in-out;
+}
+
+body.dark-theme input {
+    background-color: #1f1f1f;
+    border: transparent;
+    color: #ebebeb;
+}
+
+/* Checkboxes in modal window */
+body.dark-theme .time-checkbox {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    width: 45px;
+    height: 45px;
+    background-color: #1f1f1f;
+    border: 2px solid #ebebeb;
+    border-radius: 2px;
+    cursor: pointer;
+}
+
+body.dark-theme .time-checkbox:checked {
+    background-color: #0d6dfd9d;
+    border-color: #ffffff;
+}
+
+body.dark-theme .time-checkbox:checked::before {
+    position: absolute;
+    width: 45px;
+    height: 45px;
+    background-color: #ffffff;
+    border-radius: 2px;
+}
+
+body.dark-theme .correct-answer-checkbox {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    width: 45px;
+    height: 45px;
+    background-color: #1f1f1f;
+    border: 2px solid #ebebeb;
+    border-radius: 2px;
+    cursor: pointer;
+}
+
+body.dark-theme .correct-answer-checkbox:checked {
+    background-color: #0d6dfd9d;
+    border-color: #ffffff;
+}
+
+body.dark-theme .correct-answer-checkbox:checked::before {
+    position: absolute;
+    width: 45px;
+    height: 45px;
+    background-color: #ffffff;
+    border-radius: 2px;
+}
+
+
+
+/* Buttons */
+.switch-theme {
+    border: transparent;
+    border-radius: 10%;
+    transition: all 300ms ease-in-out;
+}
+
+.switch-theme:hover {
+    background-color: #d2d2d2;
+}
+
+body.dark-theme .control-buttons {
+    color: #ebebeb;
+}
+
+body.dark-theme .control-buttons:hover {
+    background-color: rgb(43, 43, 43);
+}
+
+body.dark-theme .switch-theme {
+    color: #ebebeb;
+    background-color: transparent;
+}
+
+body.dark-theme .switch-theme:hover {
+    background-color: rgb(43, 43, 43);
+}
+
+body.dark-theme .delete-quest-button {
+    background-color: transparent;
+    color: #ebebeb;
+}
+
+body.dark-theme .delete-quest-button:hover {
+    background-color: rgb(43, 43, 43);
+}

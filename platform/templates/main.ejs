@@ -4,8 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Create Quizizz!</title>
+
+    <!-- My styles -->
     <link rel="stylesheet" href="static/css/style.css">
+    <link rel="stylesheet" href="static/css/dark-theme.css">
     
+    <!-- Bootstrap -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
     
@@ -23,6 +27,7 @@
     <script src="../static/js/fileDownloading.js" defer></script>
 
     <script src="../static/js/preloadScreen.js" defer></script>
+    <script src="../static/js/darkThemeSwitch.js" defer></script>
 
     <!-- If you wanna use fetch api -->
     <!-- <script src="../static/js/fetch_api/createQuestFetch.js" defer></script>
@@ -33,6 +38,11 @@
         <div class="loader"></div>
         <p>Loading...</p>
     </div>
+
+    <header>
+        <h4>Telegram Quizizz</h4>
+        <button class="switch-theme">Dark</button>
+    </header>
 
     <main>
         <div id="questions-block">            

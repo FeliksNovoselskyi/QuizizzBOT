@@ -3,6 +3,14 @@
     font-family: Arial, Helvetica, sans-serif;
 }
 
+header {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 15px;
+}
+
 main {
     display: flex;
     flex-direction: column;
@@ -53,6 +61,7 @@ main {
     gap: 10px;
     background-color: rgb(239, 239, 239);
     border: 3px solid rgb(45, 45, 45);
+    transition: all 350ms ease-in-out;
 }
 
 .question {
@@ -78,6 +87,7 @@ main {
     width: 95%;
     background-color: rgb(207, 207, 207);
     border-radius: 16px;
+    transition: all 350ms ease-in-out;
 }
 
 .answers-text {
