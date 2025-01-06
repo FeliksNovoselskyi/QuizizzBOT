@@ -1,7 +1,6 @@
 import fs from 'fs'
 import path from 'path'
 
-// My scripts
 import {
     bot,
     answerMsgIdState, 
@@ -11,6 +10,7 @@ import {
     allQuestions, 
     __dirname
 } from "../config.js"
+
 
 // Indexes of current issues for each user
 export const userQuestions = {}

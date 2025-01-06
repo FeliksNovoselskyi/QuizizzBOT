@@ -1,4 +1,3 @@
-// My scripts
 import {
     bot, 
     completedQuizzes, 
@@ -17,7 +16,7 @@ import * as dbFunctions from './db/dbFunctions.js'
 import * as quizFuncs from './modules/quizFunctional.js'
 import * as botFuncs from './modules/botFunctions.js'
 
-// Create a menu of commands for the bot
+
 bot.setMyCommands([
     {command: '/start', description: '❕ Start communicating with the bot'},
     {command: '/help', description: '❕ Get help from the bot'},
@@ -27,7 +26,6 @@ bot.setMyCommands([
     {command: '/quiz', description: '❕ Start taking the quiz if given the opportunity to do so (student)'},
 ])
 
-// User messages
 bot.on('message', async function(message) {
     const chatId = message.chat.id
     const userId = message.from.id
@@ -140,7 +138,7 @@ bot.on('callback_query', async function(query) {
     )
 })
 
-// Files handling
+// Files handling (.json with quiz info)
 bot.on('document', async function(message) {
     await handleFileUpload(
         dbFunctions,

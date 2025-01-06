@@ -4,6 +4,7 @@ import dotenv from 'dotenv'
 import {fileURLToPath} from 'url'
 import {dirname, join} from 'path'
 
+
 dotenv.config({path: '../.env'})
 
 const __filename = fileURLToPath(import.meta.url)

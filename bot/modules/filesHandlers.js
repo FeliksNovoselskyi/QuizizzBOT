@@ -1,7 +1,6 @@
 import fs from 'fs'
 import path from 'path'
 
-// My scripts
 import {
     bot,
     allQuestions,
@@ -10,6 +9,7 @@ import {
     addedFile,
     __dirname
 } from "../config.js"
+
 
 // Teacher uploading .json file with quiz questions
 export default async function handleFileUpload(dbFunctions, message) {
