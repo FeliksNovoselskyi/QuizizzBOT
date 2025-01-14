@@ -1,7 +1,7 @@
 import {DataTypes} from 'sequelize'
 
-// My scripts
 import * as dataBase from './dbSetup.js'
+
 
 // Questions model
 export const Questions = dataBase.sequelize.define('Questions', {

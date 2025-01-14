@@ -5,6 +5,7 @@ import path from 'path'
 import telegramApi from 'node-telegram-bot-api'
 import dotenv from 'dotenv'
 
+
 dotenv.config({path: '../.env'})
 
 const __filename = fileURLToPath(import.meta.url)

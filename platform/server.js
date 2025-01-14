@@ -6,14 +6,13 @@ import cookieParser from 'cookie-parser'
 import {fileURLToPath} from 'url'
 import {dirname, join} from 'path'
 
-// My scripts
 import * as models from './db/models.js'
+
 
 dotenv.config({path: '../.env'})
 
 const app = express()
 
-// PORT and HOST (from .env file or basic values)
 const PORT = process.env.PORT || 3000
 const HOST = process.env.HOST || 'localhost'
 
@@ -23,7 +22,6 @@ const __dirname = dirname(__filename)
 app.set('view engine', 'ejs')
 app.set('views', './templates')
 
-// Setup static routes
 app.use('/static/', express.static(join(__dirname, 'static')))
 app.use('/css', express.static(join(__dirname, 'node_modules/bootstrap/dist/css')))
 app.use('/js', express.static(join(__dirname, 'node_modules/bootstrap/dist/js')))

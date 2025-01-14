@@ -1,4 +1,3 @@
-// My scripts
 import {
     bot,
     allQuestions,
@@ -7,6 +6,7 @@ import {
     currentMessageText,
     __dirname
 } from "../config.js"
+
 
 // Processing callback functions
 // bot.on('callback_query', async function(query) {

@@ -1,5 +1,5 @@
-// My scripts
 import * as models from './models.js'
+
 
 // Function in which user information is added to the database
 export async function addUser(userId, username, firstName, lastName, role) {
