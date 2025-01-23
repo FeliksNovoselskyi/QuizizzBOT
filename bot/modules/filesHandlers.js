@@ -11,7 +11,6 @@ import {
 } from "../config.js"
 
 
-// Teacher uploading .json file with quiz questions
 export default async function handleFileUpload(dbFunctions, message) {
     const chatId = message.chat.id
     const userId = message.from.id
@@ -19,11 +18,10 @@ export default async function handleFileUpload(dbFunctions, message) {
     const fileId = message.document.file_id
     const fileName = message.document.file_name
 
-    // Checking that the file is .json and that it is a teacher account
     if (path.extname(fileName) === '.json') {
         dbFunctions.getUserById(userId).then(async function (user) {
             if (!user || user.role !== 'teacher') {
-                return bot.sendMessage(chatId, '❗️ Only teachers are allowed to upload files! ❗️')
+                return bot.sendMessage(chatId, '❗️ Only teachers are allowed to upload files!')
             }
 
             try {
@@ -37,7 +35,7 @@ export default async function handleFileUpload(dbFunctions, message) {
                 // and parsing it for further use of data from it
                 fs.readFile(renamedPath, 'utf8', (error, data) => {
                     if (error) {
-                        return bot.sendMessage(chatId, '❗️ Error during reading a file ❗️')
+                        return bot.sendMessage(chatId, '❗️ Error during reading a file')
                     }
 
                     try {
@@ -47,19 +45,19 @@ export default async function handleFileUpload(dbFunctions, message) {
 
                         jsonFileName[chatId] = fileName
 
-                        bot.sendMessage(chatId, '🔥👍 The file with questions has been uploaded successfully! To start the quiz, please write /can_start_quiz')
+                        bot.sendMessage(chatId, '👍 The file with questions has been uploaded successfully! To start the quiz, please write /can_start_quiz')
                         addedFile.addedJsonFile = true
                     } catch (parseError) {
                         console.log('Error parsing JSON:', parseError.message)
-                        bot.sendMessage(chatId, '❗️ Error parsing JSON file. Check the file format is correct ❗️')
+                        bot.sendMessage(chatId, '❗️ Error parsing JSON file. Check the file format is correct')
                     }
                 })
             } catch (downloadError) {
                 console.log('Error downloading file:', downloadError.message)
-                bot.sendMessage(chatId, '❗️ Error downloading the file ❗️')
+                bot.sendMessage(chatId, '❗️ Error downloading the file')
             }
         })
     } else {
-        bot.sendMessage(chatId, '❗️ You can only upload a .json file for the quiz! ❗️')
+        bot.sendMessage(chatId, '❗️ You can only upload a .json file for the quiz!')
     }
 }

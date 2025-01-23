@@ -14,7 +14,6 @@ export const __dirname = dirname(__filename)
 const botToken = process.env.token
 export const bot = new telegramApi(botToken, {polling: true})
 
-// Get the directory where we will save json files sent by the user
 export const uploadFilesDir = path.join(__dirname, 'uploaded_files')
 
 // Variables for quiz functionality (quiz in one message)
@@ -24,7 +23,7 @@ export const answerMsgIdState = {
 export const completedQuizzes = {}
 export const jsonFileName = {}
 
-// Flags
+
 export const canStart = {
     canStartQuiz: false
 }
@@ -35,21 +34,19 @@ export const isTeacherLogin = {
     isLogin: false
 }
 
-// Constant to which the questions will be written after parsing the file.json
+
 export const allQuestions = {
     questions: {}
 }
 
-// Constant storing the text of the message with the result of the answer to the question
-// is used when checking for a match between a new text and an existing text.
+
 export const currentMessageText = {
     messageText: ""
 }
 
 
-// Bot message (only huge messages)
 export let helpMessage = `
-Hi! 👋🤘
+Hi! 👋
 Do you need some help? 🤔
 Here's a list of my commands that can help you:
 

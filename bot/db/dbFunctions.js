@@ -1,7 +1,6 @@
 import * as models from './models.js'
 
 
-// Function in which user information is added to the database
 export async function addUser(userId, username, firstName, lastName, role) {
     try {
         models.Users.create({
@@ -16,7 +15,7 @@ export async function addUser(userId, username, firstName, lastName, role) {
     }
 }
 
-// Function to get information about the user when he/she wants it
+
 export async function getUserById(userId) {
     try {
         const user = await models.Users.findOne({where: {userId}})
@@ -27,8 +26,7 @@ export async function getUserById(userId) {
     }
 }
 
-// Function updating the user role in the database
-// depending on the one he's got now
+
 export async function updateUserRole(userId, newRole, callback) {
     try {
         const [updated] = await models.Users.update({role: newRole}, {where: {userId}})
@@ -43,7 +41,7 @@ export async function updateUserRole(userId, newRole, callback) {
     }
 }
 
-// Function that updates the user's progress
+
 export async function updateProgress(newList, userId) {
     try {
         await models.Users.update({progress: newList}, {where: {userId}})
@@ -53,7 +51,6 @@ export async function updateProgress(newList, userId) {
 }
 
 
-// Function to clearing user progress from the database
 export async function clearProgress(userId) {
     try {
         await models.Users.update({progress: null}, {where: {userId}})
