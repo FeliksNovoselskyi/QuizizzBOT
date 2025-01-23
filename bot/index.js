@@ -31,8 +31,6 @@ bot.on('message', async function(message) {
     const userId = message.from.id
     const messageId = message.message_id
 
-    // If a user has written /start we get data about him/her
-    // whether it is stored in the database or not
     if (message.text === '/start') {
         dbFunctions.getUserById(userId).then(async (user) => {
             if (user) {
@@ -52,7 +50,6 @@ bot.on('message', async function(message) {
         })
     }
 
-    // If the user wants to retrieve data about him/herself
     if (message.text === '/info')  {
         dbFunctions.getUserById(userId).then(async (user) => {
             if (user) {
@@ -63,12 +60,10 @@ bot.on('message', async function(message) {
         })
     }
 
-    // If the user wants to take help with bot commands
     if (message.text === '/help')  {
         await bot.sendMessage(chatId, helpMessage)
     }
 
-    // Command to change role
     if (message.text === '/change_role')  {
         dbFunctions.getUserById(userId).then(async (user) => {
 
@@ -80,7 +75,6 @@ bot.on('message', async function(message) {
         })
     }
 
-    // If the user wants to start taking the quiz
     if (message.text === '/quiz') {
         dbFunctions.getUserById(userId).then(async (user) => {
             if (user.role === 'student' && canStart.canStartQuiz && !completedQuizzes[chatId]) {
@@ -95,7 +89,6 @@ bot.on('message', async function(message) {
         })
     }
 
-    // Command authorizing to start the quiz (available only to the teacher)
     if (message.text === '/can_start_quiz') {
         dbFunctions.getUserById(userId).then(async (user) => {
             if (user.role === 'teacher') {
@@ -112,8 +105,6 @@ bot.on('message', async function(message) {
         })
     }
 
-    // Handling the condition when absolutely any message has been written
-    // in this case, help for the user will be displayed
     if (
     !message.document &&
     !isTeacherLogin.isLogin &&
@@ -128,7 +119,6 @@ bot.on('message', async function(message) {
     }
 })
 
-// Callbacks handling
 bot.on('callback_query', async function(query) {
     await handleCallbackQuery(
         query, 
@@ -138,7 +128,6 @@ bot.on('callback_query', async function(query) {
     )
 })
 
-// Files handling (.json with quiz info)
 bot.on('document', async function(message) {
     await handleFileUpload(
         dbFunctions,

@@ -6,7 +6,6 @@ import {
 } from "../config.js"
 
 
-// Function that handles login as a teacher, with password verification
 export async function teacherLogin(chatId, messageId, userId, username, firstName, lastName, changeToTeacherRole) {
     await bot.sendMessage(chatId, '❕ Enter your teacher account password (password only, no extra characters)')
 

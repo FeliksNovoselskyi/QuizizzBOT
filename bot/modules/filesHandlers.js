@@ -11,7 +11,6 @@ import {
 } from "../config.js"
 
 
-// Teacher uploading .json file with quiz questions
 export default async function handleFileUpload(dbFunctions, message) {
     const chatId = message.chat.id
     const userId = message.from.id
@@ -19,7 +18,6 @@ export default async function handleFileUpload(dbFunctions, message) {
     const fileId = message.document.file_id
     const fileName = message.document.file_name
 
-    // Checking that the file is .json and that it is a teacher account
     if (path.extname(fileName) === '.json') {
         dbFunctions.getUserById(userId).then(async function (user) {
             if (!user || user.role !== 'teacher') {

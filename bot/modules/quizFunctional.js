@@ -16,7 +16,7 @@ import {
 export const userQuestions = {}
 export let userProgress = []
 
-// Function for sending a question with inline buttons
+
 export async function sendQuestion(chatId, messageId) {
     try {
         const userIndex = userQuestions[chatId] || 0
@@ -30,7 +30,6 @@ export async function sendQuestion(chatId, messageId) {
             })
 
             if (userIndex === 0) {
-                // Sending a message with an inline keyboard
                 await bot.sendMessage(chatId, currentQuestion.question, {
                     reply_markup: {
                         inline_keyboard: options
@@ -58,7 +57,6 @@ export async function sendQuestion(chatId, messageId) {
 
             await bot.sendMessage(chatId, `✋🛑 The test is over! \n\n👉 Number of questions: ${allQuestions} \n\n👉 The number of correct answers: ${allCorrectAnswers} \n\nThank you for all your answers! 🤗`)
             
-            // Resetting the status for the user
             delete userQuestions[chatId]
             userProgress = []
             answerMsgIdState.answerMessageId = null
