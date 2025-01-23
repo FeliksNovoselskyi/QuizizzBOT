@@ -46,7 +46,7 @@ export const currentMessageText = {
 
 
 export let helpMessage = `
-Hi! 👋🤘
+Hi! 👋
 Do you need some help? 🤔
 Here's a list of my commands that can help you:
 

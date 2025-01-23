@@ -55,7 +55,7 @@ export async function sendQuestion(chatId, messageId) {
                 allCorrectAnswers = allCorrectAnswers + parseInt(objectValues)
             })
 
-            await bot.sendMessage(chatId, `✋🛑 The test is over! \n\n👉 Number of questions: ${allQuestions} \n\n👉 The number of correct answers: ${allCorrectAnswers} \n\nThank you for all your answers! 🤗`)
+            await bot.sendMessage(chatId, `✋ The test is over! \n\nNumber of questions: ${allQuestions} \n\nThe number of correct answers: ${allCorrectAnswers} \n\nThank you for all your answers! 🤗`)
             
             delete userQuestions[chatId]
             userProgress = []

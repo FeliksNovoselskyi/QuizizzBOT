@@ -28,7 +28,7 @@ export default async function handleCallbackQuery(query, quizFuncs, dbFunctions,
     if (query.data === 'register_student') {
         dbFunctions.addUser(userId, username, firstName, lastName, 'student')
         await bot.editMessageReplyMarkup({inline_keyboard: []}, {chat_id: chatId, message_id: messageId})
-        await bot.sendMessage(chatId, '🧑‍🎓 You are registered in this bot as a student')
+        await bot.sendMessage(chatId, 'You are registered in this bot as a student')
         return
     }
 
@@ -47,14 +47,14 @@ export default async function handleCallbackQuery(query, quizFuncs, dbFunctions,
     if (query.data === 'switch_to_student') {
         delete quizFuncs.userQuestions[chatId]
         dbFunctions.updateUserRole(userId, 'student', () => {
-            bot.sendMessage(chatId, "🧑‍🎓 Your role has been changed to student")
+            bot.sendMessage(chatId, "Your role has been changed to student")
         })
         await bot.editMessageReplyMarkup({inline_keyboard: []}, {chat_id: chatId, message_id: messageId})
         return
     }
     
     if (query.data === 'cancel_change_role') {
-        await bot.sendMessage(chatId, "🤨 Role change cancelled")
+        await bot.sendMessage(chatId, "Role change cancelled")
         await bot.editMessageReplyMarkup({inline_keyboard: []}, {chat_id: chatId, message_id: messageId})
         return
     }
@@ -72,11 +72,11 @@ export default async function handleCallbackQuery(query, quizFuncs, dbFunctions,
     let userProgressJSON
 
     if (isCorrect) {
-        const correctAnswerText = "✅ That's the right answer! ✅"
+        const correctAnswerText = "✅ That's the right answer!"
         
         await writeAnswerResult(1, correctAnswerText, questionResult, quizFuncs, numberQuestion, chatId, userId, userProgressJSON, dbFunctions)
     } else {
-        const wrongAnswerText = `❌ Wrong answer! The correct answer: ${currentQuestion.options[currentQuestion.correct]} ❌`
+        const wrongAnswerText = `❌ Wrong answer! The correct answer: ${currentQuestion.options[currentQuestion.correct]}`
         
         await writeAnswerResult(0, wrongAnswerText, questionResult, quizFuncs, numberQuestion, chatId, userId, userProgressJSON, dbFunctions)
     } 
